@@ -6,6 +6,9 @@ import (
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
+
+  "log"
+
 )
 
 //go:embed all:frontend/dist
@@ -20,7 +23,11 @@ func main() {
 		Title:  "One Dev",
 		Width:  1024,
 		Height: 768,
-		AssetServer: &assetserver.Options{
+    MinWidth: 1024,
+    MinHeight: 768,
+    MaxWidth: 768,
+    MaxHeight: 1024,
+    AssetServer: &assetserver.Options{
 			Assets: assets,
 		},
 		OnStartup:        app.startup,
@@ -30,6 +37,6 @@ func main() {
 	})
 
 	if err != nil {
-		println("Error:", err.Error())
+		log.Fatalln("Error:", err.Error())
 	}
 }

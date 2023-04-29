@@ -2,7 +2,7 @@
   "$schema": "https://wails.io/schemas/config.v2.json",
   "name": "one_dev",
   "outputfilename": "one_dev",
-  "frontend:install": "npm install --verbose",
+  "frontend:install": "npm install --verbose  --legacy-peer-dependency",
   "frontend:build": "npm run build --verbose",
   "frontend:dev:watcher": "npm run dev",
   "frontend:dev:serverUrl": "auto",
