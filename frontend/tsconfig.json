@@ -18,10 +18,25 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "paths": {
+      "@src/*": [
+        "./src/*"
+      ],
+      "@components/*": [
+        "./src/components/*"
+      ],
+      "@go/*": [
+        "./wailsjs/go/*"
+      ],
+      "@go-runtime/*": [
+        "./wailsjs/runtime/*"
+      ]
+    }
   },
   "include": [
-    "src"
+    "src",
+    "wailsjs"
   ],
   "references": [
     {

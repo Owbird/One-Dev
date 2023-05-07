@@ -7,8 +7,7 @@ import (
 	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
 
-  "log"
-
+	"log"
 )
 
 //go:embed all:frontend/dist
@@ -20,17 +19,17 @@ func main() {
 
 	// Create application with options
 	err := wails.Run(&options.App{
-		Title:  "One Dev",
-		Width:  1024,
-		Height: 768,
-    MinWidth: 1024,
-    MinHeight: 768,
-    MaxWidth: 768,
-    MaxHeight: 1024,
-    AssetServer: &assetserver.Options{
+		Title:     "One Dev",
+		Width:     1024,
+		MinWidth:  1024,
+		MaxHeight: 1024,
+		Height:    768,
+		MinHeight: 768,
+		MaxWidth:  768,
+		AssetServer: &assetserver.Options{
 			Assets: assets,
 		},
-		OnStartup:        app.startup,
+		OnStartup: app.startup,
 		Bind: []interface{}{
 			app,
 		},
