@@ -12,12 +12,12 @@ const RamUsage = ({ memoryStats }: { memoryStats: data.MemoryStats }) => {
       ((memoryStats.used / memoryStats.total) * 100).toFixed(2)
     );
 
-    if (percentage > 50) {
-      setColor("yellow");
-    } else if (percentage <= 50 && percentage >= 30) {
-      setColor("red");
-    } else {
+    if (percentage < 50) {
       setColor("green");
+    } else if (percentage >= 50 && percentage <= 70) {
+      setColor("yellow");
+    } else {
+      setColor("red");
     }
 
     setPercentage(percentage);
