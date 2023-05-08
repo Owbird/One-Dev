@@ -1,29 +1,47 @@
 import {
   Box,
+  CloseButton,
   Drawer,
   DrawerContent,
   DrawerOverlay,
   Flex,
+  HStack,
   Icon,
   IconButton,
-  Input,
-  InputGroup,
   Text,
   useColorModeValue,
   useDisclosure,
 } from "@chakra-ui/react";
+import { useState } from "react";
 
+import { FaClock, FaHome } from "react-icons/fa";
 import { FiMenu } from "react-icons/fi";
-import { MdHome } from "react-icons/md";
 
 function SideBar({ children }: { children: JSX.Element }) {
   const sidebar = useDisclosure();
   const color = useColorModeValue("gray.600", "gray.300");
 
+  const [activeTab, setActiveTab] = useState("home");
+  const [tabs, setTabs] = useState(["home"]);
+
+  const closeTab = (tab: string) => {
+    setTabs(tabs.filter((x) => x !== tab));
+  };
+
   const NavItem = (props: any) => {
-    const { icon, children, ...rest } = props;
+    const { icon, children, tab, ...rest } = props;
+
+    const handleMenuClick = (tab: string) => {
+      setActiveTab(tab);
+
+      if (!tabs.includes(tab)) {
+        tabs.push(tab);
+      }
+    };
+
     return (
       <Flex
+        onClick={() => handleMenuClick(tab)}
         align="center"
         px="4"
         pl="4"
@@ -101,33 +119,12 @@ function SideBar({ children }: { children: JSX.Element }) {
         color="gray.600"
         aria-label="Main Navigation"
       >
-        <NavItem icon={MdHome}>Home</NavItem>
-        {/*
-                        <NavItem icon={FaRss}>Articles</NavItem>
-                        <NavItem icon={HiCollection}>Collections</NavItem>
-                        <NavItem icon={FaClipboardCheck}>Checklists</NavItem>
-                        <NavItem icon={HiCode} onClick={integrations.onToggle}>
-                            Integrations
-                            <Icon
-                                as={MdKeyboardArrowRight}
-                                ml="auto"
-                                transform={integrations.isOpen ? "rotate(90deg)" : ""}
-                            />
-                        </NavItem>
-                        <Collapse in={integrations.isOpen}>
-                            <NavItem pl="12" py="2">
-                                Shopify
-                            </NavItem>
-                            <NavItem pl="12" py="2">
-                                Slack
-                            </NavItem>
-                            <NavItem pl="12" py="2">
-                                Zapier
-                            </NavItem>
-                        </Collapse>
-                        <NavItem icon={AiFillGift}>Changelog</NavItem>
-                        <NavItem icon={BsGearFill}>Settings</NavItem>
-             */}
+        <NavItem tab="home" icon={FaHome}>
+          Home
+        </NavItem>
+        <NavItem tab="wakatime" icon={FaClock}>
+          WakaTime
+        </NavItem>
       </Flex>
     </Box>
   );
@@ -188,19 +185,69 @@ function SideBar({ children }: { children: JSX.Element }) {
             icon={<FiMenu />}
             size="sm"
           />
-          <InputGroup
-            w="96"
-            display={{
-              base: "none",
-              md: "flex",
+          <Flex
+            as="header"
+            align="center"
+            justify="space-between"
+            w="full"
+            px="4"
+            bg="white"
+            _dark={{
+              bg: "gray.800",
             }}
+            borderBottomWidth="1px"
+            color="inherit"
+            h="14"
           >
-            <Input placeholder="Search for articles..." />
-          </InputGroup>
+            <IconButton
+              aria-label="Menu"
+              display={{
+                base: "inline-flex",
+                md: "none",
+              }}
+              onClick={sidebar.onOpen}
+              icon={<FiMenu />}
+              size="sm"
+            />
+            <Box>
+              <Flex align="center" h="full">
+                {tabs.map((tab, index) => (
+                  <Box
+                    px="4"
+                    py="2"
+                    borderBottomWidth={activeTab === tab ? "2px" : "0px"}
+                    borderBottomColor={
+                      activeTab === tab ? "brand.500" : "transparent"
+                    }
+                    fontWeight={activeTab === tab ? "bold" : "normal"}
+                    cursor="pointer"
+                    onClick={() => setActiveTab(tab)}
+                  >
+                    <HStack>
+                      <Text>{tab}</Text>
+                      {tab !== "home" && (
+                        <CloseButton
+                          onClick={() => closeTab(tab)}
+                          size={"sm"}
+                          color={"red"}
+                        />
+                      )}
+                    </HStack>
+                  </Box>
+                ))}
+              </Flex>
+            </Box>
+          </Flex>
         </Flex>
 
         <Box as="main" p="4">
-          {children}
+          <Box as="main" p="4">
+            {activeTab === "home" ? (
+              <div>Home content</div>
+            ) : (
+              <div>WakaTime content</div>
+            )}
+          </Box>
         </Box>
       </Box>
     </Box>
