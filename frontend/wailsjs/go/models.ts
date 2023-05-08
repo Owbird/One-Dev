@@ -52,7 +52,7 @@ export namespace data {
 	    name: string;
 	    username: string;
 	    pid: number;
-	    memoyUsage: number;
+	    memoryUsage: number;
 	    cpuUsage: number;
 	
 	    static createFrom(source: any = {}) {
@@ -64,7 +64,7 @@ export namespace data {
 	        this.name = source["name"];
 	        this.username = source["username"];
 	        this.pid = source["pid"];
-	        this.memoyUsage = source["memoyUsage"];
+	        this.memoryUsage = source["memoryUsage"];
 	        this.cpuUsage = source["cpuUsage"];
 	    }
 	}

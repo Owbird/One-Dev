@@ -10,7 +10,7 @@ type Process struct {
 	Name        string  `json:"name"`
 	Username    string  `json:"username"`
 	Pid         int32   `json:"pid"`
-	MemoryUsage float64 `json:"memoyUsage"`
+	MemoryUsage float64 `json:"memoryUsage"`
 	CPUUsage    float64 `json:"cpuUsage"`
 }
 
