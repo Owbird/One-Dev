@@ -18,7 +18,7 @@ import { FaClock, FaHome } from "react-icons/fa";
 import { FiMenu } from "react-icons/fi";
 import Home from "./pages/Home";
 
-function App({ children }: { children: JSX.Element }) {
+function App() {
   const sidebar = useDisclosure();
   const color = useColorModeValue("gray.600", "gray.300");
 
