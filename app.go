@@ -2,8 +2,12 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"math"
+	"os"
+	"os/exec"
+	"path"
 
 	"github.com/distatus/battery"
 	"github.com/gen2brain/beeep"
@@ -29,6 +33,36 @@ func (a *App) startup(ctx context.Context) {
 
 func (a *App) Notify(message string) {
 	beeep.Alert("One Dev", message, "")
+}
+
+func (a *App) GetWakaToday() string {
+	log.Println("[+] Getting waka today")
+
+	dir, err := os.UserHomeDir()
+
+	if err != nil {
+		log.Println(err)
+		return "0"
+	}
+
+	_, err = os.Stat(path.Join(dir, ".wakatime", "wakatime-cli"))
+
+	if err != nil {
+		log.Println(err)
+		return "0"
+	}
+
+	waka_cli := path.Join(dir, ".wakatime", "wakatime-cli")
+
+	res, err := exec.Command(waka_cli, "--today").Output()
+
+	if err != nil {
+		log.Println(err)
+		return "0"
+	}
+
+	return fmt.Sprintf("%s Today", string(res))
+
 }
 
 func (a *App) GetSystemStat() data.SystemStats {
@@ -96,8 +130,6 @@ func (a *App) GetSystemStat() data.SystemStats {
 		stats.BatteryStats.ChargingState = "Full"
 
 	}
-
-	log.Println(stats)
 
 	return stats
 }

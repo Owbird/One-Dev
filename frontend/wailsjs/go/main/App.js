@@ -6,6 +6,10 @@ export function GetSystemStat() {
   return window['go']['main']['App']['GetSystemStat']();
 }
 
+export function GetWakaToday() {
+  return window['go']['main']['App']['GetWakaToday']();
+}
+
 export function Notify(arg1) {
   return window['go']['main']['App']['Notify'](arg1);
 }

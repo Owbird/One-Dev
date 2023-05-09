@@ -4,4 +4,6 @@ import {data} from '../models';
 
 export function GetSystemStat():Promise<data.SystemStats>;
 
+export function GetWakaToday():Promise<string>;
+
 export function Notify(arg1:string):Promise<void>;
