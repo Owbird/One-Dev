@@ -14,8 +14,10 @@ import {
 } from "@chakra-ui/react";
 import { useState } from "react";
 
-import { FaClock, FaHome } from "react-icons/fa";
+import { FaCode, FaGithub, FaHome, FaSpotify } from "react-icons/fa";
 import { FiMenu } from "react-icons/fi";
+
+import Git from "./pages/Git";
 import Home from "./pages/Home";
 
 function App() {
@@ -38,8 +40,8 @@ function App() {
       case "home":
         setTabBody(<Home />);
         break;
-      case "wakatime":
-        setTabBody(<>HI</>);
+      case "git":
+        setTabBody(<Git />);
         break;
     }
 
@@ -134,8 +136,14 @@ function App() {
         <NavItem tab="home" icon={FaHome}>
           Home
         </NavItem>
-        <NavItem tab="wakatime" icon={FaClock}>
-          WakaTime
+        <NavItem tab="git" icon={FaGithub}>
+          Git
+        </NavItem>
+        <NavItem tab="code" icon={FaCode}>
+          Code
+        </NavItem>
+        <NavItem tab="spotify " icon={FaSpotify}>
+          Spotify
         </NavItem>
       </Flex>
     </Box>
@@ -235,7 +243,9 @@ function App() {
                     cursor="pointer"
                   >
                     <HStack>
-                      <Text onClick={() => handleMenuClick(tab)}>{tab}</Text>
+                      <Text onClick={() => handleMenuClick(tab)}>
+                        {index + 1}. {tab}
+                      </Text>
                       {tab !== "home" && (
                         <CloseButton
                           onClick={() => closeTab(tab)}
