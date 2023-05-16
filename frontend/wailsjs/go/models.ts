@@ -93,6 +93,7 @@ export namespace data {
 	    memoryStats: MemoryStats;
 	    cpuStats: CPUStats;
 	    processes: Process[];
+	    hasWaka: boolean;
 	
 	    static createFrom(source: any = {}) {
 	        return new SystemStats(source);
@@ -107,6 +108,7 @@ export namespace data {
 	        this.memoryStats = this.convertValues(source["memoryStats"], MemoryStats);
 	        this.cpuStats = this.convertValues(source["cpuStats"], CPUStats);
 	        this.processes = this.convertValues(source["processes"], Process);
+	        this.hasWaka = source["hasWaka"];
 	    }
 	
 		convertValues(a: any, classs: any, asMap: boolean = false): any {

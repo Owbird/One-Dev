@@ -22,24 +22,24 @@ const Home = () => {
   const _getWakaToday = async () => {
     const data = await GetWakaToday();
 
-    if (data !== "0") {
-      const timerID = setInterval(async () => {
-        const data = await GetWakaToday();
-        setWakaToday(data);
-      }, 1000 * 60 * 5);
-    }
-
     setWakaToday(data);
-  };
 
-  useEffect(() => {
-    _getWakaToday();
-  }, []);
+    const timerID = setInterval(async () => {
+      const data = await GetWakaToday();
+      setWakaToday(data);
+    }, 1000 * 60 * 5);
+  };
 
   useEffect(() => {
     const timerID = setInterval(() => _getSystemStat(), 1000);
     return () => clearInterval(timerID);
   }, []);
+
+  useEffect(() => {
+    if (systemStats?.hasWaka) {
+      _getWakaToday();
+    }
+  }, [systemStats?.hasWaka]);
 
   return (
     <>

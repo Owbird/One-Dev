@@ -7,7 +7,6 @@ import (
 	"math"
 	"os"
 	"os/exec"
-	"path"
 
 	"github.com/distatus/battery"
 	"github.com/gen2brain/beeep"
@@ -38,27 +37,13 @@ func (a *App) Notify(message string) {
 func (a *App) GetWakaToday() string {
 	log.Println("[+] Getting waka today")
 
-	dir, err := os.UserHomeDir()
-
-	if err != nil {
-		log.Println(err)
-		return "0"
-	}
-
-	_, err = os.Stat(path.Join(dir, ".wakatime", "wakatime-cli"))
-
-	if err != nil {
-		log.Println(err)
-		return "0"
-	}
-
-	waka_cli := path.Join(dir, ".wakatime", "wakatime-cli")
+	waka_cli := utils.WakaTimeCli()
 
 	res, err := exec.Command(waka_cli, "--today").Output()
 
 	if err != nil {
 		log.Println(err)
-		return "0"
+		return "0 seconds Today"
 	}
 
 	return fmt.Sprintf("%s Today", string(res))
@@ -67,6 +52,7 @@ func (a *App) GetWakaToday() string {
 
 func (a *App) GetSystemStat() data.SystemStats {
 	log.Println("[+] Getting system stats...")
+
 	memoryStats, _ := mem.VirtualMemory()
 	batteryStats, _ := battery.GetAll()
 	stats := data.SystemStats{}
@@ -130,6 +116,10 @@ func (a *App) GetSystemStat() data.SystemStats {
 		stats.BatteryStats.ChargingState = "Full"
 
 	}
+
+	_, err = os.Stat(utils.WakaTimeCli())
+
+	stats.HasWaka = err == nil
 
 	return stats
 }

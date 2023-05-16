@@ -43,4 +43,5 @@ type SystemStats struct {
 	MemoryStats  MemoryStats  `json:"memoryStats"`
 	CPUStats     CPUStats     `json:"cpuStats"`
 	Processes    []Process    `json:"processes"`
+	HasWaka      bool         `json:"hasWaka"`
 }
