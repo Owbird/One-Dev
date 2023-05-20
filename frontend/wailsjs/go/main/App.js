@@ -10,6 +10,10 @@ export function GetWakaToday() {
   return window['go']['main']['App']['GetWakaToday']();
 }
 
+export function KillProcess(arg1) {
+  return window['go']['main']['App']['KillProcess'](arg1);
+}
+
 export function Notify(arg1) {
   return window['go']['main']['App']['Notify'](arg1);
 }

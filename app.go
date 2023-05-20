@@ -50,8 +50,23 @@ func (a *App) GetWakaToday() string {
 
 }
 
+func (a *App) KillProcess(pid int) {
+
+	process, err := os.FindProcess(pid)
+
+	if err != nil {
+		log.Println(err)
+	}
+
+	err = process.Signal(os.Kill)
+
+	if err != nil {
+		log.Println(err)
+	}
+
+}
+
 func (a *App) GetSystemStat() data.SystemStats {
-	log.Println("[+] Getting system stats...")
 
 	memoryStats, _ := mem.VirtualMemory()
 	batteryStats, _ := battery.GetAll()

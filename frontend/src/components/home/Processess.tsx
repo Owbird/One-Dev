@@ -1,4 +1,11 @@
 import {
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogOverlay,
+  Button,
   Table,
   TableCaption,
   TableContainer,
@@ -7,13 +14,19 @@ import {
   Th,
   Thead,
   Tr,
+  useDisclosure,
 } from "@chakra-ui/react";
+import { KillProcess } from "@go/main/App";
 import { data } from "@go/models";
-import { useState } from "react";
+import { MutableRefObject, useRef, useState } from "react";
 
 const Processess = ({ processes }: { processes: data.Process[] }) => {
   const [sortField, setSortField] = useState<string>("name");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
+  const [activeProcess, setActiveProcess] = useState<data.Process>();
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const cancelRef = useRef();
 
   const sortedProcesses = [...processes].sort((a, b) => {
     if (!sortField) {
@@ -46,6 +59,18 @@ const Processess = ({ processes }: { processes: data.Process[] }) => {
     }
   };
 
+  const killProcess = async (pid: number) => {
+    await KillProcess(pid);
+
+    onClose();
+  };
+
+  const handleClick = (process: data.Process) => {
+    setActiveProcess(process);
+
+    onOpen();
+  };
+
   return (
     <TableContainer>
       <Table variant="simple">
@@ -60,8 +85,41 @@ const Processess = ({ processes }: { processes: data.Process[] }) => {
           </Tr>
         </Thead>
         <Tbody>
+          <AlertDialog
+            isOpen={isOpen}
+            leastDestructiveRef={cancelRef as MutableRefObject<any>}
+            onClose={onClose}
+          >
+            <AlertDialogOverlay>
+              <AlertDialogContent>
+                <AlertDialogHeader fontSize="lg" fontWeight="bold">
+                  Kill Process "{activeProcess?.name} - {activeProcess?.pid}"
+                </AlertDialogHeader>
+
+                <AlertDialogBody>
+                  Are you sure? You can't undo this action afterwards.
+                </AlertDialogBody>
+
+                <AlertDialogFooter>
+                  <Button onClick={onClose}>Cancel</Button>
+                  <Button
+                    colorScheme="red"
+                    onClick={() => killProcess(activeProcess?.pid!)}
+                    ml={3}
+                  >
+                    Kill
+                  </Button>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialogOverlay>
+          </AlertDialog>
+
           {sortedProcesses.map((process, index) => (
-            <Tr key={index}>
+            <Tr
+              onClick={() => handleClick(process)}
+              _hover={{ bg: "gray.100" }}
+              key={index}
+            >
               <Td>{process.pid}</Td>
               <Td overflow={"scroll"} maxWidth={"50px"}>
                 {process.name}

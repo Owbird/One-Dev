@@ -6,4 +6,6 @@ export function GetSystemStat():Promise<data.SystemStats>;
 
 export function GetWakaToday():Promise<string>;
 
+export function KillProcess(arg1:number):Promise<void>;
+
 export function Notify(arg1:string):Promise<void>;
