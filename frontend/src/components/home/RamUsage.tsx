@@ -5,12 +5,19 @@ import { BsMemory } from "react-icons/bs";
 
 const RamUsage = ({ memoryStats }: { memoryStats: data.MemoryStats }) => {
   const [color, setColor] = useState("green");
-  const [percentage, setPercentage] = useState(0);
+  const [totalMemory, setTotalMemory] = useState(0);
+  const [totalUsed, setTotalUsed] = useState(0);
 
   useEffect(() => {
-    const percentage = Number(
-      ((memoryStats.used / memoryStats.total) * 100).toFixed(2)
+    const percentage = memoryStats.usedPercentage;
+
+    const totalMemory = Number(
+      (memoryStats.total / Math.pow(1024, 3)).toFixed(2)
     );
+
+    const totalUsed = Number((memoryStats.used / Math.pow(1024, 3)).toFixed(2));
+
+    setTotalUsed(totalUsed);
 
     if (percentage < 50) {
       setColor("green");
@@ -20,12 +27,12 @@ const RamUsage = ({ memoryStats }: { memoryStats: data.MemoryStats }) => {
       setColor("red");
     }
 
-    setPercentage(percentage);
+    setTotalMemory(totalMemory);
   }, [memoryStats]);
 
   return (
     <>
-      <Text>Ram: {Math.round(memoryStats.total / Math.pow(1024, 3))} Gb</Text>
+      <Text>Ram: {totalMemory.toFixed(1)} Gb</Text>
       <HStack>
         {<BsMemory />}
         <Progress
@@ -33,9 +40,11 @@ const RamUsage = ({ memoryStats }: { memoryStats: data.MemoryStats }) => {
           borderRadius={"md"}
           colorScheme={color}
           height="32px"
-          value={percentage}
+          value={memoryStats.usedPercentage}
         />
-        <Text>{percentage}%</Text>
+        <Text>
+          ({totalUsed} Gb) {memoryStats.usedPercentage.toFixed(2)}%
+        </Text>
       </HStack>
     </>
   );
