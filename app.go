@@ -3,10 +3,14 @@ package main
 import (
 	"context"
 	"fmt"
+	"io/fs"
 	"log"
 	"math"
 	"os"
 	"os/exec"
+	"path/filepath"
+	"sort"
+	"strings"
 
 	"github.com/distatus/battery"
 	"github.com/gen2brain/beeep"
@@ -48,6 +52,34 @@ func (a *App) GetWakaToday() string {
 
 	return fmt.Sprintf("%s Today", string(res))
 
+}
+
+func (a *App) GetGitDirs() []data.File {
+
+	dirs := []data.File{}
+
+	filepath.WalkDir(utils.UserHome(), func(path string, d fs.DirEntry, err error) error {
+
+		if d.IsDir() && string(d.Name()[0]) == "." && d.Name() != ".git" {
+			return filepath.SkipDir
+		}
+
+		if d.IsDir() && d.Name() == ".git" {
+			dirs = append(dirs, data.File{
+				ParentDir: filepath.Dir(path),
+				Dir:       filepath.Base(filepath.Dir(path)),
+			})
+		}
+
+		return nil
+	})
+
+	sort.Slice(dirs, func(i, j int) bool {
+
+		return strings.Compare(dirs[i].Dir, dirs[j].Dir) < 0
+	})
+
+	return dirs
 }
 
 func (a *App) KillProcess(pid int) {

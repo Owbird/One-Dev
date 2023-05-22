@@ -45,3 +45,8 @@ type SystemStats struct {
 	Processes    []Process    `json:"processes"`
 	HasWaka      bool         `json:"hasWaka"`
 }
+
+type File struct {
+	ParentDir string `json:"parentDir"`
+	Dir       string `json:"dir"`
+}

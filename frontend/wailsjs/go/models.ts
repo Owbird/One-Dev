@@ -30,6 +30,20 @@ export namespace data {
 	        this.usages = source["usages"];
 	    }
 	}
+	export class File {
+	    parentDir: string;
+	    dir: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new File(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.parentDir = source["parentDir"];
+	        this.dir = source["dir"];
+	    }
+	}
 	export class MemoryStats {
 	    total: number;
 	    used: number;
