@@ -3,18 +3,16 @@ package main
 import (
 	"context"
 	"fmt"
-	"io/fs"
 	"log"
 	"math"
 	"os"
 	"os/exec"
-	"path/filepath"
-	"sort"
-	"strings"
 
 	"github.com/distatus/battery"
 	"github.com/gen2brain/beeep"
+	"github.com/owbird/one-dev/logic/background"
 	"github.com/owbird/one-dev/logic/data"
+	"github.com/owbird/one-dev/logic/database"
 	"github.com/owbird/one-dev/logic/utils"
 	"github.com/shirou/gopsutil/process"
 	"github.com/shirou/gopsutil/v3/cpu"
@@ -31,6 +29,7 @@ func NewApp() *App {
 
 func (a *App) startup(ctx context.Context) {
 	log.Println("[+] App startup")
+	go background.RunTasks()
 	a.ctx = ctx
 }
 
@@ -55,31 +54,7 @@ func (a *App) GetWakaToday() string {
 }
 
 func (a *App) GetGitDirs() []data.File {
-
-	dirs := []data.File{}
-
-	filepath.WalkDir(utils.UserHome(), func(path string, d fs.DirEntry, err error) error {
-
-		if d.IsDir() && string(d.Name()[0]) == "." && d.Name() != ".git" {
-			return filepath.SkipDir
-		}
-
-		if d.IsDir() && d.Name() == ".git" {
-			dirs = append(dirs, data.File{
-				ParentDir: filepath.Dir(path),
-				Dir:       filepath.Base(filepath.Dir(path)),
-			})
-		}
-
-		return nil
-	})
-
-	sort.Slice(dirs, func(i, j int) bool {
-
-		return strings.Compare(dirs[i].Dir, dirs[j].Dir) < 0
-	})
-
-	return dirs
+	return database.GetGitDirs()
 }
 
 func (a *App) KillProcess(pid int) {
