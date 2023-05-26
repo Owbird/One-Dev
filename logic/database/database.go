@@ -60,13 +60,9 @@ func (d *Database) IsOpen() bool {
 
 func Init() {
 
-	log.Println("[+] Initing Database")
-
 	database = Database{}
 
 	database.Open()
-
-	log.Println("[+] Database up")
 
 }
 
