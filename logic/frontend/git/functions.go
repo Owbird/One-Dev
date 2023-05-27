@@ -3,6 +3,7 @@ package frontend
 import (
 	"context"
 	"log"
+	"os/exec"
 	"strings"
 
 	"github.com/go-git/go-git/v5"
@@ -69,26 +70,26 @@ func GetRepo(ctx context.Context, path string) data.Repo {
 		return nil
 	})
 
-	worktree, err := repo.Worktree()
+	// go-git worktree.Status() has an issue
+	// https://github.com/go-git/go-git/issues/181
+	res, err := exec.Command("git", "-C", path, "status", "-s").Output()
 
 	utils.HandleError(ctx, err)
 
-	status, err := worktree.Status()
+	status := strings.Split(string(res), "\n")
 
-	utils.HandleError(ctx, err)
+	for _, stat := range status {
+		changes := strings.Split(strings.Trim(stat, " "), " ")
 
-	for file, status := range status {
+		if changes[0] != "" {
 
-		code := strings.ReplaceAll(string(status.Staging), " ", "M")
+			change := data.RepoChange{
+				File:   changes[1],
+				Change: changes[0],
+			}
 
-		code = strings.ReplaceAll(code, "?", "N")
-
-		change := data.RepoChange{
-			File:   file,
-			Change: code,
+			git_repo.Changes = append(git_repo.Changes, change)
 		}
-
-		git_repo.Changes = append(git_repo.Changes, change)
 
 	}
 
