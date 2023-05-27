@@ -1,7 +1,7 @@
 package home
 
 import (
-	"log"
+	"context"
 	"math"
 	"os"
 
@@ -13,7 +13,7 @@ import (
 	"github.com/shirou/gopsutil/process"
 )
 
-func GetSystemStat() data.SystemStats {
+func GetSystemStat(ctx context.Context) data.SystemStats {
 
 	memoryStats, _ := mem.VirtualMemory()
 	batteryStats, _ := battery.GetAll()
@@ -52,9 +52,7 @@ func GetSystemStat() data.SystemStats {
 
 	}
 
-	if err != nil {
-		log.Fatalln(err)
-	}
+	utils.HandleError(ctx, err)
 
 	stats.CPUStats = data.CPUStats{
 		Model:  cpu_info[0].ModelName,

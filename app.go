@@ -27,11 +27,11 @@ func (a *App) startup(ctx context.Context) {
 }
 
 func (a *App) Notify(message string) {
-	shared.Notify(message)
+	shared.Notify(a.ctx, message)
 }
 
 func (a *App) GetWakaToday() string {
-	return shared.GetWakaToday()
+	return shared.GetWakaToday(a.ctx)
 }
 
 func (a *App) GetGitDirs() []data.File {
@@ -39,13 +39,13 @@ func (a *App) GetGitDirs() []data.File {
 }
 
 func (a *App) KillProcess(pid int) {
-	shared.KillProcess(pid)
+	shared.KillProcess(a.ctx, pid)
 }
 
 func (a *App) GetSystemStat() data.SystemStats {
-	return home.GetSystemStat()
+	return home.GetSystemStat(a.ctx)
 }
 
 func (a *App) GetRepo(path string) data.Repo {
-	return git_ui.GetRepo(path)
+	return git_ui.GetRepo(a.ctx, path)
 }

@@ -1,8 +1,8 @@
 package shared
 
 import (
+	"context"
 	"fmt"
-	"log"
 	"os"
 	"os/exec"
 
@@ -10,18 +10,20 @@ import (
 	"github.com/owbird/one-dev/logic/utils"
 )
 
-func Notify(message string) {
+func Notify(ctx context.Context, message string) {
 	beeep.Alert("One Dev", message, "")
 }
 
-func GetWakaToday() string {
+func GetWakaToday(ctx context.Context) string {
+
+	// utils.HandleError(conte "TEST")
 
 	waka_cli := utils.WakaTimeCli()
 
 	res, err := exec.Command(waka_cli, "--today").Output()
 
 	if err != nil {
-		log.Println(err)
+		utils.HandleError(ctx, err)
 		return "0 seconds Today"
 	}
 
@@ -29,18 +31,14 @@ func GetWakaToday() string {
 
 }
 
-func KillProcess(pid int) {
+func KillProcess(ctx context.Context, pid int) {
 
 	process, err := os.FindProcess(pid)
 
-	if err != nil {
-		log.Println(err)
-	}
+	utils.HandleError(ctx, err)
 
 	err = process.Signal(os.Kill)
 
-	if err != nil {
-		log.Println(err)
-	}
+	utils.HandleError(ctx, err)
 
 }

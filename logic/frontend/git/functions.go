@@ -1,6 +1,7 @@
 package frontend
 
 import (
+	"context"
 	"log"
 	"strings"
 
@@ -8,18 +9,17 @@ import (
 	"github.com/go-git/go-git/v5/plumbing"
 	"github.com/go-git/go-git/v5/plumbing/object"
 	"github.com/owbird/one-dev/logic/data"
+	"github.com/owbird/one-dev/logic/utils"
 )
 
-func GetRepo(path string) data.Repo {
+func GetRepo(ctx context.Context, path string) data.Repo {
 	log.Println("[+] Getting git dir")
 
 	git_repo := data.Repo{}
 
 	repo, err := git.PlainOpen(path)
 
-	if err != nil {
-		log.Println(err)
-	}
+	utils.HandleError(ctx, err)
 
 	head, err := repo.Head()
 
@@ -33,9 +33,7 @@ func GetRepo(path string) data.Repo {
 
 	git_log, err := repo.Log(&git.LogOptions{})
 
-	if err != nil {
-		log.Println(err)
-	}
+	utils.HandleError(ctx, err)
 
 	git_log.ForEach((func(commit *object.Commit) error {
 
@@ -51,9 +49,7 @@ func GetRepo(path string) data.Repo {
 
 	branches, err := repo.Branches()
 
-	if err != nil {
-		log.Println(err)
-	}
+	utils.HandleError(ctx, err)
 
 	branches.ForEach(func(branch *plumbing.Reference) error {
 
@@ -64,9 +60,7 @@ func GetRepo(path string) data.Repo {
 
 	tags, err := repo.Tags()
 
-	if err != nil {
-		log.Println(err)
-	}
+	utils.HandleError(ctx, err)
 
 	tags.ForEach(func(tag *plumbing.Reference) error {
 
@@ -77,15 +71,11 @@ func GetRepo(path string) data.Repo {
 
 	worktree, err := repo.Worktree()
 
-	if err != nil {
-		log.Println(err)
-	}
+	utils.HandleError(ctx, err)
 
 	status, err := worktree.Status()
 
-	if err != nil {
-		log.Println(err)
-	}
+	utils.HandleError(ctx, err)
 
 	for file, status := range status {
 
@@ -102,6 +92,5 @@ func GetRepo(path string) data.Repo {
 
 	}
 
-	log.Println(git_repo)
 	return git_repo
 }

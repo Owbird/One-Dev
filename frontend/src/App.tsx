@@ -1,4 +1,8 @@
 import {
+  Alert,
+  AlertDescription,
+  AlertIcon,
+  AlertTitle,
   Box,
   CloseButton,
   Drawer,
@@ -12,17 +16,20 @@ import {
   useColorModeValue,
   useDisclosure,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { FaCode, FaGithub, FaHome, FaSpotify } from "react-icons/fa";
 import { FiMenu } from "react-icons/fi";
 
-import Git from "./pages/git/Git";
-import Home from "./pages/Home";
+import { EventsOn } from "@go-runtime/runtime";
+import Home from "@pages/Home";
+import Git from "@pages/git/Git";
 
 function App() {
   const sidebar = useDisclosure();
   const color = useColorModeValue("gray.600", "gray.300");
+
+  const [error, setError] = useState();
 
   const [activeTab, setActiveTab] = useState("home");
   const [tabs, setTabs] = useState(["home"]);
@@ -49,6 +56,10 @@ function App() {
       tabs.push(tab);
     }
   };
+
+  useEffect(() => {
+    EventsOn("error", setError);
+  }, []);
 
   const NavItem = (props: any) => {
     const { icon, children, tab, ...rest } = props;
@@ -263,6 +274,24 @@ function App() {
 
         <Box as="main" p="4">
           <Box as="main" p="4">
+            {error && (
+              <Alert status="error">
+                <AlertIcon />
+                <HStack>
+                  <Box>
+                    <AlertTitle>Oops!</AlertTitle>
+                    <AlertDescription>{error}</AlertDescription>
+                  </Box>
+                  <CloseButton
+                    alignSelf="flex-start"
+                    position="relative"
+                    right={-1}
+                    top={-1}
+                    onClick={() => setError(undefined)}
+                  />
+                </HStack>
+              </Alert>
+            )}
             {tabBody}
           </Box>
         </Box>
