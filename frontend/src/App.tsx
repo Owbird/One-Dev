@@ -1,8 +1,4 @@
 import {
-  Alert,
-  AlertDescription,
-  AlertIcon,
-  AlertTitle,
   Box,
   CloseButton,
   Drawer,
@@ -11,19 +7,41 @@ import {
   Flex,
   HStack,
   Icon,
-  IconButton,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
   Text,
   useColorModeValue,
   useDisclosure,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 
-import { FaCode, FaGithub, FaHome, FaSpotify } from "react-icons/fa";
-import { FiMenu } from "react-icons/fi";
+import { FaGithub, FaHome } from "react-icons/fa";
 
 import { EventsOn } from "@go-runtime/runtime";
 import Home from "@pages/Home";
-import Git from "@pages/git/Git";
+import { IconType } from "react-icons";
+import { IMenuTab, INavItem } from "./interfaces/interfaces";
+import Git from "./pages/git/Git";
+
+const NAV_ITEMS: INavItem[] = [
+  {
+    icon: FaHome,
+    menuTab: {
+      label: "Home",
+      body: <Home />,
+    },
+  },
+  {
+    icon: FaGithub,
+    menuTab: {
+      label: "Git",
+      body: <Git />,
+    },
+  },
+];
 
 function App() {
   const sidebar = useDisclosure();
@@ -31,29 +49,21 @@ function App() {
 
   const [error, setError] = useState();
 
-  const [activeTab, setActiveTab] = useState("home");
-  const [tabs, setTabs] = useState(["home"]);
-  const [tabBody, setTabBody] = useState(<Home />);
+  const [tabIndex, setTabIndex] = useState(0);
 
-  const closeTab = (tab: string) => {
+  const [tabs, setTabs] = useState<IMenuTab[]>([NAV_ITEMS[0].menuTab]);
+
+  const closeTab = (tab: IMenuTab) => {
     setTabs(tabs.filter((x) => x !== tab));
-    handleMenuClick(tabs[tabs.length - 2]);
+    setTabIndex(tabs.length - 2);
   };
 
-  const handleMenuClick = (tab: string) => {
-    setActiveTab(tab);
-
-    switch (tab) {
-      case "home":
-        setTabBody(<Home />);
-        break;
-      case "git":
-        setTabBody(<Git />);
-        break;
-    }
-
-    if (!tabs.includes(tab)) {
-      tabs.push(tab);
+  const handleMenuClick = (tab: IMenuTab) => {
+    if (!tabs.find((x) => tab.label === x.label)) {
+      setTabs([...tabs, tab]);
+      setTabIndex(tabs.length);
+    } else {
+      setTabIndex(tabs.findIndex((x) => x.label === tab.label));
     }
   };
 
@@ -61,9 +71,15 @@ function App() {
     EventsOn("error", setError);
   }, []);
 
-  const NavItem = (props: any) => {
-    const { icon, children, tab, ...rest } = props;
-
+  const NavItem = ({
+    isActive,
+    icon,
+    tab,
+  }: {
+    isActive: boolean;
+    icon: IconType;
+    tab: IMenuTab;
+  }) => {
     return (
       <Flex
         onClick={() => handleMenuClick(tab)}
@@ -76,6 +92,7 @@ function App() {
         _dark={{
           color: "gray.400",
         }}
+        bg={isActive ? "blue.100" : "transparent"}
         _hover={{
           bg: "gray.100",
           _dark: {
@@ -86,7 +103,6 @@ function App() {
         role="group"
         fontWeight="semibold"
         transition=".15s ease"
-        {...rest}
       >
         {icon && (
           <Icon
@@ -98,7 +114,7 @@ function App() {
             as={icon}
           />
         )}
-        {children}
+        {tab.label}
       </Flex>
     );
   };
@@ -144,18 +160,17 @@ function App() {
         color="gray.600"
         aria-label="Main Navigation"
       >
-        <NavItem tab="home" icon={FaHome}>
-          Home
-        </NavItem>
-        <NavItem tab="git" icon={FaGithub}>
-          Git
-        </NavItem>
-        <NavItem tab="code" icon={FaCode}>
-          Code
-        </NavItem>
-        <NavItem tab="spotify " icon={FaSpotify}>
-          Spotify
-        </NavItem>
+        {NAV_ITEMS.map((item, index) => (
+          <NavItem
+            isActive={index === tabIndex}
+            key={index}
+            icon={item.icon}
+            tab={{
+              label: item.menuTab.label,
+              body: item.menuTab.body,
+            }}
+          />
+        ))}
       </Flex>
     </Box>
   );
@@ -192,109 +207,28 @@ function App() {
         }}
         transition=".3s ease"
       >
-        <Flex
-          as="header"
-          align="center"
-          justify="space-between"
-          w="full"
-          px="4"
-          bg="white"
-          _dark={{
-            bg: "gray.800",
-          }}
-          borderBottomWidth="1px"
-          color="inherit"
-          h="14"
-        >
-          <IconButton
-            aria-label="Menu"
-            display={{
-              base: "inline-flex",
-              md: "none",
-            }}
-            onClick={sidebar.onOpen}
-            icon={<FiMenu />}
-            size="sm"
-          />
-          <Flex
-            as="header"
-            align="center"
-            justify="space-between"
-            w="full"
-            px="4"
-            bg="white"
-            _dark={{
-              bg: "gray.800",
-            }}
-            borderBottomWidth="1px"
-            color="inherit"
-            h="14"
-          >
-            <IconButton
-              aria-label="Menu"
-              display={{
-                base: "inline-flex",
-                md: "none",
-              }}
-              onClick={sidebar.onOpen}
-              icon={<FiMenu />}
-              size="sm"
-            />
-            <Box>
-              <Flex align="center" h="full">
-                {tabs.map((tab, index) => (
-                  <Box
-                    px="4"
-                    py="2"
-                    borderBottomWidth={activeTab === tab ? "2px" : "0px"}
-                    borderBottomColor={
-                      activeTab === tab ? "brand.500" : "transparent"
-                    }
-                    fontWeight={activeTab === tab ? "bold" : "normal"}
-                    cursor="pointer"
-                  >
-                    <HStack>
-                      <Text onClick={() => handleMenuClick(tab)}>
-                        {index + 1}. {tab}
-                      </Text>
-                      {tab !== "home" && (
-                        <CloseButton
-                          onClick={() => closeTab(tab)}
-                          size={"sm"}
-                          color={"red"}
-                        />
-                      )}
-                    </HStack>
-                  </Box>
-                ))}
-              </Flex>
-            </Box>
-          </Flex>
-        </Flex>
-
-        <Box as="main" p="4">
-          <Box as="main" p="4">
-            {error && (
-              <Alert status="error">
-                <AlertIcon />
-                <HStack>
-                  <Box>
-                    <AlertTitle>Oops!</AlertTitle>
-                    <AlertDescription>{error}</AlertDescription>
-                  </Box>
+        <Tabs index={tabIndex} onChange={(index) => setTabIndex(index)}>
+          <TabList>
+            {tabs.map((tab, index) => (
+              <HStack>
+                <Tab key={index}>{tab.label}</Tab>
+                {tab.label !== "Home" && (
                   <CloseButton
-                    alignSelf="flex-start"
-                    position="relative"
-                    right={-1}
-                    top={-1}
-                    onClick={() => setError(undefined)}
+                    onClick={() => closeTab(tab)}
+                    size={"sm"}
+                    color={"red"}
                   />
-                </HStack>
-              </Alert>
-            )}
-            {tabBody}
-          </Box>
-        </Box>
+                )}
+              </HStack>
+            ))}
+          </TabList>
+
+          <TabPanels>
+            {tabs.map((tabBody, index) => (
+              <TabPanel key={index}>{tabBody.body}</TabPanel>
+            ))}
+          </TabPanels>
+        </Tabs>
       </Box>
     </Box>
   );
