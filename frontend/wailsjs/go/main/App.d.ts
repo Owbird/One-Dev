@@ -4,6 +4,8 @@ import {data} from '../models';
 
 export function GetGitDirs():Promise<Array<data.File>>;
 
+export function GetRepo(arg1:string):Promise<data.Repo>;
+
 export function GetSystemStat():Promise<data.SystemStats>;
 
 export function GetWakaToday():Promise<string>;

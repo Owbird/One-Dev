@@ -50,3 +50,23 @@ type File struct {
 	ParentDir string `json:"parentDir"`
 	Dir       string `json:"dir"`
 }
+
+type RepoChange struct {
+	File   string `json:"file"`
+	Change string `json:"change"`
+}
+
+type Repo struct {
+	CurrentBranch string       `json:"currentBranch"`
+	Branches      []string     `json:"branches"`
+	Tags          []string     `json:"tags"`
+	Changes       []RepoChange `json:"changes"`
+	Commits       []RepoCommit `json:"commits"`
+}
+
+type RepoCommit struct {
+	Message   string `json:"message"`
+	Committer string `json:"committer"`
+	Hash      string `json:"hash"`
+	Date      string `json:"date"`
+}

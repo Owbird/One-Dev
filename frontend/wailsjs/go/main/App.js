@@ -6,6 +6,10 @@ export function GetGitDirs() {
   return window['go']['main']['App']['GetGitDirs']();
 }
 
+export function GetRepo(arg1) {
+  return window['go']['main']['App']['GetRepo'](arg1);
+}
+
 export function GetSystemStat() {
   return window['go']['main']['App']['GetSystemStat']();
 }

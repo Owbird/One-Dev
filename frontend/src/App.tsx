@@ -17,7 +17,7 @@ import { useState } from "react";
 import { FaCode, FaGithub, FaHome, FaSpotify } from "react-icons/fa";
 import { FiMenu } from "react-icons/fi";
 
-import Git from "./pages/Git";
+import Git from "./pages/git/Git";
 import Home from "./pages/Home";
 
 function App() {
