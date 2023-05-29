@@ -112,7 +112,7 @@ func GetRemoteRepos() []data.RemoteRepo {
 	req, err := http.NewRequest(method, url, nil)
 
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 	}
 
 	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", token))
@@ -120,14 +120,14 @@ func GetRemoteRepos() []data.RemoteRepo {
 	res, err := client.Do(req)
 
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 	}
 
 	defer res.Body.Close()
 
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 	}
 
 	var user data.GitUser
@@ -137,7 +137,7 @@ func GetRemoteRepos() []data.RemoteRepo {
 	req, err = http.NewRequest(method, fmt.Sprintf("%s/repos", url), nil)
 
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 	}
 
 	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", token))
@@ -145,7 +145,7 @@ func GetRemoteRepos() []data.RemoteRepo {
 	res, err = client.Do(req)
 
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 	}
 
 	defer res.Body.Close()
@@ -153,10 +153,10 @@ func GetRemoteRepos() []data.RemoteRepo {
 	body, err = ioutil.ReadAll(res.Body)
 
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 	}
 
-	fmt.Println(string(body))
+	log.Println(string(body))
 
 	var repos []data.RemoteRepo
 
