@@ -104,3 +104,39 @@ func GetGitDirs() []data.File {
 
 	return dirs
 }
+
+func GetGitToken() string {
+	database.OpenState.Lock()
+
+	defer database.OpenState.Unlock()
+
+	doc, err := database.Db.Query("git_token").FindFirst()
+
+	if err != nil {
+		log.Println(err)
+		return ""
+	}
+
+	log.Println()
+
+	return doc.Get("token").(string)
+}
+
+func SaveGitToken(token string) {
+	database.OpenState.Lock()
+
+	defer database.OpenState.Unlock()
+
+	doc := c.NewDocument()
+
+	doc.Set("token", token)
+
+	err := database.Db.CreateCollection("git_token")
+
+	if err != c.ErrCollectionExist {
+		log.Println(err)
+	}
+
+	database.Db.InsertOne("git_token", doc)
+
+}

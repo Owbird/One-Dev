@@ -1,16 +1,29 @@
 import {
   Box,
+  Button,
   Divider,
   Grid,
   GridItem,
+  HStack,
   Input,
+  List,
+  ListItem,
+  Radio,
+  RadioGroup,
   Tab,
   TabList,
   TabPanel,
   TabPanels,
   Tabs,
+  Text,
 } from "@chakra-ui/react";
-import { GetGitDirs } from "@go/main/App";
+import {
+  GetGitDirs,
+  GetGitToken,
+  GetGitTokens,
+  GetRemoteRepos,
+  SaveGitToken,
+} from "@go/main/App";
 import { data } from "@go/models";
 import ActiveRepo from "@src/pages/git/ActiveRepo";
 import { Fragment, useEffect, useState } from "react";
@@ -19,7 +32,10 @@ const Git = () => {
   const [dirs, setDirs] = useState<data.File[]>([]);
   const [searchRes, setSearchRes] = useState<data.File[]>();
   const [searchQuery, setSearchQuery] = useState("");
+  const [gitToken, setGitToken] = useState("");
+  const [gitTokens, setGitTokens] = useState<string[]>();
   const [activeDir, setActiveRepo] = useState<data.File>();
+  const [repos, setRepos] = useState<data.RemoteRepo[]>([]);
 
   const clearActiveDir = () => {
     setActiveRepo(undefined);
@@ -27,6 +43,16 @@ const Git = () => {
 
   useEffect(() => {
     GetGitDirs().then(setDirs);
+    GetGitToken().then((token) => {
+      if (token === "") {
+        GetGitTokens().then((tokens) => {
+          setGitToken(tokens[0]);
+          setGitTokens(tokens);
+        });
+      } else {
+        GetRemoteRepos().then(setRepos);
+      }
+    });
   }, []);
 
   const handleSearch = (query: string) => {
@@ -41,6 +67,14 @@ const Git = () => {
         )
       );
     }
+  };
+
+  const handleSave = async () => {
+    await SaveGitToken(gitToken);
+
+    setGitTokens(undefined);
+
+    await GetRemoteRepos();
   };
 
   return (
@@ -82,6 +116,49 @@ const Git = () => {
                   </Fragment>
                 ))}
               </Grid>
+            </TabPanel>
+            <TabPanel>
+              {gitTokens ? (
+                <Fragment>
+                  <List spacing={3}>
+                    <RadioGroup onChange={setGitToken} value={gitToken}>
+                      {gitTokens.map((token) => (
+                        <ListItem key={token}>
+                          <HStack>
+                            <Radio value={token}>
+                              <Text>{token}</Text>
+                            </Radio>
+                          </HStack>
+                        </ListItem>
+                      ))}
+                    </RadioGroup>
+                  </List>
+                  <HStack>
+                    <Divider />
+                    <Text>OR</Text>
+                    <Divider />
+                  </HStack>
+                  <Input
+                    onChange={(event) => setGitToken(event.target.value)}
+                    placeholder="Use another token"
+                  />
+
+                  <Button mt={4} onClick={handleSave}>
+                    Save
+                  </Button>
+                </Fragment>
+              ) : (
+                <>
+                  {repos.map((repo) => (
+                    <>
+                      <p>
+                        {repo.name}
+                        {repo.private ? " (private)" : "(public)"}
+                      </p>
+                    </>
+                  ))}
+                </>
+              )}
             </TabPanel>
           </TabPanels>
         </Tabs>

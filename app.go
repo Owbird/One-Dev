@@ -49,3 +49,19 @@ func (a *App) GetSystemStat() data.SystemStats {
 func (a *App) GetRepo(path string) data.Repo {
 	return git_ui.GetRepo(a.ctx, path)
 }
+
+func (a *App) GetGitToken() string {
+	return database.GetGitToken()
+}
+
+func (a *App) GetGitTokens() []string {
+	return git_ui.GetGitTokens()
+}
+
+func (a *App) SaveGitToken(token string) {
+	database.SaveGitToken(token)
+}
+
+func (a *App) GetRemoteRepos() []data.RemoteRepo {
+	return git_ui.GetRemoteRepos()
+}
