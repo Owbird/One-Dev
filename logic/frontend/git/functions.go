@@ -126,6 +126,7 @@ func GetRemoteRepos() []data.RemoteRepo {
 	defer res.Body.Close()
 
 	body, err := ioutil.ReadAll(res.Body)
+
 	if err != nil {
 		log.Println(err)
 	}
