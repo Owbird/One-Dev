@@ -48,6 +48,7 @@ const Git = () => {
         GetGitTokens().then((tokens) => {
           setGitToken(tokens[0]);
           setGitTokens(tokens);
+          GetRemoteRepos().then(setRepos);
         });
       } else {
         GetRemoteRepos().then(setRepos);
@@ -149,14 +150,15 @@ const Git = () => {
                 </Fragment>
               ) : (
                 <>
-                  {repos.map((repo) => (
-                    <>
-                      <p>
-                        {repo.name}
-                        {repo.private ? " (private)" : "(public)"}
-                      </p>
-                    </>
-                  ))}
+                  {repos &&
+                    repos.map((repo) => (
+                      <>
+                        <p>
+                          {repo.name}
+                          {repo.private ? " (private)" : "(public)"}
+                        </p>
+                      </>
+                    ))}
                 </>
               )}
             </TabPanel>

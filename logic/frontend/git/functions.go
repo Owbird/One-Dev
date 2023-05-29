@@ -4,9 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"log"
-	"net/http"
 	"os/exec"
 	"strings"
 
@@ -107,25 +105,7 @@ func GetRemoteRepos() []data.RemoteRepo {
 	url := "https://api.github.com/user"
 	method := "GET"
 
-	client := &http.Client{}
-
-	req, err := http.NewRequest(method, url, nil)
-
-	if err != nil {
-		log.Println(err)
-	}
-
-	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", token))
-
-	res, err := client.Do(req)
-
-	if err != nil {
-		log.Println(err)
-	}
-
-	defer res.Body.Close()
-
-	body, err := ioutil.ReadAll(res.Body)
+	body, err := utils.MakeAuthorizedRequest(method, url, token)
 
 	if err != nil {
 		log.Println(err)
@@ -135,29 +115,11 @@ func GetRemoteRepos() []data.RemoteRepo {
 
 	json.Unmarshal(body, &user)
 
-	req, err = http.NewRequest(method, fmt.Sprintf("%s/repos", url), nil)
+	body, err = utils.MakeAuthorizedRequest(method, fmt.Sprintf("%s/repos", url), token)
 
 	if err != nil {
 		log.Println(err)
 	}
-
-	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", token))
-
-	res, err = client.Do(req)
-
-	if err != nil {
-		log.Println(err)
-	}
-
-	defer res.Body.Close()
-
-	body, err = ioutil.ReadAll(res.Body)
-
-	if err != nil {
-		log.Println(err)
-	}
-
-	log.Println(string(body))
 
 	var repos []data.RemoteRepo
 
