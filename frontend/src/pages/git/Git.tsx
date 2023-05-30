@@ -35,7 +35,7 @@ const Git = () => {
   const [gitToken, setGitToken] = useState("");
   const [gitTokens, setGitTokens] = useState<string[]>();
   const [activeDir, setActiveRepo] = useState<data.File>();
-  const [repos, setRepos] = useState<data.RemoteRepo[]>([]);
+  const [repos, setRepos] = useState<data.RemoteRepo>();
 
   const clearActiveDir = () => {
     setActiveRepo(undefined);
@@ -83,8 +83,8 @@ const Git = () => {
       {!activeDir ? (
         <Tabs>
           <TabList>
-            <Tab>Local</Tab>
-            <Tab>Remote</Tab>
+            <Tab>Local ({dirs.length})</Tab>
+            <Tab>Remote ({repos ? repos.total_count : 0})</Tab>
           </TabList>
 
           <TabPanels>
@@ -149,17 +149,28 @@ const Git = () => {
                   </Button>
                 </Fragment>
               ) : (
-                <>
+                <Grid
+                  maxH={500}
+                  overflowY={"scroll"}
+                  templateColumns="repeat(5, 1fr)"
+                  gap={6}
+                >
                   {repos &&
-                    repos.map((repo) => (
-                      <>
+                    repos.items.map((repo) => (
+                      <GridItem
+                        // onClick={() => setActiveRepo(dir)}
+                        w="100%"
+                        h="100%"
+                        p={5}
+                        bg="blue.500"
+                      >
                         <p>
                           {repo.name}
                           {repo.private ? " (private)" : "(public)"}
                         </p>
-                      </>
+                      </GridItem>
                     ))}
-                </>
+                </Grid>
               )}
             </TabPanel>
           </TabPanels>

@@ -99,7 +99,7 @@ func GetRepo(ctx context.Context, path string) data.Repo {
 	return git_repo
 }
 
-func GetRemoteRepos() []data.RemoteRepo {
+func GetRemoteRepos() data.RemoteRepo {
 	token := database.GetGitToken()
 
 	url := "https://api.github.com/user"
@@ -115,15 +115,21 @@ func GetRemoteRepos() []data.RemoteRepo {
 
 	json.Unmarshal(body, &user)
 
-	body, err = utils.MakeAuthorizedRequest(method, fmt.Sprintf("%s/repos", url), token)
+	body, err = utils.MakeAuthorizedRequest(method, fmt.Sprintf("https://api.github.com/search/repositories?q=user:%s", user.Name), token)
 
 	if err != nil {
 		log.Println(err)
 	}
 
-	var repos []data.RemoteRepo
+	var repos data.RemoteRepo
 
-	json.Unmarshal(body, &repos)
+	err = json.Unmarshal(body, &repos)
+
+	if err != nil {
+		log.Println(err)
+	}
+
+	log.Println(string(body))
 
 	return repos
 

@@ -62,6 +62,6 @@ func (a *App) SaveGitToken(token string) {
 	database.SaveGitToken(token)
 }
 
-func (a *App) GetRemoteRepos() []data.RemoteRepo {
+func (a *App) GetRemoteRepos() data.RemoteRepo {
 	return git_ui.GetRemoteRepos()
 }

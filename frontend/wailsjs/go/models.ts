@@ -82,16 +82,81 @@ export namespace data {
 	        this.cpuUsage = source["cpuUsage"];
 	    }
 	}
-	export class RemoteRepo {
+	export class RemoteRepoPermissions {
+	    admin: boolean;
+	    maintain: boolean;
+	    push: boolean;
+	    triage: boolean;
+	    pull: boolean;
+	
+	    static createFrom(source: any = {}) {
+	        return new RemoteRepoPermissions(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.admin = source["admin"];
+	        this.maintain = source["maintain"];
+	        this.push = source["push"];
+	        this.triage = source["triage"];
+	        this.pull = source["pull"];
+	    }
+	}
+	export class RemoteRepoOwner {
+	    login: string;
+	    id: number;
+	    node_id: string;
+	    avatar_url: string;
+	    gravatar_id: string;
+	    url: string;
+	    html_url: string;
+	    followers_url: string;
+	    following_url: string;
+	    gists_url: string;
+	    starred_url: string;
+	    subscriptions_url: string;
+	    organizations_url: string;
+	    repos_url: string;
+	    events_url: string;
+	    received_events_url: string;
+	    type: string;
+	    site_admin: boolean;
+	
+	    static createFrom(source: any = {}) {
+	        return new RemoteRepoOwner(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.login = source["login"];
+	        this.id = source["id"];
+	        this.node_id = source["node_id"];
+	        this.avatar_url = source["avatar_url"];
+	        this.gravatar_id = source["gravatar_id"];
+	        this.url = source["url"];
+	        this.html_url = source["html_url"];
+	        this.followers_url = source["followers_url"];
+	        this.following_url = source["following_url"];
+	        this.gists_url = source["gists_url"];
+	        this.starred_url = source["starred_url"];
+	        this.subscriptions_url = source["subscriptions_url"];
+	        this.organizations_url = source["organizations_url"];
+	        this.repos_url = source["repos_url"];
+	        this.events_url = source["events_url"];
+	        this.received_events_url = source["received_events_url"];
+	        this.type = source["type"];
+	        this.site_admin = source["site_admin"];
+	    }
+	}
+	export class RemoteRepoItem {
 	    id: number;
 	    node_id: string;
 	    name: string;
 	    full_name: string;
 	    private: boolean;
-	    // Go type: struct { Login string "json:\"login\""; ID int "json:\"id\""; NodeID string "json:\"node_id\""; AvatarURL string "json:\"avatar_url\""; GravatarID string "json:\"gravatar_id\""; URL string "json:\"url\""; HTMLURL string "json:\"html_url\""; FollowersURL string "json:\"followers_url\""; FollowingURL string "json:\"following_url\""; GistsURL string "json:\"gists_url\""; StarredURL string "json:\"starred_url\""; SubscriptionsURL string "json:\"subscriptions_url\""; OrganizationsURL string "json:\"organizations_url\""; ReposURL string "json:\"repos_url\""; EventsURL string "json:\"events_url\""; ReceivedEventsURL string "json:\"received_events_url\""; Type string "json:\"type\""; SiteAdmin bool "json:\"site_admin\"" }
-	    owner: any;
+	    owner: RemoteRepoOwner;
 	    html_url: string;
-	    description: any;
+	    description: string;
 	    fork: boolean;
 	    url: string;
 	    forks_url: string;
@@ -140,7 +205,7 @@ export namespace data {
 	    ssh_url: string;
 	    clone_url: string;
 	    svn_url: string;
-	    homepage: string;
+	    homepage: any;
 	    size: number;
 	    stargazers_count: number;
 	    watchers_count: number;
@@ -166,11 +231,11 @@ export namespace data {
 	    open_issues: number;
 	    watchers: number;
 	    default_branch: string;
-	    // Go type: struct { Admin bool "json:\"admin\""; Maintain bool "json:\"maintain\""; Push bool "json:\"push\""; Triage bool "json:\"triage\""; Pull bool "json:\"pull\"" }
-	    permissions: any;
+	    permissions: RemoteRepoPermissions;
+	    score: number;
 	
 	    static createFrom(source: any = {}) {
-	        return new RemoteRepo(source);
+	        return new RemoteRepoItem(source);
 	    }
 	
 	    constructor(source: any = {}) {
@@ -180,7 +245,7 @@ export namespace data {
 	        this.name = source["name"];
 	        this.full_name = source["full_name"];
 	        this.private = source["private"];
-	        this.owner = this.convertValues(source["owner"], Object);
+	        this.owner = this.convertValues(source["owner"], RemoteRepoOwner);
 	        this.html_url = source["html_url"];
 	        this.description = source["description"];
 	        this.fork = source["fork"];
@@ -254,7 +319,8 @@ export namespace data {
 	        this.open_issues = source["open_issues"];
 	        this.watchers = source["watchers"];
 	        this.default_branch = source["default_branch"];
-	        this.permissions = this.convertValues(source["permissions"], Object);
+	        this.permissions = this.convertValues(source["permissions"], RemoteRepoPermissions);
+	        this.score = source["score"];
 	    }
 	
 		convertValues(a: any, classs: any, asMap: boolean = false): any {
@@ -275,6 +341,43 @@ export namespace data {
 		    return a;
 		}
 	}
+	export class RemoteRepo {
+	    total_count: number;
+	    incomplete_results: boolean;
+	    items: RemoteRepoItem[];
+	
+	    static createFrom(source: any = {}) {
+	        return new RemoteRepo(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.total_count = source["total_count"];
+	        this.incomplete_results = source["incomplete_results"];
+	        this.items = this.convertValues(source["items"], RemoteRepoItem);
+	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
+	}
+	
+	
+	
 	export class RepoCommit {
 	    message: string;
 	    committer: string;
