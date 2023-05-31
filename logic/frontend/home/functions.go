@@ -20,6 +20,7 @@ func GetSystemStat(ctx context.Context) data.SystemStats {
 	stats := data.SystemStats{}
 
 	stats.UpTime = utils.GetUptime()
+
 	stats.MemoryStats.Total = memoryStats.Total
 	stats.MemoryStats.Free = memoryStats.Free
 	stats.MemoryStats.Used = memoryStats.Used
