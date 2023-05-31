@@ -30,7 +30,4 @@ chmod 644 build/bin/usr/share/icons/appicon.png
 
 dpkg-deb --build build/bin  onedev.deb
 
-
-
-
-
+wails build -platform windows -nsis
