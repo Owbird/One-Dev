@@ -7,18 +7,20 @@ import {
   Flex,
   HStack,
   Icon,
+  Switch,
   Tab,
   TabList,
   TabPanel,
   TabPanels,
   Tabs,
   Text,
+  useColorMode,
   useColorModeValue,
   useDisclosure,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 
-import { FaGithub, FaHome } from "react-icons/fa";
+import { FaGithub, FaHome, FaMoon, FaSun } from "react-icons/fa";
 
 import { EventsOn } from "@go-runtime/runtime";
 import Home from "@pages/Home";
@@ -45,6 +47,7 @@ const NAV_ITEMS: INavItem[] = [
 
 function App() {
   const sidebar = useDisclosure();
+  const { colorMode, toggleColorMode } = useColorMode();
   const color = useColorModeValue("gray.600", "gray.300");
 
   const [error, setError] = useState();
@@ -140,37 +143,50 @@ function App() {
       w="30"
       {...props}
     >
-      <Flex px="4" py="5" align="center">
-        <Text
-          fontSize="2xl"
-          ml="2"
-          color="brand.500"
-          _dark={{
-            color: "white",
-          }}
-          fontWeight="semibold"
-        >
-          One Dev
-        </Text>
-      </Flex>
-      <Flex
-        direction="column"
-        as="nav"
-        fontSize="sm"
-        color="gray.600"
-        aria-label="Main Navigation"
-      >
-        {NAV_ITEMS.map((item, index) => (
-          <NavItem
-            isActive={index === tabIndex}
-            key={index}
-            icon={item.icon}
-            tab={{
-              label: item.menuTab.label,
-              body: item.menuTab.body,
-            }}
-          />
-        ))}
+      <Flex direction="column" h="full" justify="space-between">
+        <div>
+          <Flex px="4" py="5" align="center">
+            <Text
+              fontSize="2xl"
+              ml="2"
+              color="brand.500"
+              _dark={{
+                color: "white",
+              }}
+              fontWeight="semibold"
+            >
+              One Dev
+            </Text>
+          </Flex>
+          <Flex
+            direction="column"
+            as="nav"
+            fontSize="sm"
+            color="gray.600"
+            aria-label="Main Navigation"
+          >
+            {NAV_ITEMS.map((item, index) => (
+              <NavItem
+                isActive={index === tabIndex}
+                key={index}
+                icon={item.icon}
+                tab={{
+                  label: item.menuTab.label,
+                  body: item.menuTab.body,
+                }}
+              />
+            ))}
+          </Flex>
+        </div>
+        <Flex align="center" justify="center" py="4">
+          <HStack>
+            {colorMode === "dark" ? <FaMoon /> : <FaSun />}
+            <Switch
+              onChange={toggleColorMode}
+              isChecked={colorMode === "dark"}
+            />
+          </HStack>
+        </Flex>
       </Flex>
     </Box>
   );
