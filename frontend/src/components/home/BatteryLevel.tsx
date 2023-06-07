@@ -13,10 +13,17 @@ const BatteryLevel = ({
   const [chargingState, setChargingState] = useState(batteryStats.charginState);
   const batteryLevel = batteryStats.currentPower;
 
+  const [battNotifBuffer, setBattNotifBuffer] = useState([30, 20, 10, 5]);
+
   useEffect(() => {
     if (chargingState != batteryStats.charginState) {
       Notify(batteryStats.charginState);
       setChargingState(batteryStats.charginState);
+
+      // Reset notif buffer if AC plugged in
+      if (batteryStats.charginState === "Charging") {
+        setBattNotifBuffer([30, 20, 10, 5]);
+      }
     }
 
     if (batteryLevel > 50) {
@@ -25,6 +32,14 @@ const BatteryLevel = ({
       setColor("yellow");
     } else {
       setColor("red");
+    }
+
+    if (
+      battNotifBuffer.includes(batteryLevel) &&
+      batteryStats.charginState !== "Charging"
+    ) {
+      Notify(`Battery power at ${batteryLevel}%`);
+      setBattNotifBuffer(battNotifBuffer.filter((x) => x !== batteryLevel));
     }
   }, [batteryStats]);
 
