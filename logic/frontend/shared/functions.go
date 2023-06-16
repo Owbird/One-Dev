@@ -2,7 +2,6 @@ package shared
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"os/exec"
 
@@ -31,7 +30,11 @@ func (sf SharedFunctions) Notify(message string) {
 // It returns a string.
 func (sf SharedFunctions) GetWakaToday() string {
 
-	waka_cli := utils.WakaTimeCli()
+	waka_cli, err := utils.WakaTimeCli()
+
+	if err != nil {
+		return "0 seconds Today"
+	}
 
 	res, err := exec.Command(waka_cli, "--today").Output()
 
@@ -46,12 +49,19 @@ func (sf SharedFunctions) GetWakaToday() string {
 // KillProcess kills a process with the specified PID.
 //
 // pid: An integer representing the process ID.
-func (sf SharedFunctions) KillProcess(pid int) {
+func (sf SharedFunctions) KillProcess(pid int) error {
 
 	process, err := os.FindProcess(pid)
 
-	log.Println(err)
+	if err != nil {
+		return err
+	}
 
 	err = process.Signal(os.Kill)
 
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

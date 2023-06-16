@@ -1,24 +1,27 @@
 package utils
 
 import (
-	"log"
 	"os"
 	"path"
 )
 
-func UserHome() string {
+func UserHome() (string, error) {
 	dir, err := os.UserHomeDir()
 
 	if err != nil {
-		log.Println(err)
+		return "", err
 	}
 
-	return dir
+	return dir, nil
 
 }
 
-func WakaTimeCli() string {
-	dir := UserHome()
-	return path.Join(dir, ".wakatime", "wakatime-cli")
+func WakaTimeCli() (string, error) {
+	dir, err := UserHome()
+
+	if err != nil {
+		return "", err
+	}
+	return path.Join(dir, ".wakatime", "wakatime-cli"), nil
 
 }

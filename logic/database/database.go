@@ -25,14 +25,16 @@ func (d *Database) Close() {
 }
 
 // Open opens a connection to the database stored in the ".onedev" file.
-func (d *Database) Open() {
+func (d *Database) Open() error {
 	db, err := c.Open(".onedev")
 
 	if err != nil {
-		log.Println(err)
+		return err
 	}
 
 	d.Db = db
+
+	return nil
 
 }
 
@@ -48,7 +50,7 @@ func Init() {
 // IndexGitDir indexes a Git directory.
 //
 // dir is the directory to index.
-func IndexGitDir(dir data.File) {
+func IndexGitDir(dir data.File) error {
 	database.OpenState.Lock()
 
 	defer database.OpenState.Unlock()
@@ -56,13 +58,13 @@ func IndexGitDir(dir data.File) {
 	err := database.Db.CreateCollection("git_dirs")
 
 	if err != c.ErrCollectionExist {
-		log.Println(err)
+		return err
 	}
 
 	exists, err := database.Db.Query("git_dirs").Where((*c.Criteria)(c.Field("dir").Eq(dir.Dir))).FindFirst()
 
 	if err != nil {
-		log.Println(err)
+		return err
 	}
 
 	if exists == nil {
@@ -74,16 +76,16 @@ func IndexGitDir(dir data.File) {
 		_, err = database.Db.InsertOne("git_dirs", doc)
 
 		if err != nil {
-			log.Println(err)
+			return err
 		}
 	}
-
+	return nil
 }
 
 // GetGitDirs returns a slice of data File structs representing Git directories.
 //
 // This function returns a slice of data File structs.
-func GetGitDirs() []data.File {
+func GetGitDirs() ([]data.File, error) {
 
 	dirs := []data.File{}
 
@@ -96,7 +98,7 @@ func GetGitDirs() []data.File {
 	docs, err := database.Db.Query("git_dirs").FindAll()
 
 	if err != nil {
-		log.Println(err)
+		return nil, err
 	}
 
 	for _, doc := range docs {
@@ -111,7 +113,7 @@ func GetGitDirs() []data.File {
 		return strings.Compare(dirs[i].Dir, dirs[j].Dir) < 0
 	})
 
-	return dirs
+	return dirs, nil
 }
 
 // GetGitToken retrieves the Git token from the database.
@@ -125,11 +127,8 @@ func GetGitToken() string {
 	doc, err := database.Db.Query("git_token").FindFirst()
 
 	if err != nil {
-		log.Println(err)
 		return ""
 	}
-
-	log.Println()
 
 	return doc.Get("token").(string)
 }
@@ -137,7 +136,7 @@ func GetGitToken() string {
 // SaveGitToken saves a git token in the database.
 //
 // token: string representing the git token to be saved.
-func SaveGitToken(token string) {
+func SaveGitToken(token string) error {
 	database.OpenState.Lock()
 
 	defer database.OpenState.Unlock()
@@ -149,9 +148,11 @@ func SaveGitToken(token string) {
 	err := database.Db.CreateCollection("git_token")
 
 	if err != c.ErrCollectionExist {
-		log.Println(err)
+		return err
 	}
 
 	database.Db.InsertOne("git_token", doc)
+
+	return nil
 
 }

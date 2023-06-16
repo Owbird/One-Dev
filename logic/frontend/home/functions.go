@@ -20,22 +20,36 @@ type HomeFunctions struct {
 }
 
 // GetSystemStat returns system statistics like uptime, cpu usage, memory usage, battery status and processes.
-func (hf *HomeFunctions) GetSystemStat() data.SystemStats {
+func (hf *HomeFunctions) GetSystemStat() (data.SystemStats, error) {
 
 	memoryStats, _ := mem.VirtualMemory()
 	batteryStats, _ := battery.GetAll()
 	stats := data.SystemStats{}
 
-	stats.UpTime = utils.GetUptime()
+	upTime, err := utils.GetUptime()
+
+	if err != nil {
+		upTime = data.UpTime{}
+	} else {
+		stats.UpTime = upTime
+	}
 
 	stats.MemoryStats.Total = memoryStats.Total
 	stats.MemoryStats.Free = memoryStats.Free
 	stats.MemoryStats.Used = memoryStats.Used
 	stats.MemoryStats.UsedPercentage = memoryStats.UsedPercent
 
-	cpu_info, _ := cpu.Info()
+	cpu_info, err := cpu.Info()
+
+	if err != nil {
+		return data.SystemStats{}, err
+	}
 
 	cpu_usages, err := cpu.Percent(0, true)
+
+	if err != nil {
+		return data.SystemStats{}, err
+	}
 
 	stats.Processes = []data.Process{}
 
@@ -83,9 +97,15 @@ func (hf *HomeFunctions) GetSystemStat() data.SystemStats {
 
 	}
 
-	_, err = os.Stat(utils.WakaTimeCli())
+	wk_cli_path, err := utils.WakaTimeCli()
+
+	if err != nil {
+		return stats, err
+	}
+
+	_, err = os.Stat(wk_cli_path)
 
 	stats.HasWaka = err == nil
 
-	return stats
+	return stats, nil
 }

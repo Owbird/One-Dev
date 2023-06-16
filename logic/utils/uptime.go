@@ -1,19 +1,18 @@
 package utils
 
 import (
-	"log"
 	"time"
 
 	"github.com/owbird/one-dev/logic/data"
 	"github.com/shirou/gopsutil/host"
 )
 
-func GetUptime() data.UpTime {
+func GetUptime() (data.UpTime, error) {
 
 	uptime, err := host.Uptime()
 
 	if err != nil {
-		log.Println(err)
+		return data.UpTime{}, err
 	}
 
 	duration := time.Duration(uptime) * time.Second
@@ -22,5 +21,5 @@ func GetUptime() data.UpTime {
 		Days:    int(duration.Hours() / 24),
 		Hours:   int(duration.Hours()) % 24,
 		Minutes: int(duration.Minutes()) % 60,
-	}
+	}, nil
 }

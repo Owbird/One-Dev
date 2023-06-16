@@ -26,17 +26,21 @@ type GitFunctions struct {
 // located at the specified path. This function takes a single parameter, path, a string
 // representing the path to the git repository.
 // It returns a data.Repo struct.
-func (gf *GitFunctions) GetRepo(path string) data.Repo {
+func (gf *GitFunctions) GetRepo(path string) (data.Repo, error) {
 	log.Println("[+] Getting git dir")
 
 	git_repo := data.Repo{}
 
 	repo, err := git.PlainOpen(path)
 
+	if err != nil {
+		return data.Repo{}, err
+	}
+
 	head, err := repo.Head()
 
 	if err != nil {
-		return git_repo
+		return git_repo, nil
 	}
 
 	branch := head.Name()
@@ -44,6 +48,10 @@ func (gf *GitFunctions) GetRepo(path string) data.Repo {
 	git_repo.CurrentBranch = branch.Short()
 
 	git_log, err := repo.Log(&git.LogOptions{})
+
+	if err != nil {
+		return git_repo, nil
+	}
 
 	git_log.ForEach((func(commit *object.Commit) error {
 
@@ -58,6 +66,10 @@ func (gf *GitFunctions) GetRepo(path string) data.Repo {
 	}))
 
 	branches, err := repo.Branches()
+
+	if err != nil {
+		return git_repo, nil
+	}
 
 	branches.ForEach(func(branch *plumbing.Reference) error {
 
@@ -79,6 +91,10 @@ func (gf *GitFunctions) GetRepo(path string) data.Repo {
 	// https://github.com/go-git/go-git/issues/181
 	res, err := exec.Command("git", "-C", path, "status", "-s").Output()
 
+	if err != nil {
+		return git_repo, nil
+	}
+
 	status := strings.Split(string(res), "\n")
 
 	for _, stat := range status {
@@ -96,13 +112,13 @@ func (gf *GitFunctions) GetRepo(path string) data.Repo {
 
 	}
 
-	return git_repo
+	return git_repo, nil
 }
 
 // GetRemoteRepos retrieves the list of remote repositories for the authenticated user
 // using the GitHub API. It returns a RemoteRepo struct containing information about
 // each repository.
-func (gf *GitFunctions) GetRemoteRepos() data.RemoteRepo {
+func (gf *GitFunctions) GetRemoteRepos() (data.RemoteRepo, error) {
 	token := database.GetGitToken()
 
 	url := "https://api.github.com/user"
@@ -111,7 +127,7 @@ func (gf *GitFunctions) GetRemoteRepos() data.RemoteRepo {
 	body, err := utils.MakeAuthorizedRequest(method, url, token)
 
 	if err != nil {
-		log.Println(err)
+		return data.RemoteRepo{}, err
 	}
 
 	var user data.GitUser
@@ -121,7 +137,8 @@ func (gf *GitFunctions) GetRemoteRepos() data.RemoteRepo {
 	body, err = utils.MakeAuthorizedRequest(method, fmt.Sprintf("https://api.github.com/search/repositories?q=user:%s", user.Name), token)
 
 	if err != nil {
-		log.Println(err)
+		return data.RemoteRepo{}, err
+
 	}
 
 	var repos data.RemoteRepo
@@ -129,28 +146,33 @@ func (gf *GitFunctions) GetRemoteRepos() data.RemoteRepo {
 	err = json.Unmarshal(body, &repos)
 
 	if err != nil {
-		log.Println(err)
+		return data.RemoteRepo{}, err
 	}
 
-	log.Println(string(body))
-
-	return repos
+	return repos, nil
 
 }
 
 // GetGitTokens returns an array of Git tokens that are not duplicates.
-func (gf *GitFunctions) GetGitTokens() []string {
+func (gf *GitFunctions) GetGitTokens() ([]string, error) {
 
 	log.Println("[+] Reading Git tokens")
 
 	tokens := []string{}
 
-	for _, dir := range database.GetGitDirs() {
+	dirs, err := database.GetGitDirs()
+
+	if err != nil {
+		return []string{}, err
+	}
+
+	for _, dir := range dirs {
 
 		res, err := exec.Command("git", "-C", dir.ParentDir, "remote", "-v").Output()
 
 		if err != nil {
-			log.Println(err)
+			return []string{}, err
+
 		}
 
 		url := strings.Split(string(res), "@")
@@ -176,5 +198,5 @@ func (gf *GitFunctions) GetGitTokens() []string {
 
 	}
 
-	return tokens
+	return tokens, nil
 }
