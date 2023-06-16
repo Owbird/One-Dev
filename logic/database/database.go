@@ -18,11 +18,13 @@ type Database struct {
 
 var database Database
 
+// Close closes the database connection and acquires a lock on the OpenState.
 func (d *Database) Close() {
 	d.Db.Close()
 	d.OpenState.Lock()
 }
 
+// Open opens a connection to the database stored in the ".onedev" file.
 func (d *Database) Open() {
 	db, err := c.Open(".onedev")
 
@@ -34,6 +36,7 @@ func (d *Database) Open() {
 
 }
 
+// Init initializes the database by opening a connection.
 func Init() {
 
 	database = Database{}
@@ -42,6 +45,9 @@ func Init() {
 
 }
 
+// IndexGitDir indexes a Git directory.
+//
+// dir is the directory to index.
 func IndexGitDir(dir data.File) {
 	database.OpenState.Lock()
 
@@ -74,6 +80,9 @@ func IndexGitDir(dir data.File) {
 
 }
 
+// GetGitDirs returns a slice of data File structs representing Git directories.
+//
+// This function returns a slice of data File structs.
 func GetGitDirs() []data.File {
 
 	dirs := []data.File{}
@@ -105,6 +114,9 @@ func GetGitDirs() []data.File {
 	return dirs
 }
 
+// GetGitToken retrieves the Git token from the database.
+//
+// It returns a string.
 func GetGitToken() string {
 	database.OpenState.Lock()
 
@@ -122,6 +134,9 @@ func GetGitToken() string {
 	return doc.Get("token").(string)
 }
 
+// SaveGitToken saves a git token in the database.
+//
+// token: string representing the git token to be saved.
 func SaveGitToken(token string) {
 	database.OpenState.Lock()
 

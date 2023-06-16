@@ -10,6 +10,7 @@ import (
 	"github.com/owbird/one-dev/logic/utils"
 )
 
+// ReadGitDirs reads all Git directories in the user's home directory and indexes them in a database.
 func ReadGitDirs() {
 
 	log.Println("[+] Reading Git dirs")

@@ -29,9 +29,6 @@ const ActiveRepo = ({
 
   useEffect(() => {
     GetRepo(repo?.parentDir!).then(setRepoData);
-    // setInterval(() => {
-    //   GetRepo(repo?.parentDir!).then(setRepoData);
-    // }, 1000 * 10);
   }, []);
 
   const getChangeColor = (change: string): string => {

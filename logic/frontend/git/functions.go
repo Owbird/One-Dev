@@ -22,6 +22,10 @@ func NewInstance() *GitFunctions {
 type GitFunctions struct {
 }
 
+// GetRepo returns a data.Repo struct containing information about the git repository
+// located at the specified path. This function takes a single parameter, path, a string
+// representing the path to the git repository.
+// It returns a data.Repo struct.
 func (gf *GitFunctions) GetRepo(path string) data.Repo {
 	log.Println("[+] Getting git dir")
 
@@ -95,6 +99,9 @@ func (gf *GitFunctions) GetRepo(path string) data.Repo {
 	return git_repo
 }
 
+// GetRemoteRepos retrieves the list of remote repositories for the authenticated user
+// using the GitHub API. It returns a RemoteRepo struct containing information about
+// each repository.
 func (gf *GitFunctions) GetRemoteRepos() data.RemoteRepo {
 	token := database.GetGitToken()
 
@@ -131,6 +138,7 @@ func (gf *GitFunctions) GetRemoteRepos() data.RemoteRepo {
 
 }
 
+// GetGitTokens returns an array of Git tokens that are not duplicates.
 func (gf *GitFunctions) GetGitTokens() []string {
 
 	log.Println("[+] Reading Git tokens")

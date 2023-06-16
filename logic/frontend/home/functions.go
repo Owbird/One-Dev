@@ -19,6 +19,7 @@ func NewInstance() *HomeFunctions {
 type HomeFunctions struct {
 }
 
+// GetSystemStat returns system statistics like uptime, cpu usage, memory usage, battery status and processes.
 func (hf *HomeFunctions) GetSystemStat() data.SystemStats {
 
 	memoryStats, _ := mem.VirtualMemory()
