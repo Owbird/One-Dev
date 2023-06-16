@@ -14,8 +14,13 @@ import (
 func ReadGitDirs() {
 
 	log.Println("[+] Reading Git dirs")
+	home, err := utils.UserHome()
 
-	filepath.WalkDir(utils.UserHome(), func(path string, d fs.DirEntry, err error) error {
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	filepath.WalkDir(home, func(path string, d fs.DirEntry, err error) error {
 
 		if d.IsDir() {
 
