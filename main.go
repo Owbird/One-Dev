@@ -28,6 +28,10 @@ func main() {
 		OnStartup: app.startup,
 		Bind: []interface{}{
 			app,
+			app.HomeFunctions,
+			app.SharedFunctions,
+			app.GitFunctions,
+			app.DatabaseController,
 		},
 	})
 

@@ -1,7 +1,6 @@
 package home
 
 import (
-	"context"
 	"math"
 	"os"
 
@@ -13,7 +12,14 @@ import (
 	"github.com/shirou/gopsutil/process"
 )
 
-func GetSystemStat(ctx context.Context) data.SystemStats {
+func NewInstance() *HomeFunctions {
+	return &HomeFunctions{}
+}
+
+type HomeFunctions struct {
+}
+
+func (hf *HomeFunctions) GetSystemStat() data.SystemStats {
 
 	memoryStats, _ := mem.VirtualMemory()
 	batteryStats, _ := battery.GetAll()
@@ -52,8 +58,6 @@ func GetSystemStat(ctx context.Context) data.SystemStats {
 		stats.Processes = append(stats.Processes, process)
 
 	}
-
-	utils.HandleError(ctx, err)
 
 	stats.CPUStats = data.CPUStats{
 		Model:  cpu_info[0].ModelName,

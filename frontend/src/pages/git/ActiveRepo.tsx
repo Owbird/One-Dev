@@ -12,7 +12,7 @@ import {
   Tabs,
   Text,
 } from "@chakra-ui/react";
-import { GetRepo } from "@go/main/App";
+import { GetRepo } from "@go/git/GitFunctions";
 import { data } from "@go/models";
 import { Fragment, useEffect, useState } from "react";
 import { AiOutlineBranches, AiOutlineTag } from "react-icons/ai";
