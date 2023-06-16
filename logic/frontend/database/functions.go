@@ -28,7 +28,12 @@ func (dbc *DatabaseController) SaveGitToken(token string) {
 
 // GetGitDirs returns a slice of data.File representing the Git directories
 // available in the database.
-func (dbc *DatabaseController) GetGitDirs() []data.File {
+func (dbc *DatabaseController) GetGitDirs() ([]data.File, error) {
 
-	return database.GetGitDirs()
+	dirs, err := database.GetGitDirs()
+
+	if err != nil {
+		return []data.File{}, err
+	}
+	return dirs, nil
 }
