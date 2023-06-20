@@ -80,6 +80,10 @@ func (gf *GitFunctions) GetRepo(path string) (data.Repo, error) {
 
 	tags, err := repo.Tags()
 
+	if err != nil {
+		log.Println(err)
+	}
+
 	tags.ForEach(func(tag *plumbing.Reference) error {
 
 		git_repo.Tags = append(git_repo.Tags, tag.Name().Short())
@@ -118,8 +122,7 @@ func (gf *GitFunctions) GetRepo(path string) (data.Repo, error) {
 // GetRemoteRepos retrieves the list of remote repositories for the authenticated user
 // using the GitHub API. It returns a RemoteRepo struct containing information about
 // each repository.
-func (gf *GitFunctions) GetRemoteRepos() (data.RemoteRepo, error) {
-	token := database.GetGitToken()
+func (gf *GitFunctions) GetRemoteRepos(token string) (data.RemoteRepo, error) {
 
 	url := "https://api.github.com/user"
 	method := "GET"
@@ -199,4 +202,20 @@ func (gf *GitFunctions) GetGitTokens() ([]string, error) {
 	}
 
 	return tokens, nil
+}
+
+func (gf *GitFunctions) ChangeBranch(repoPath string) {
+
+}
+
+func (gf *GitFunctions) GetGitToken() string {
+	return database.GetGitToken()
+}
+
+func (gf *GitFunctions) SaveGitToken(token string) error {
+	return database.SaveGitToken(token)
+}
+
+func (gf *GitFunctions) GetGitDirs() ([]data.File, error) {
+	return database.GetGitDirs()
 }

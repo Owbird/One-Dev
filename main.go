@@ -31,7 +31,6 @@ func main() {
 			app.HomeFunctions,
 			app.SharedFunctions,
 			app.GitFunctions,
-			app.DatabaseController,
 		},
 	})
 
