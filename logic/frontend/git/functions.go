@@ -204,7 +204,24 @@ func (gf *GitFunctions) GetGitTokens() ([]string, error) {
 	return tokens, nil
 }
 
-func (gf *GitFunctions) ChangeBranch(repoPath string) {
+func (gf *GitFunctions) ChangeBranch(repoPath string, branch string) {
+
+	repo, err := git.PlainOpen(repoPath)
+
+	if err != nil {
+		log.Fatalln((err))
+
+	}
+
+	worktree, err := repo.Worktree()
+
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	worktree.Checkout(&git.CheckoutOptions{
+		Branch: plumbing.NewBranchReferenceName(branch),
+	})
 
 }
 
