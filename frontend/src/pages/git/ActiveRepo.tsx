@@ -50,17 +50,20 @@ const ActiveRepo = ({
     return "gray";
   };
 
-  return repoData?.currentBranch == "" ? (
-    <Fragment>
-      <HStack>
-        <IoIosArrowBack onClick={clear} size={50} />
-        <Heading>{repo?.dir}</Heading>
-      </HStack>
-      <Center>
-        <Heading>Empty Repo?</Heading>
-      </Center>
-    </Fragment>
-  ) : (
+  if (repoData?.currentBranch == "")
+    return (
+      <Fragment>
+        <HStack>
+          <IoIosArrowBack onClick={clear} size={50} />
+          <Heading>{repo?.dir}</Heading>
+        </HStack>
+        <Center>
+          <Heading>Empty Repo?</Heading>
+        </Center>
+      </Fragment>
+    );
+
+  return (
     <Fragment>
       <HStack>
         <IoIosArrowBack onClick={clear} size={50} />
@@ -104,7 +107,9 @@ const ActiveRepo = ({
 
           <TabPanels>
             <TabPanel>
-              {repoData?.changes &&
+              {!repoData?.changes ? (
+                <Text>No local changes</Text>
+              ) : (
                 repoData?.changes.map((change) => (
                   <Fragment>
                     <HStack>
@@ -114,7 +119,8 @@ const ActiveRepo = ({
                       </Badge>
                     </HStack>
                   </Fragment>
-                ))}
+                ))
+              )}
             </TabPanel>
             <TabPanel>
               {repoData?.commits &&

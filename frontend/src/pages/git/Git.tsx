@@ -104,23 +104,34 @@ const Git = () => {
                 gap={6}
               >
                 {(searchRes ?? dirs).map((dir) => (
-                  <Fragment>
-                    <GridItem
-                      onClick={() => setActiveRepo(dir)}
-                      w="100%"
-                      h="100%"
-                      p={5}
-                      bg="blue.500"
-                    >
-                      <p>{dir.dir}</p>
-                    </GridItem>
-                  </Fragment>
+                  <GridItem
+                    onClick={() => setActiveRepo(dir)}
+                    w="100%"
+                    h="100%"
+                    p={5}
+                    bg="blue.500"
+                  >
+                    <p>{dir.dir}</p>
+                  </GridItem>
                 ))}
               </Grid>
             </TabPanel>
             <TabPanel>
               {gitTokens ? (
                 <Fragment>
+                  <List spacing={3}>
+                    <RadioGroup onChange={setGitToken} value={gitToken}>
+                      {gitTokens.map((token) => (
+                        <ListItem key={token}>
+                          <HStack>
+                            <Radio value={token}>
+                              <Text>{token}</Text>
+                            </Radio>
+                          </HStack>
+                        </ListItem>
+                      ))}
+                    </RadioGroup>
+                  </List>{" "}
                   <List spacing={3}>
                     <RadioGroup onChange={setGitToken} value={gitToken}>
                       {gitTokens.map((token) => (
@@ -143,7 +154,6 @@ const Git = () => {
                     onChange={(event) => setGitToken(event.target.value)}
                     placeholder="Use another token"
                   />
-
                   <Button mt={4} onClick={handleSave}>
                     Save
                   </Button>
