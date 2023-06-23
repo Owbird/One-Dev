@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os/exec"
+	"path/filepath"
 	"strings"
 
 	"github.com/go-git/go-git/v5"
@@ -29,7 +30,12 @@ type GitFunctions struct {
 func (gf *GitFunctions) GetRepo(path string) (data.Repo, error) {
 	log.Println("[+] Getting git dir")
 
-	git_repo := data.Repo{}
+	git_repo := data.Repo{
+		File: data.File{
+			ParentDir: path,
+			Dir:       filepath.Base(path),
+		},
+	}
 
 	repo, err := git.PlainOpen(path)
 

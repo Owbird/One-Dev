@@ -13,6 +13,7 @@ type Repo struct {
 	Tags          []string     `json:"tags"`
 	Changes       []RepoChange `json:"changes"`
 	Commits       []RepoCommit `json:"commits"`
+	File
 }
 
 type RepoCommit struct {

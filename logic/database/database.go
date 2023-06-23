@@ -126,11 +126,11 @@ func GetGitToken() string {
 
 	doc, err := database.Db.Query("git_token").FindFirst()
 
-	if err != nil {
+	if err != nil || doc == nil {
 		return ""
 	}
 
-	return doc.Get("token").(string)
+	return doc.Get("git_token").(string)
 }
 
 // SaveGitToken saves a git token in the database.
@@ -143,7 +143,7 @@ func SaveGitToken(token string) error {
 
 	doc := c.NewDocument()
 
-	doc.Set("token", token)
+	doc.Set("git_token", token)
 
 	err := database.Db.CreateCollection("git_token")
 
