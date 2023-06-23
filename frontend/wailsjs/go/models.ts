@@ -416,6 +416,8 @@ export namespace data {
 	    tags: string[];
 	    changes: RepoChange[];
 	    commits: RepoCommit[];
+	    parentDir: string;
+	    dir: string;
 	
 	    static createFrom(source: any = {}) {
 	        return new Repo(source);
@@ -428,6 +430,8 @@ export namespace data {
 	        this.tags = source["tags"];
 	        this.changes = this.convertValues(source["changes"], RepoChange);
 	        this.commits = this.convertValues(source["commits"], RepoCommit);
+	        this.parentDir = source["parentDir"];
+	        this.dir = source["dir"];
 	    }
 	
 		convertValues(a: any, classs: any, asMap: boolean = false): any {

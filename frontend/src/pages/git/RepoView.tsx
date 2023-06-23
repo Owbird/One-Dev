@@ -12,23 +12,22 @@ import {
   Tabs,
   Text,
 } from "@chakra-ui/react";
-import { ChangeBranch, GetRepo } from "@go/git/GitFunctions";
+import { ChangeBranch, GetRepo } from "@go/main/App";
 import { data } from "@go/models";
 import { Fragment, useEffect, useState } from "react";
 import { AiOutlineBranches, AiOutlineTag } from "react-icons/ai";
 import { IoIosArrowBack } from "react-icons/io";
+import { useLocation, useNavigate } from "react-router-dom";
 
-const ActiveRepo = ({
-  repo,
-  clear,
-}: {
-  repo: data.File | undefined;
-  clear: () => void;
-}) => {
+const RepoView = () => {
   const [repoData, setRepoData] = useState<data.Repo>();
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const dir = queryParams.get("dir");
+  const navigate = useNavigate();
 
   useEffect(() => {
-    GetRepo(repo?.parentDir!).then(setRepoData);
+    GetRepo(dir!).then(setRepoData);
   }, []);
 
   const getChangeColor = (change: string): string => {
@@ -51,15 +50,17 @@ const ActiveRepo = ({
   };
 
   const handleBranchChnage = async (branch: string) => {
-    await ChangeBranch(repo?.parentDir!, branch);
-    GetRepo(repo?.parentDir!).then(setRepoData);
+    await ChangeBranch(repoData?.parentDir!, branch);
+    GetRepo(repoData?.parentDir!).then(setRepoData);
   };
+
+  // return <pre>{JSON.stringify(repoData, null, 4)}</pre>;
 
   return repoData?.currentBranch == "" ? (
     <Fragment>
       <HStack>
-        <IoIosArrowBack onClick={clear} size={50} />
-        <Heading>{repo?.dir}</Heading>
+        <IoIosArrowBack onClick={() => navigate(-1)} size={50} />
+        <Heading>{repoData?.dir}</Heading>
       </HStack>
       <Center>
         <Heading>Empty Repo?</Heading>
@@ -68,8 +69,8 @@ const ActiveRepo = ({
   ) : (
     <Fragment>
       <HStack>
-        <IoIosArrowBack onClick={clear} size={50} />
-        <Heading>{repo?.dir}</Heading>
+        <IoIosArrowBack onClick={() => navigate(-1)} size={50} />
+        <Heading>{repoData?.dir}</Heading>
         <AiOutlineBranches /> <Badge>{repoData?.branches.length}</Badge>
         <Badge color={"green"}>{repoData?.currentBranch}</Badge>
       </HStack>
@@ -78,13 +79,13 @@ const ActiveRepo = ({
           <AiOutlineBranches size={60} />
           <Select
             onChange={(event) => handleBranchChnage(event.target.value)}
-            // placeholder={repoData?.currentBranch}
+            placeholder={repoData?.currentBranch}
             defaultValue={repoData?.currentBranch}
           >
             {repoData?.branches.map((branch, index) => (
               <option
                 selected={
-                  branch.toLowerCase() === repoData.currentBranch.toLowerCase()
+                  branch.toLowerCase() === repoData!.currentBranch.toLowerCase()
                 }
                 key={index}
                 value={branch}
@@ -148,4 +149,4 @@ const ActiveRepo = ({
   );
 };
 
-export default ActiveRepo;
+export default RepoView;
