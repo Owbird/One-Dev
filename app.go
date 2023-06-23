@@ -5,7 +5,6 @@ import (
 	"log"
 
 	"github.com/owbird/one-dev/logic/background"
-	"github.com/owbird/one-dev/logic/frontend/database"
 	"github.com/owbird/one-dev/logic/frontend/git"
 	"github.com/owbird/one-dev/logic/frontend/home"
 	"github.com/owbird/one-dev/logic/frontend/shared"
@@ -16,15 +15,13 @@ type App struct {
 	*shared.SharedFunctions
 	*home.HomeFunctions
 	*git.GitFunctions
-	*database.DatabaseController
 }
 
 func NewApp() *App {
 	return &App{
-		SharedFunctions:    shared.NewInstance(),
-		HomeFunctions:      home.NewInstance(),
-		GitFunctions:       git.NewInstance(),
-		DatabaseController: database.NewInstance(),
+		SharedFunctions: shared.NewInstance(),
+		HomeFunctions:   home.NewInstance(),
+		GitFunctions:    git.NewInstance(),
 	}
 }
 

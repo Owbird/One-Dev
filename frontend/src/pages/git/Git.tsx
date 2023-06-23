@@ -48,10 +48,9 @@ const Git = () => {
         GetGitTokens().then((tokens) => {
           setGitToken(tokens[0]);
           setGitTokens(tokens);
-          GetRemoteRepos().then(setRepos);
         });
       } else {
-        GetRemoteRepos().then(setRepos);
+        GetRemoteRepos(token).then(setRepos);
       }
     });
   }, []);
@@ -71,11 +70,12 @@ const Git = () => {
   };
 
   const handleSave = async () => {
+    alert(gitToken);
     await SaveGitToken(gitToken);
 
     setGitTokens(undefined);
 
-    await GetRemoteRepos();
+    await GetRemoteRepos(gitToken);
   };
 
   return (
@@ -132,19 +132,6 @@ const Git = () => {
                       ))}
                     </RadioGroup>
                   </List>{" "}
-                  <List spacing={3}>
-                    <RadioGroup onChange={setGitToken} value={gitToken}>
-                      {gitTokens.map((token) => (
-                        <ListItem key={token}>
-                          <HStack>
-                            <Radio value={token}>
-                              <Text>{token}</Text>
-                            </Radio>
-                          </HStack>
-                        </ListItem>
-                      ))}
-                    </RadioGroup>
-                  </List>
                   <HStack>
                     <Divider />
                     <Text>OR</Text>

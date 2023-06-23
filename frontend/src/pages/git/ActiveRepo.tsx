@@ -12,7 +12,7 @@ import {
   Tabs,
   Text,
 } from "@chakra-ui/react";
-import { GetRepo } from "@go/git/GitFunctions";
+import { ChangeBranch, GetRepo } from "@go/git/GitFunctions";
 import { data } from "@go/models";
 import { Fragment, useEffect, useState } from "react";
 import { AiOutlineBranches, AiOutlineTag } from "react-icons/ai";
@@ -50,20 +50,22 @@ const ActiveRepo = ({
     return "gray";
   };
 
-  if (repoData?.currentBranch == "")
-    return (
-      <Fragment>
-        <HStack>
-          <IoIosArrowBack onClick={clear} size={50} />
-          <Heading>{repo?.dir}</Heading>
-        </HStack>
-        <Center>
-          <Heading>Empty Repo?</Heading>
-        </Center>
-      </Fragment>
-    );
+  const handleBranchChnage = async (branch: string) => {
+    await ChangeBranch(repo?.parentDir!, branch);
+    GetRepo(repo?.parentDir!).then(setRepoData);
+  };
 
-  return (
+  return repoData?.currentBranch == "" ? (
+    <Fragment>
+      <HStack>
+        <IoIosArrowBack onClick={clear} size={50} />
+        <Heading>{repo?.dir}</Heading>
+      </HStack>
+      <Center>
+        <Heading>Empty Repo?</Heading>
+      </Center>
+    </Fragment>
+  ) : (
     <Fragment>
       <HStack>
         <IoIosArrowBack onClick={clear} size={50} />
@@ -74,16 +76,22 @@ const ActiveRepo = ({
       <Stack ml={5} mt={5} width={500}>
         <HStack>
           <AiOutlineBranches size={60} />
-          <Select placeholder={repoData?.currentBranch}>
-            {repoData?.branches.map(
-              (branch, index) =>
-                branch.toLowerCase() !==
-                  repoData.currentBranch.toLowerCase() && (
-                  <option key={index} value={branch}>
-                    {branch}
-                  </option>
-                )
-            )}
+          <Select
+            onChange={(event) => handleBranchChnage(event.target.value)}
+            // placeholder={repoData?.currentBranch}
+            defaultValue={repoData?.currentBranch}
+          >
+            {repoData?.branches.map((branch, index) => (
+              <option
+                selected={
+                  branch.toLowerCase() === repoData.currentBranch.toLowerCase()
+                }
+                key={index}
+                value={branch}
+              >
+                {branch}
+              </option>
+            ))}
           </Select>
           <AiOutlineTag size={60} />
           {repoData?.tags === null ? (
