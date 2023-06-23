@@ -43,17 +43,19 @@ const Git = () => {
 
   useEffect(() => {
     GetGitDirs().then(setDirs);
-    GetGitToken().then((token) => {
-      if (token === "") {
-        GetGitTokens().then((tokens) => {
-          setGitToken(tokens[0]);
-          setGitTokens(tokens);
-        });
-      } else {
-        GetRemoteRepos(token).then(setRepos);
-      }
-    });
+    GetGitToken().then(setGitToken);
   }, []);
+
+  useEffect(() => {
+    if (gitToken === "") {
+      GetGitTokens().then((tokens) => {
+        setGitToken(tokens[0]);
+        setGitTokens(tokens);
+      });
+    } else {
+      GetRemoteRepos(gitToken).then(setRepos);
+    }
+  }, [gitToken]);
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
