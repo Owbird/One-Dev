@@ -19,7 +19,7 @@ import { AiOutlineBranches, AiOutlineTag } from "react-icons/ai";
 import { IoIosArrowBack } from "react-icons/io";
 import { useLocation, useNavigate } from "react-router-dom";
 
-const RepoView = () => {
+const ViewLocalRepo = () => {
   const [repoData, setRepoData] = useState<data.Repo>();
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
@@ -147,4 +147,4 @@ const RepoView = () => {
   );
 };
 
-export default RepoView;
+export default ViewLocalRepo;

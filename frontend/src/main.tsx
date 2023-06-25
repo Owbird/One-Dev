@@ -2,8 +2,8 @@ import { ChakraProvider } from "@chakra-ui/react";
 import { createRoot } from "react-dom/client";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import App from "./App";
-import RepoView from "./pages/git/RepoView";
-const container = document.getElementById("root");
+import { GitRoutes } from "./data/constants/routes";
+import ViewLocalRepo from "./pages/git/localRepo/ViewLocalRepo";
 
 const root = createRoot(document.getElementById("root") as HTMLElement);
 root.render(
@@ -11,7 +11,7 @@ root.render(
     <Router>
       <Routes>
         <Route path="/" element={<App />} />
-        <Route path="/repo/view" element={<RepoView />} />
+        <Route path={GitRoutes.LocalRepoView} element={<ViewLocalRepo />} />
       </Routes>
     </Router>
   </ChakraProvider>

@@ -1,6 +1,6 @@
 import { Box, Tab, TabList, TabPanels, Tabs } from "@chakra-ui/react";
-import LocalRepos from "./LocalRepos";
-import RemoteRepos from "./RemoteRepos";
+import LocalRepos from "./localRepo/LocalRepos";
+import RemoteRepos from "./remoteRepo/RemoteRepos";
 
 const Git = () => {
   return (
