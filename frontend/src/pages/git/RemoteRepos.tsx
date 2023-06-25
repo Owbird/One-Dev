@@ -9,6 +9,7 @@ import {
   ListItem,
   Radio,
   RadioGroup,
+  Spinner,
   TabPanel,
   Text,
 } from "@chakra-ui/react";
@@ -21,6 +22,7 @@ const RemoteRepos = () => {
   const [gitToken, setGitToken] = useState("");
   const [gitTokens, setGitTokens] = useState<string[]>();
   const [repos, setRepos] = useState<data.RemoteRepo>();
+  const [hasLoaded, setHasLoaded] = useState(false);
 
   const handleSave = async () => {
     await SaveGitToken(gitToken);
@@ -33,18 +35,22 @@ const RemoteRepos = () => {
   }, []);
 
   useEffect(() => {
-    alert(gitToken);
+    setHasLoaded(false);
+
     if (gitToken === "") {
       GetGitTokens().then((tokens) => {
         setGitToken(tokens[0]);
         setGitTokens(tokens);
       });
     } else {
-      alert("here");
       setGitToken(gitToken);
       GetRemoteRepos(gitToken).then(setRepos);
     }
+
+    setHasLoaded(true);
   }, [gitToken]);
+
+  if (!hasLoaded) return <Spinner />;
 
   if (gitTokens && !repos) {
     return (
