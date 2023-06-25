@@ -23,12 +23,11 @@ const RemoteRepos = () => {
   const [repos, setRepos] = useState<data.RemoteRepo>();
 
   const handleSave = async () => {
-    alert(gitToken);
     await SaveGitToken(gitToken);
 
     setGitTokens(undefined);
 
-    await GetRemoteRepos(gitToken);
+    await GetRemoteRepos(gitToken).then(setRepos);
   };
 
   useEffect(() => {

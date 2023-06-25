@@ -54,8 +54,6 @@ const RepoView = () => {
     GetRepo(repoData?.parentDir!).then(setRepoData);
   };
 
-  // return <pre>{JSON.stringify(repoData, null, 4)}</pre>;
-
   return repoData?.currentBranch == "" ? (
     <Fragment>
       <HStack>
