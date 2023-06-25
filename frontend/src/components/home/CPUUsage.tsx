@@ -13,7 +13,7 @@ const CPUUsage = ({ cpuStats }: { cpuStats: data.CPUStats }) => {
         {<BsCpu />}
         <Grid templateColumns="repeat(2, 1fr)" gap={6} maxH="3xl">
           {cpuStats.usages.map((cpu, index) => (
-            <GridItem>
+            <GridItem key={index}>
               <HStack>
                 <Text>{index + 1}</Text>
                 <Progress

@@ -118,7 +118,7 @@ const RepoView = () => {
                 <Text>No local changes</Text>
               ) : (
                 repoData?.changes.map((change) => (
-                  <Fragment>
+                  <Fragment key={change.file}>
                     <HStack>
                       <Text>{change.file}</Text>
                       <Badge colorScheme={getChangeColor(change.change)}>
@@ -132,7 +132,7 @@ const RepoView = () => {
             <TabPanel>
               {repoData?.commits &&
                 repoData?.commits.map((commit) => (
-                  <Fragment>
+                  <Fragment key={commit.hash}>
                     <Text>{commit.message}</Text>
                     <Text color={"gray.500"}>
                       {commit.committer} | {commit.date}
