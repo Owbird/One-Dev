@@ -26,8 +26,6 @@ const RemoteRepos = () => {
     await SaveGitToken(gitToken);
 
     setGitTokens(undefined);
-
-    await GetRemoteRepos(gitToken).then(setRepos);
   };
 
   useEffect(() => {
@@ -35,70 +33,76 @@ const RemoteRepos = () => {
   }, []);
 
   useEffect(() => {
+    alert(gitToken);
     if (gitToken === "") {
       GetGitTokens().then((tokens) => {
         setGitToken(tokens[0]);
         setGitTokens(tokens);
       });
     } else {
+      alert("here");
+      setGitToken(gitToken);
       GetRemoteRepos(gitToken).then(setRepos);
     }
   }, [gitToken]);
+
+  if (gitTokens && !repos) {
+    return (
+      <Fragment>
+        <List spacing={3}>
+          <RadioGroup onChange={setGitToken} value={gitToken}>
+            {gitTokens!.map((token) => (
+              <ListItem key={token}>
+                <HStack>
+                  <Radio value={token}>
+                    <Text>{token}</Text>
+                  </Radio>
+                </HStack>
+              </ListItem>
+            ))}
+          </RadioGroup>
+        </List>{" "}
+        <HStack>
+          <Divider />
+          <Text>OR</Text>
+          <Divider />
+        </HStack>
+        <Input
+          onChange={(event) => setGitToken(event.target.value)}
+          placeholder="Use another token"
+        />
+        <Button mt={4} onClick={handleSave}>
+          Save
+        </Button>
+      </Fragment>
+    );
+  }
+
   return (
     <TabPanel>
-      {gitTokens ? (
-        <Fragment>
-          <List spacing={3}>
-            <RadioGroup onChange={setGitToken} value={gitToken}>
-              {gitTokens.map((token) => (
-                <ListItem key={token}>
-                  <HStack>
-                    <Radio value={token}>
-                      <Text>{token}</Text>
-                    </Radio>
-                  </HStack>
-                </ListItem>
-              ))}
-            </RadioGroup>
-          </List>{" "}
-          <HStack>
-            <Divider />
-            <Text>OR</Text>
-            <Divider />
-          </HStack>
-          <Input
-            onChange={(event) => setGitToken(event.target.value)}
-            placeholder="Use another token"
-          />
-          <Button mt={4} onClick={handleSave}>
-            Save
-          </Button>
-        </Fragment>
-      ) : (
-        <Grid
-          maxH={500}
-          templateColumns="repeat(5, 1fr)"
-          overflowY={"scroll"}
-          gap={6}
-        >
-          {repos &&
-            repos.items.map((repo) => (
-              <GridItem
-                key={repo.id}
-                // onClick={() => setActiveRepo(dir)}
-                w="100%"
-                h="100%"
-                p={5}
-                bg="blue.500"
-              >
-                <p>
-                  {repo.name}
-                  {repo.private ? " (private)" : "(public)"}
-                </p>
-              </GridItem>
-            ))}
-        </Grid>
-      )}
+      <Grid
+        maxH={500}
+        templateColumns="repeat(5, 1fr)"
+        overflowY={"scroll"}
+        gap={6}
+      >
+        {repos &&
+          repos.items.map((repo) => (
+            <GridItem
+              key={repo.id}
+              // onClick={() => setActiveRepo(dir)}
+              w="100%"
+              h="100%"
+              p={5}
+              bg="blue.500"
+            >
+              <p>
+                {repo.name}
+                {repo.private ? " (private)" : "(public)"}
+              </p>
+            </GridItem>
+          ))}
+      </Grid>
     </TabPanel>
   );
 };

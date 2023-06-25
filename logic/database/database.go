@@ -137,6 +137,8 @@ func GetGitToken() string {
 //
 // token: string representing the git token to be saved.
 func SaveGitToken(token string) error {
+	log.Println(token)
+
 	database.OpenState.Lock()
 
 	defer database.OpenState.Unlock()
@@ -151,7 +153,11 @@ func SaveGitToken(token string) error {
 		return err
 	}
 
-	database.Db.InsertOne("git_token", doc)
+	_, err = database.Db.InsertOne("git_token", doc)
+
+	if err != nil {
+		return err
+	}
 
 	return nil
 
