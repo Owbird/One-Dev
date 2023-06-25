@@ -226,7 +226,7 @@ function App() {
         <Tabs index={tabIndex} onChange={(index) => setTabIndex(index)}>
           <TabList>
             {tabs.map((tab, index) => (
-              <HStack>
+              <HStack key={index}>
                 <Tab key={index}>{tab.label}</Tab>
                 {tab.label !== "Home" && (
                   <CloseButton
