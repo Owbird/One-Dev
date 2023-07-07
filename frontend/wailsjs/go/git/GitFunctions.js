@@ -6,26 +6,22 @@ export function ChangeBranch(arg1, arg2) {
   return window['go']['git']['GitFunctions']['ChangeBranch'](arg1, arg2);
 }
 
+export function CloneRepo() {
+  return window['go']['git']['GitFunctions']['CloneRepo']();
+}
+
 export function GetGitDirs() {
   return window['go']['git']['GitFunctions']['GetGitDirs']();
 }
 
-export function GetGitToken() {
-  return window['go']['git']['GitFunctions']['GetGitToken']();
+export function GetGitUser() {
+  return window['go']['git']['GitFunctions']['GetGitUser']();
 }
 
-export function GetGitTokens() {
-  return window['go']['git']['GitFunctions']['GetGitTokens']();
-}
-
-export function GetRemoteRepos(arg1) {
-  return window['go']['git']['GitFunctions']['GetRemoteRepos'](arg1);
+export function GetRemoteRepos() {
+  return window['go']['git']['GitFunctions']['GetRemoteRepos']();
 }
 
 export function GetRepo(arg1) {
   return window['go']['git']['GitFunctions']['GetRepo'](arg1);
-}
-
-export function SaveGitToken(arg1) {
-  return window['go']['git']['GitFunctions']['SaveGitToken'](arg1);
 }

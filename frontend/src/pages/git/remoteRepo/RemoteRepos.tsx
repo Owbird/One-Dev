@@ -1,86 +1,41 @@
 import {
-  Button,
-  Divider,
+  Center,
   Grid,
   GridItem,
-  HStack,
-  Input,
-  List,
-  ListItem,
-  Radio,
-  RadioGroup,
   Spinner,
   TabPanel,
-  Text,
+  useDisclosure,
 } from "@chakra-ui/react";
-import { GetGitTokens } from "@go/git/GitFunctions";
-import { GetGitToken, GetRemoteRepos, SaveGitToken } from "@go/main/App";
+import { GetRemoteRepos } from "@go/main/App";
 import { data } from "@go/models";
 import { Fragment, useEffect, useState } from "react";
+import ViewRemoteRepoModal from "./ViewRemoteRepo";
 
 const RemoteRepos = () => {
-  const [gitToken, setGitToken] = useState("");
-  const [gitTokens, setGitTokens] = useState<string[]>();
-  const [repos, setRepos] = useState<data.RemoteRepo>();
-  const [hasLoaded, setHasLoaded] = useState(false);
-
-  const handleSave = async () => {
-    await SaveGitToken(gitToken);
-
-    setGitTokens(undefined);
-  };
+  const [repos, setRepos] = useState<data.RemoteRepos>();
+  const [activeRepo, setActiveRepo] = useState<data.RemoteRepoItem>();
+  const [isLoading, setIsLoading] = useState(true);
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {
-    GetGitToken().then(setGitToken);
+    GetRemoteRepos().then((repos) => {
+      setRepos(repos);
+      setIsLoading(false);
+    });
   }, []);
 
-  useEffect(() => {
-    setHasLoaded(false);
+  const handleRepoView = (repo: data.RemoteRepoItem) => {
+    setActiveRepo(repo);
+    onOpen();
+  };
 
-    if (gitToken === "") {
-      GetGitTokens().then((tokens) => {
-        setGitToken(tokens[0]);
-        setGitTokens(tokens);
-      });
-    } else {
-      setGitToken(gitToken);
-      GetRemoteRepos(gitToken).then(setRepos);
-    }
-
-    setHasLoaded(true);
-  }, [gitToken]);
-
-  if (!hasLoaded) return <Spinner />;
-
-  if (gitTokens && !repos) {
+  if (isLoading) {
     return (
-      <Fragment>
-        <List spacing={3}>
-          <RadioGroup onChange={setGitToken} value={gitToken}>
-            {gitTokens!.map((token) => (
-              <ListItem key={token}>
-                <HStack>
-                  <Radio value={token}>
-                    <Text>{token}</Text>
-                  </Radio>
-                </HStack>
-              </ListItem>
-            ))}
-          </RadioGroup>
-        </List>{" "}
-        <HStack>
-          <Divider />
-          <Text>OR</Text>
-          <Divider />
-        </HStack>
-        <Input
-          onChange={(event) => setGitToken(event.target.value)}
-          placeholder="Use another token"
-        />
-        <Button mt={4} onClick={handleSave}>
-          Save
-        </Button>
-      </Fragment>
+      <TabPanel>
+        <Center>
+          <Spinner />
+        </Center>
+      </TabPanel>
     );
   }
 
@@ -92,22 +47,30 @@ const RemoteRepos = () => {
         overflowY={"scroll"}
         gap={6}
       >
-        {repos &&
-          repos.items.map((repo) => (
-            <GridItem
-              key={repo.id}
-              // onClick={() => setActiveRepo(dir)}
-              w="100%"
-              h="100%"
-              p={5}
-              bg="blue.500"
-            >
-              <p>
-                {repo.name}
-                {repo.private ? " (private)" : "(public)"}
-              </p>
-            </GridItem>
-          ))}
+        {repos && repos.items && (
+          <Fragment>
+            <ViewRemoteRepoModal
+              isOpen={isOpen}
+              onClose={onClose}
+              repo={activeRepo!}
+            />
+            {repos.items.map((repo) => (
+              <GridItem
+                key={repo.id}
+                onClick={() => handleRepoView(repo)}
+                w="100%"
+                h="100%"
+                p={5}
+                bg="blue.500"
+              >
+                <p>
+                  {repo.name}
+                  {repo.private ? " (private)" : "(public)"}
+                </p>
+              </GridItem>
+            ))}
+          </Fragment>
+        )}
       </Grid>
     </TabPanel>
   );

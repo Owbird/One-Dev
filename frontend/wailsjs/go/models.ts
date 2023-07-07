@@ -44,6 +44,20 @@ export namespace data {
 	        this.dir = source["dir"];
 	    }
 	}
+	export class GitUser {
+	    username: string;
+	    token: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new GitUser(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.username = source["username"];
+	        this.token = source["token"];
+	    }
+	}
 	export class MemoryStats {
 	    total: number;
 	    used: number;
@@ -341,13 +355,15 @@ export namespace data {
 		    return a;
 		}
 	}
-	export class RemoteRepo {
+	
+	
+	export class RemoteRepos {
 	    total_count: number;
 	    incomplete_results: boolean;
 	    items: RemoteRepoItem[];
 	
 	    static createFrom(source: any = {}) {
-	        return new RemoteRepo(source);
+	        return new RemoteRepos(source);
 	    }
 	
 	    constructor(source: any = {}) {
@@ -375,9 +391,6 @@ export namespace data {
 		    return a;
 		}
 	}
-	
-	
-	
 	export class RepoCommit {
 	    message: string;
 	    committer: string;

@@ -1,14 +1,17 @@
 package database
 
 import (
+	"encoding/json"
+	"io/fs"
 	"log"
-	"sort"
-	"strings"
+	"os"
+	"path/filepath"
 
 	"sync"
 
 	c "github.com/ostafen/clover"
 	"github.com/owbird/one-dev/logic/data"
+	"github.com/owbird/one-dev/logic/utils"
 )
 
 type Database struct {
@@ -18,70 +21,6 @@ type Database struct {
 
 var database Database
 
-// Close closes the database connection and acquires a lock on the OpenState.
-func (d *Database) Close() {
-	d.Db.Close()
-	d.OpenState.Lock()
-}
-
-// Open opens a connection to the database stored in the ".onedev" file.
-func (d *Database) Open() error {
-	db, err := c.Open(".onedev")
-
-	if err != nil {
-		return err
-	}
-
-	d.Db = db
-
-	return nil
-
-}
-
-// Init initializes the database by opening a connection.
-func Init() {
-
-	database = Database{}
-
-	database.Open()
-
-}
-
-// IndexGitDir indexes a Git directory.
-//
-// dir is the directory to index.
-func IndexGitDir(dir data.File) error {
-	database.OpenState.Lock()
-
-	defer database.OpenState.Unlock()
-
-	err := database.Db.CreateCollection("git_dirs")
-
-	if err != c.ErrCollectionExist {
-		return err
-	}
-
-	exists, err := database.Db.Query("git_dirs").Where((*c.Criteria)(c.Field("dir").Eq(dir.Dir))).FindFirst()
-
-	if err != nil {
-		return err
-	}
-
-	if exists == nil {
-		doc := c.NewDocument()
-
-		doc.Set("dir", dir.Dir)
-		doc.Set("parentDir", dir.ParentDir)
-
-		_, err = database.Db.InsertOne("git_dirs", doc)
-
-		if err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
 // GetGitDirs returns a slice of data File structs representing Git directories.
 //
 // This function returns a slice of data File structs.
@@ -89,28 +28,36 @@ func GetGitDirs() ([]data.File, error) {
 
 	dirs := []data.File{}
 
-	database.OpenState.Lock()
-
-	defer database.OpenState.Unlock()
-
-	log.Println("[+] Getting Git dirs")
-
-	docs, err := database.Db.Query("git_dirs").FindAll()
+	log.Println("[+] Reading Git dirs")
+	home, err := utils.UserHome()
 
 	if err != nil {
-		return nil, err
+		log.Fatalln(err)
 	}
 
-	for _, doc := range docs {
-		dir := &data.File{}
-		doc.Unmarshal(dir)
+	filepath.WalkDir(home, func(path string, d fs.DirEntry, err error) error {
 
-		dirs = append(dirs, *dir)
-	}
+		if d.IsDir() {
 
-	sort.Slice(dirs, func(i, j int) bool {
+			dir_name := d.Name()
 
-		return strings.Compare(dirs[i].Dir, dirs[j].Dir) < 0
+			if string(dir_name[0]) == "." && dir_name != ".git" {
+				return filepath.SkipDir
+			}
+
+			if dir_name == ".git" {
+				dir := data.File{
+					ParentDir: filepath.Dir(path),
+					Dir:       filepath.Base(filepath.Dir(path)),
+				}
+
+				dirs = append(dirs, dir)
+
+				// database.IndexGitDir(dir)
+			}
+		}
+
+		return nil
 	})
 
 	return dirs, nil
@@ -119,46 +66,23 @@ func GetGitDirs() ([]data.File, error) {
 // GetGitToken retrieves the Git token from the database.
 //
 // It returns a string.
-func GetGitToken() string {
+func GetGitUser() (data.GitUser, error) {
 	database.OpenState.Lock()
 
 	defer database.OpenState.Unlock()
 
-	doc, err := database.Db.Query("git_token").FindFirst()
+	var oneJson data.OneJson
 
-	if err != nil || doc == nil {
-		return ""
-	}
-
-	return doc.Get("git_token").(string)
-}
-
-// SaveGitToken saves a git token in the database.
-//
-// token: string representing the git token to be saved.
-func SaveGitToken(token string) error {
-	log.Println(token)
-
-	database.OpenState.Lock()
-
-	defer database.OpenState.Unlock()
-
-	doc := c.NewDocument()
-
-	doc.Set("git_token", token)
-
-	err := database.Db.CreateCollection("git_token")
-
-	if err != c.ErrCollectionExist {
-		return err
-	}
-
-	_, err = database.Db.InsertOne("git_token", doc)
+	file, err := os.ReadFile("one.json")
 
 	if err != nil {
-		return err
+		return data.GitUser{}, nil
 	}
 
-	return nil
+	json.Unmarshal(file, &oneJson)
 
+	return data.GitUser{
+		Username: oneJson.Git.Username,
+		Token:    oneJson.Git.Token,
+	}, nil
 }

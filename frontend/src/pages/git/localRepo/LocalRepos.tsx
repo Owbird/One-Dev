@@ -1,4 +1,12 @@
-import { Divider, Grid, GridItem, Input, TabPanel } from "@chakra-ui/react";
+import {
+  Center,
+  Divider,
+  Grid,
+  GridItem,
+  Input,
+  Spinner,
+  TabPanel,
+} from "@chakra-ui/react";
 import { GetGitDirs } from "@go/main/App";
 import { data } from "@go/models";
 import { GitRoutes } from "@src/data/constants/routes";
@@ -6,13 +14,18 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const LocalRepos = () => {
+  const [isLoading, setIsLoading] = useState(true);
+
   const [dirs, setDirs] = useState<data.File[]>([]);
   const [searchRes, setSearchRes] = useState<data.File[]>();
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
-    GetGitDirs().then(setDirs);
+    GetGitDirs().then((dirs) => {
+      setDirs(dirs);
+      setIsLoading(false);
+    });
   }, []);
   const handleSearch = (query: string) => {
     setSearchQuery(query);
@@ -28,6 +41,15 @@ const LocalRepos = () => {
     }
   };
 
+  if (isLoading) {
+    return (
+      <TabPanel>
+        <Center>
+          <Spinner />
+        </Center>
+      </TabPanel>
+    );
+  }
   return (
     <TabPanel>
       <Divider width={20} />

@@ -6,20 +6,20 @@ export function ChangeBranch(arg1, arg2) {
   return window['go']['main']['App']['ChangeBranch'](arg1, arg2);
 }
 
+export function CloneRepo() {
+  return window['go']['main']['App']['CloneRepo']();
+}
+
 export function GetGitDirs() {
   return window['go']['main']['App']['GetGitDirs']();
 }
 
-export function GetGitToken() {
-  return window['go']['main']['App']['GetGitToken']();
+export function GetGitUser() {
+  return window['go']['main']['App']['GetGitUser']();
 }
 
-export function GetGitTokens() {
-  return window['go']['main']['App']['GetGitTokens']();
-}
-
-export function GetRemoteRepos(arg1) {
-  return window['go']['main']['App']['GetRemoteRepos'](arg1);
+export function GetRemoteRepos() {
+  return window['go']['main']['App']['GetRemoteRepos']();
 }
 
 export function GetRepo(arg1) {
@@ -40,8 +40,4 @@ export function KillProcess(arg1) {
 
 export function Notify(arg1) {
   return window['go']['main']['App']['Notify'](arg1);
-}
-
-export function SaveGitToken(arg1) {
-  return window['go']['main']['App']['SaveGitToken'](arg1);
 }

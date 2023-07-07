@@ -128,88 +128,38 @@ func (gf *GitFunctions) GetRepo(path string) (data.Repo, error) {
 // GetRemoteRepos retrieves the list of remote repositories for the authenticated user
 // using the GitHub API. It returns a RemoteRepo struct containing information about
 // each repository.
-func (gf *GitFunctions) GetRemoteRepos(token string) (data.RemoteRepo, error) {
+func (gf *GitFunctions) GetRemoteRepos() (data.RemoteRepos, error) {
 
-	url := "https://api.github.com/user"
-	method := "GET"
+	log.Println("[+] Getting remote repos")
 
-	body, err := utils.MakeAuthorizedRequest(method, url, token)
-
-	if err != nil {
-		return data.RemoteRepo{}, err
-	}
-
-	var user data.GitUser
-
-	json.Unmarshal(body, &user)
-
-	body, err = utils.MakeAuthorizedRequest(method, fmt.Sprintf("https://api.github.com/search/repositories?q=user:%s", user.Name), token)
+	user, err := database.GetGitUser()
 
 	if err != nil {
-		return data.RemoteRepo{}, err
+		return data.RemoteRepos{}, err
 
 	}
 
-	var repos data.RemoteRepo
+	body, err := utils.MakeAuthorizedRequest("GET", fmt.Sprintf("https://api.github.com/search/repositories?q=user:%s", user.Username), user.Token)
+	if err != nil {
+		return data.RemoteRepos{}, err
+	}
+
+	var repos data.RemoteRepos
 
 	err = json.Unmarshal(body, &repos)
 
 	if err != nil {
-		return data.RemoteRepo{}, err
+		return data.RemoteRepos{}, err
 	}
 
 	return repos, nil
 
 }
 
-// GetGitTokens returns an array of Git tokens that are not duplicates.
-func (gf *GitFunctions) GetGitTokens() ([]string, error) {
-
-	log.Println("[+] Reading Git tokens")
-
-	tokens := []string{}
-
-	dirs, err := database.GetGitDirs()
-
-	if err != nil {
-		return []string{}, err
-	}
-
-	for _, dir := range dirs {
-
-		res, err := exec.Command("git", "-C", dir.ParentDir, "remote", "-v").Output()
-
-		if err != nil {
-			return []string{}, err
-
-		}
-
-		url := strings.Split(string(res), "@")
-
-		if len(url) > 1 {
-			token := url[0]
-			token = strings.Split(token, "//")[1]
-
-			insert := true
-
-			for _, t := range tokens {
-				if t == token {
-					insert = false
-					break
-				}
-
-			}
-
-			if insert {
-				tokens = append(tokens, token)
-			}
-		}
-
-	}
-
-	return tokens, nil
-}
-
+// ChangeBranch changes the branch of a Git repository.
+//
+// It takes in the repository path and the name of the branch as parameters.
+// There is no return value.
 func (gf *GitFunctions) ChangeBranch(repoPath string, branch string) {
 
 	repo, err := git.PlainOpen(repoPath)
@@ -231,12 +181,12 @@ func (gf *GitFunctions) ChangeBranch(repoPath string, branch string) {
 
 }
 
-func (gf *GitFunctions) GetGitToken() string {
-	return database.GetGitToken()
+func (gf *GitFunctions) CloneRepo() {
+
 }
 
-func (gf *GitFunctions) SaveGitToken(token string) error {
-	return database.SaveGitToken(token)
+func (gf *GitFunctions) GetGitUser() (data.GitUser, error) {
+	return database.GetGitUser()
 }
 
 func (gf *GitFunctions) GetGitDirs() ([]data.File, error) {
