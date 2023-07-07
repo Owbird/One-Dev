@@ -21,7 +21,7 @@ const ViewRemoteRepoModal = ({
   repo: data.RemoteRepoItem;
 }) => {
   const handleClone = () => {
-    CloneRepo();
+    CloneRepo(repo.html_url, repo.name);
   };
   return (
     <Modal isOpen={isOpen} onClose={onClose}>

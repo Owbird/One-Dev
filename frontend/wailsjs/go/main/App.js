@@ -6,8 +6,8 @@ export function ChangeBranch(arg1, arg2) {
   return window['go']['main']['App']['ChangeBranch'](arg1, arg2);
 }
 
-export function CloneRepo() {
-  return window['go']['main']['App']['CloneRepo']();
+export function CloneRepo(arg1, arg2) {
+  return window['go']['main']['App']['CloneRepo'](arg1, arg2);
 }
 
 export function GetGitDirs() {

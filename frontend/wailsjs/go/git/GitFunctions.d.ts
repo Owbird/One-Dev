@@ -4,7 +4,7 @@ import {data} from '../models';
 
 export function ChangeBranch(arg1:string,arg2:string):Promise<void>;
 
-export function CloneRepo():Promise<void>;
+export function CloneRepo(arg1:string,arg2:string):Promise<void>;
 
 export function GetGitDirs():Promise<Array<data.File>>;
 

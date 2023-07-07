@@ -1,9 +1,11 @@
 package git
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"log"
+	"os"
 	"os/exec"
 	"path/filepath"
 	"strings"
@@ -11,9 +13,11 @@ import (
 	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing"
 	"github.com/go-git/go-git/v5/plumbing/object"
+	"github.com/go-git/go-git/v5/plumbing/transport/http"
 	"github.com/owbird/one-dev/logic/data"
 	"github.com/owbird/one-dev/logic/database"
 	"github.com/owbird/one-dev/logic/utils"
+	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 func NewInstance() *GitFunctions {
@@ -21,6 +25,7 @@ func NewInstance() *GitFunctions {
 }
 
 type GitFunctions struct {
+	Ctx context.Context
 }
 
 // GetRepo returns a data.Repo struct containing information about the git repository
@@ -181,8 +186,54 @@ func (gf *GitFunctions) ChangeBranch(repoPath string, branch string) {
 
 }
 
-func (gf *GitFunctions) CloneRepo() {
+func (gf *GitFunctions) CloneRepo(url string, name string) error {
+	home, err := utils.UserHome()
 
+	if err != nil {
+		return err
+	}
+
+	user, err := database.GetGitUser()
+
+	if err != nil {
+		return err
+	}
+
+	path, err := runtime.OpenDirectoryDialog(gf.Ctx, runtime.OpenDialogOptions{
+		Title:            "Clone Repo",
+		DefaultDirectory: home,
+	})
+
+	path = filepath.Join(path, name)
+
+	os.MkdirAll(path, 0755)
+
+	if err != nil {
+		return err
+	}
+
+	auth := &http.BasicAuth{
+		Username: user.Username,
+		Password: user.Token,
+	}
+
+	log.Println("[+] Cloning repo")
+
+	repo, err := git.PlainClone(path, false, &git.CloneOptions{
+		URL:      url,
+		Progress: os.Stdout,
+		Auth:     auth,
+	})
+
+	if err != nil {
+		log.Println(err)
+	}
+
+	log.Println(repo)
+
+	log.Println("[+] Repo cloned")
+
+	return nil
 }
 
 func (gf *GitFunctions) GetGitUser() (data.GitUser, error) {

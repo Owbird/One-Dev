@@ -4,7 +4,6 @@ import (
 	"context"
 	"log"
 
-	"github.com/owbird/one-dev/logic/background"
 	"github.com/owbird/one-dev/logic/frontend/git"
 	"github.com/owbird/one-dev/logic/frontend/home"
 	"github.com/owbird/one-dev/logic/frontend/shared"
@@ -27,6 +26,6 @@ func NewApp() *App {
 
 func (a *App) startup(ctx context.Context) {
 	log.Println("[+] App startup")
-	go background.RunTasks()
 	a.ctx = ctx
+	a.GitFunctions.Ctx = ctx
 }
