@@ -3,6 +3,7 @@ package git
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"log"
 	"os"
 	"os/exec"
@@ -199,7 +200,7 @@ func (gf *GitFunctions) CloneRepo(url string, name string) error {
 	}
 
 	path, err := runtime.OpenDirectoryDialog(gf.Ctx, runtime.OpenDialogOptions{
-		Title:            "Clone Repo",
+		Title:            fmt.Sprintf("Clone %s repo", name),
 		DefaultDirectory: home,
 	})
 

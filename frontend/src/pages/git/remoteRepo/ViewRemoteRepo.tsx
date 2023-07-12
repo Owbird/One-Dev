@@ -10,6 +10,7 @@ import {
 } from "@chakra-ui/react";
 import { CloneRepo } from "@go/git/GitFunctions";
 import { data } from "@go/models";
+import { useState } from "react";
 
 const ViewRemoteRepoModal = ({
   isOpen,
@@ -20,25 +21,41 @@ const ViewRemoteRepoModal = ({
   onClose: () => void;
   repo: data.RemoteRepo;
 }) => {
-  const handleClone = () => {
-    CloneRepo(repo.html_url, repo.name);
+  const [isCloning, setIsCloning] = useState(false);
+
+  const handleClone = async () => {
+    setIsCloning(true);
+    await CloneRepo(repo.html_url, repo.name);
+    setIsCloning(false);
   };
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal
+      closeOnOverlayClick={!isCloning}
+      closeOnEsc={!isCloning}
+      isOpen={isOpen}
+      onClose={onClose}
+    >
       <ModalOverlay />
       {repo && (
         <ModalContent>
           <ModalHeader>{repo.name}</ModalHeader>
-          <ModalCloseButton />
+          {!isCloning && <ModalCloseButton />}
           <ModalBody>
             {repo.description === "" ? "No description" : repo.description}
           </ModalBody>
 
           <ModalFooter>
-            <Button variant="ghost" mr={3} onClick={onClose}>
-              Close
-            </Button>
-            <Button colorScheme="blue" onClick={handleClone}>
+            {!isCloning && (
+              <Button variant="ghost" mr={3} onClick={onClose}>
+                Close
+              </Button>
+            )}
+            <Button
+              isLoading={isCloning}
+              loadingText="Cloning..."
+              colorScheme="blue"
+              onClick={handleClone}
+            >
               Clone
             </Button>
           </ModalFooter>
