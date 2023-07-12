@@ -35,6 +35,11 @@ type MemoryStats struct {
 	UsedPercentage float64 `json:"usedPercentage"`
 }
 
+type UserMeta struct {
+	Name     string `json:"name"`
+	UserName string `json:"userName"`
+}
+
 type SystemStats struct {
 	IsLaptop     bool         `json:"isLaptop"`
 	UpTime       UpTime       `json:"uptime"`
@@ -43,5 +48,6 @@ type SystemStats struct {
 	MemoryStats  MemoryStats  `json:"memoryStats"`
 	CPUStats     CPUStats     `json:"cpuStats"`
 	Processes    []Process    `json:"processes"`
+	UserMeta     UserMeta     `json:"userMeta"`
 	HasWaka      bool         `json:"hasWaka"`
 }

@@ -43,7 +43,7 @@ const Home = () => {
 
   return (
     <>
-      <Greeting />
+      <Greeting userMeta={systemStats?.userMeta!} />
       {systemStats && (
         <>
           <VStack alignItems={"flex-start"}>

@@ -467,6 +467,20 @@ export namespace data {
 	}
 	
 	
+	export class UserMeta {
+	    name: string;
+	    userName: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new UserMeta(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.name = source["name"];
+	        this.userName = source["userName"];
+	    }
+	}
 	export class UpTime {
 	    days: number;
 	    hours: number;
@@ -492,6 +506,7 @@ export namespace data {
 	    memoryStats: MemoryStats;
 	    cpuStats: CPUStats;
 	    processes: Process[];
+	    userMeta: UserMeta;
 	    hasWaka: boolean;
 	
 	    static createFrom(source: any = {}) {
@@ -507,6 +522,7 @@ export namespace data {
 	        this.memoryStats = this.convertValues(source["memoryStats"], MemoryStats);
 	        this.cpuStats = this.convertValues(source["cpuStats"], CPUStats);
 	        this.processes = this.convertValues(source["processes"], Process);
+	        this.userMeta = this.convertValues(source["userMeta"], UserMeta);
 	        this.hasWaka = source["hasWaka"];
 	    }
 	
@@ -528,6 +544,7 @@ export namespace data {
 		    return a;
 		}
 	}
+	
 
 }
 

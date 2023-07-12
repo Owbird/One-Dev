@@ -3,6 +3,7 @@ package home
 import (
 	"math"
 	"os"
+	"os/user"
 
 	"github.com/distatus/battery"
 	"github.com/owbird/one-dev/logic/data"
@@ -24,7 +25,17 @@ func (hf *HomeFunctions) GetSystemStat() (data.SystemStats, error) {
 
 	memoryStats, _ := mem.VirtualMemory()
 	batteryStats, _ := battery.GetAll()
+
 	stats := data.SystemStats{}
+
+	user, err := user.Current()
+
+	if err != nil {
+		return data.SystemStats{}, err
+	}
+
+	stats.UserMeta.UserName = user.Username
+	stats.UserMeta.Name = user.Name
 
 	upTime, err := utils.GetUptime()
 
