@@ -10,6 +10,6 @@ export function GetGitDirs():Promise<Array<data.File>>;
 
 export function GetGitUser():Promise<data.GitUser>;
 
-export function GetRemoteRepos():Promise<data.RemoteRepos>;
+export function GetRemoteRepos():Promise<Array<data.RemoteRepo>>;
 
 export function GetRepo(arg1:string):Promise<data.Repo>;

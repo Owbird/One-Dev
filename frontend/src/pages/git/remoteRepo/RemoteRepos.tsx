@@ -12,8 +12,8 @@ import { Fragment, useEffect, useState } from "react";
 import ViewRemoteRepoModal from "./ViewRemoteRepo";
 
 const RemoteRepos = () => {
-  const [repos, setRepos] = useState<data.RemoteRepos>();
-  const [activeRepo, setActiveRepo] = useState<data.RemoteRepoItem>();
+  const [repos, setRepos] = useState<data.RemoteRepo[]>();
+  const [activeRepo, setActiveRepo] = useState<data.RemoteRepo>();
   const [isLoading, setIsLoading] = useState(true);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -24,7 +24,7 @@ const RemoteRepos = () => {
     });
   }, []);
 
-  const handleRepoView = (repo: data.RemoteRepoItem) => {
+  const handleRepoView = (repo: data.RemoteRepo) => {
     setActiveRepo(repo);
     onOpen();
   };
@@ -47,14 +47,14 @@ const RemoteRepos = () => {
         overflowY={"scroll"}
         gap={6}
       >
-        {repos && repos.items && (
+        {repos && (
           <Fragment>
             <ViewRemoteRepoModal
               isOpen={isOpen}
               onClose={onClose}
               repo={activeRepo!}
             />
-            {repos.items.map((repo) => (
+            {repos.map((repo) => (
               <GridItem
                 key={repo.id}
                 onClick={() => handleRepoView(repo)}

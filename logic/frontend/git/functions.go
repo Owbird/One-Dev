@@ -3,7 +3,6 @@ package git
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"log"
 	"os"
 	"os/exec"
@@ -133,28 +132,28 @@ func (gf *GitFunctions) GetRepo(path string) (data.Repo, error) {
 // GetRemoteRepos retrieves the list of remote repositories for the authenticated user
 // using the GitHub API. It returns a RemoteRepo struct containing information about
 // each repository.
-func (gf *GitFunctions) GetRemoteRepos() (data.RemoteRepos, error) {
+func (gf *GitFunctions) GetRemoteRepos() ([]data.RemoteRepo, error) {
 
 	log.Println("[+] Getting remote repos")
 
 	user, err := database.GetGitUser()
 
 	if err != nil {
-		return data.RemoteRepos{}, err
+		return []data.RemoteRepo{}, err
 
 	}
 
-	body, err := utils.MakeAuthorizedRequest("GET", fmt.Sprintf("https://api.github.com/search/repositories?q=user:%s", user.Username), user.Token)
+	body, err := utils.MakeAuthorizedRequest("GET", "https://api.github.com/user/repos?per_page=500", user.Token)
 	if err != nil {
-		return data.RemoteRepos{}, err
+		return []data.RemoteRepo{}, err
 	}
 
-	var repos data.RemoteRepos
+	var repos []data.RemoteRepo
 
 	err = json.Unmarshal(body, &repos)
 
 	if err != nil {
-		return data.RemoteRepos{}, err
+		return []data.RemoteRepo{}, err
 	}
 
 	return repos, nil

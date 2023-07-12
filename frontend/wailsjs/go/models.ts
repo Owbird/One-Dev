@@ -162,7 +162,7 @@ export namespace data {
 	        this.site_admin = source["site_admin"];
 	    }
 	}
-	export class RemoteRepoItem {
+	export class RemoteRepo {
 	    id: number;
 	    node_id: string;
 	    name: string;
@@ -249,7 +249,7 @@ export namespace data {
 	    score: number;
 	
 	    static createFrom(source: any = {}) {
-	        return new RemoteRepoItem(source);
+	        return new RemoteRepo(source);
 	    }
 	
 	    constructor(source: any = {}) {
@@ -357,40 +357,6 @@ export namespace data {
 	}
 	
 	
-	export class RemoteRepos {
-	    total_count: number;
-	    incomplete_results: boolean;
-	    items: RemoteRepoItem[];
-	
-	    static createFrom(source: any = {}) {
-	        return new RemoteRepos(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.total_count = source["total_count"];
-	        this.incomplete_results = source["incomplete_results"];
-	        this.items = this.convertValues(source["items"], RemoteRepoItem);
-	    }
-	
-		convertValues(a: any, classs: any, asMap: boolean = false): any {
-		    if (!a) {
-		        return a;
-		    }
-		    if (a.slice) {
-		        return (a as any[]).map(elem => this.convertValues(elem, classs));
-		    } else if ("object" === typeof a) {
-		        if (asMap) {
-		            for (const key of Object.keys(a)) {
-		                a[key] = new classs(a[key]);
-		            }
-		            return a;
-		        }
-		        return new classs(a);
-		    }
-		    return a;
-		}
-	}
 	export class RepoCommit {
 	    message: string;
 	    committer: string;

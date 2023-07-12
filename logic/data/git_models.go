@@ -57,7 +57,7 @@ type RemoteRepoPermissions struct {
 	Pull     bool `json:"pull"`
 }
 
-type RemoteRepoItem struct {
+type RemoteRepo struct {
 	ID                       int                   `json:"id"`
 	NodeID                   string                `json:"node_id"`
 	Name                     string                `json:"name"`
@@ -139,10 +139,4 @@ type RemoteRepoItem struct {
 	DefaultBranch            string                `json:"default_branch"`
 	Permissions              RemoteRepoPermissions `json:"permissions"`
 	Score                    float64               `json:"score"`
-}
-
-type RemoteRepos struct {
-	TotalCount        int              `json:"total_count"`
-	IncompleteResults bool             `json:"incomplete_results"`
-	Items             []RemoteRepoItem `json:"items"`
 }
