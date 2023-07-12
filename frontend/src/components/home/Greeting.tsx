@@ -31,7 +31,7 @@ const Greeting = ({ userMeta }: { userMeta: data.UserMeta }) => {
       } else if (hour >= 12 && hour < 16) {
         setGreeting("Good Afternoon");
         setIcon(<FaSun color="yellow" size={50} />);
-      } else if (hour >= 16 && hour < 23) {
+      } else if (hour >= 16 && hour <= 23) {
         setIcon(<FaMoon color="orange.200" size={50} />);
         setGreeting("Good Evening");
       }
@@ -50,7 +50,8 @@ const Greeting = ({ userMeta }: { userMeta: data.UserMeta }) => {
           lineHeight={"110%"}
         >
           <Text as={"span"} color={"green.400"}>
-            {greeting}, {userMeta.name} ({userMeta.userName})
+            {greeting}
+            {userMeta && `, ${userMeta.name} (${userMeta.userName})`}
           </Text>
         </Heading>
 
