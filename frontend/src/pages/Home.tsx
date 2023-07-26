@@ -4,6 +4,7 @@ import { data } from "@go/models";
 import BatteryLevel from "@src/components/home/BatteryLevel";
 import CPUUsage from "@src/components/home/CPUUsage";
 import Greeting from "@src/components/home/Greeting";
+import IPView from "@src/components/home/IPView";
 import Processess from "@src/components/home/Processess";
 import RamUsage from "@src/components/home/RamUsage";
 import UpTimeView from "@src/components/home/UpTimeView";
@@ -47,6 +48,7 @@ const Home = () => {
       {systemStats && (
         <>
           <VStack alignItems={"flex-start"}>
+            <IPView ip={systemStats.localIP} />
             <UpTimeView uptime={systemStats.uptime} />
             <WakaTimeToday time={wakaToday} />
             <BatteryLevel batteryStats={systemStats.batteryStats} />

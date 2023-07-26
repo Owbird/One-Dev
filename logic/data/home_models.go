@@ -50,4 +50,5 @@ type SystemStats struct {
 	Processes    []Process    `json:"processes"`
 	UserMeta     UserMeta     `json:"userMeta"`
 	HasWaka      bool         `json:"hasWaka"`
+	LocalIP      string       `json:"localIP"`
 }

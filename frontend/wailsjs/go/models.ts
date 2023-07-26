@@ -474,6 +474,7 @@ export namespace data {
 	    processes: Process[];
 	    userMeta: UserMeta;
 	    hasWaka: boolean;
+	    localIP: string;
 	
 	    static createFrom(source: any = {}) {
 	        return new SystemStats(source);
@@ -490,6 +491,7 @@ export namespace data {
 	        this.processes = this.convertValues(source["processes"], Process);
 	        this.userMeta = this.convertValues(source["userMeta"], UserMeta);
 	        this.hasWaka = source["hasWaka"];
+	        this.localIP = source["localIP"];
 	    }
 	
 		convertValues(a: any, classs: any, asMap: boolean = false): any {

@@ -118,5 +118,13 @@ func (hf *HomeFunctions) GetSystemStat() (data.SystemStats, error) {
 
 	stats.HasWaka = err == nil
 
+	ip, err := utils.GetLocalIp()
+
+	if err != nil {
+		return stats, err
+	}
+
+	stats.LocalIP = ip
+
 	return stats, nil
 }
