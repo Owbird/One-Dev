@@ -1,9 +1,6 @@
 import {
   Box,
   CloseButton,
-  Drawer,
-  DrawerContent,
-  DrawerOverlay,
   Flex,
   HStack,
   Icon,
@@ -16,7 +13,6 @@ import {
   Text,
   useColorMode,
   useColorModeValue,
-  useDisclosure,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 
@@ -46,7 +42,6 @@ const NAV_ITEMS: INavItem[] = [
 ];
 
 function App() {
-  const sidebar = useDisclosure();
   const { colorMode, toggleColorMode } = useColorMode();
   const color = useColorModeValue("gray.600", "gray.300");
 
@@ -122,7 +117,7 @@ function App() {
     );
   };
 
-  const SidebarContent = (props: any) => (
+  const SidebarContent = () => (
     <Box
       as="nav"
       pos="fixed"
@@ -137,11 +132,14 @@ function App() {
       _dark={{
         bg: "gray.800",
       }}
-      border
       color="inherit"
       borderRightWidth="1px"
       w="30"
-      {...props}
+      display={{
+        base: "none",
+        md: "unset",
+      }}
+      borderRight="none"
     >
       <Flex direction="column" h="full" justify="space-between">
         <div>
@@ -200,22 +198,8 @@ function App() {
       }}
       minH="100vh"
     >
-      <SidebarContent
-        display={{
-          base: "none",
-          md: "unset",
-        }}
-      />
-      <Drawer
-        isOpen={sidebar.isOpen}
-        onClose={sidebar.onClose}
-        placement="left"
-      >
-        <DrawerOverlay />
-        <DrawerContent>
-          <SidebarContent w="full" borderRight="none" />
-        </DrawerContent>
-      </Drawer>
+      <SidebarContent />
+
       <Box
         ml={{
           base: 0,
