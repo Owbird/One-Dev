@@ -8,6 +8,7 @@ import {
 } from "@chakra-ui/react";
 import { GetRemoteRepos } from "@go/main/App";
 import { data } from "@go/models";
+import { enqueueSnackbar } from "notistack";
 import { Fragment, useEffect, useState } from "react";
 import ViewRemoteRepoModal from "./ViewRemoteRepo";
 
@@ -18,10 +19,14 @@ const RemoteRepos = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {
-    GetRemoteRepos().then((repos) => {
-      setRepos(repos);
-      setIsLoading(false);
-    });
+    GetRemoteRepos()
+      .then((repos) => {
+        setRepos(repos);
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        enqueueSnackbar(err);
+      });
   }, []);
 
   const handleRepoView = (repo: data.RemoteRepo) => {
