@@ -154,7 +154,7 @@ func (gf *GitFunctions) GetRemoteRepos() ([]data.RemoteRepo, error) {
 	err = json.Unmarshal(body, &repos)
 
 	if err != nil {
-		return []data.RemoteRepo{}, err
+		return []data.RemoteRepo{}, fmt.Errorf("could not get repos: %s", string(body))
 	}
 
 	return repos, nil
