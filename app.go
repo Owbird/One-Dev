@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 
+	"github.com/owbird/one-dev/logic/database"
 	"github.com/owbird/one-dev/logic/frontend/git"
 	"github.com/owbird/one-dev/logic/frontend/home"
 	"github.com/owbird/one-dev/logic/frontend/shared"
@@ -28,4 +29,6 @@ func (a *App) startup(ctx context.Context) {
 	log.Println("[+] App startup")
 	a.ctx = ctx
 	a.GitFunctions.Ctx = ctx
+
+	database.EnsureOneDir()
 }

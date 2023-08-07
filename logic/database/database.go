@@ -5,6 +5,7 @@ import (
 	"io/fs"
 	"log"
 	"os"
+	"path"
 	"path/filepath"
 
 	"sync"
@@ -85,4 +86,31 @@ func GetGitUser() (data.GitUser, error) {
 		Username: oneJson.Git.Username,
 		Token:    oneJson.Git.Token,
 	}, nil
+}
+
+func EnsureOneDir() {
+	user_home, err := utils.UserHome()
+
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	one_dir := path.Join(user_home, ".onedev")
+
+	os.Mkdir(one_dir, 0755)
+
+	one_json := path.Join(one_dir, "one.json")
+
+	_, err = os.Stat(one_json)
+
+	if err != nil {
+		_, err := os.Create(one_json)
+
+		if err != nil {
+			log.Fatalln(err)
+		}
+
+	}
+
+	log.Println(user_home)
 }
