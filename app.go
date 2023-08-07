@@ -30,5 +30,7 @@ func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
 	a.GitFunctions.Ctx = ctx
 
-	database.EnsureOneDir()
+	db := database.NewInstance()
+
+	db.EnsureOneDir()
 }

@@ -22,10 +22,14 @@ type Database struct {
 
 var database Database
 
+func NewInstance() *Database {
+	return &Database{}
+}
+
 // GetGitDirs returns a slice of data File structs representing Git directories.
 //
 // This function returns a slice of data File structs.
-func GetGitDirs() ([]data.File, error) {
+func (db *Database) GetGitDirs() ([]data.File, error) {
 
 	dirs := []data.File{}
 
@@ -67,7 +71,7 @@ func GetGitDirs() ([]data.File, error) {
 // GetGitToken retrieves the Git token from the database.
 //
 // It returns a string.
-func GetGitUser() (data.GitUser, error) {
+func (db *Database) GetGitUser() (data.GitUser, error) {
 	database.OpenState.Lock()
 
 	defer database.OpenState.Unlock()
@@ -88,7 +92,7 @@ func GetGitUser() (data.GitUser, error) {
 	}, nil
 }
 
-func EnsureOneDir() {
+func (db *Database) EnsureOneDir() {
 	user_home, err := utils.UserHome()
 
 	if err != nil {

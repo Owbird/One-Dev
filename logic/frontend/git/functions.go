@@ -21,11 +21,14 @@ import (
 )
 
 func NewInstance() *GitFunctions {
-	return &GitFunctions{}
+	return &GitFunctions{
+		db: *database.NewInstance(),
+	}
 }
 
 type GitFunctions struct {
 	Ctx context.Context
+	db  database.Database
 }
 
 // GetRepo returns a data.Repo struct containing information about the git repository
@@ -137,7 +140,7 @@ func (gf *GitFunctions) GetRemoteRepos() ([]data.RemoteRepo, error) {
 
 	log.Println("[+] Getting remote repos")
 
-	user, err := database.GetGitUser()
+	user, err := gf.db.GetGitUser()
 
 	if err != nil {
 		return []data.RemoteRepo{}, err
@@ -193,7 +196,7 @@ func (gf *GitFunctions) CloneRepo(url string, name string) error {
 		return err
 	}
 
-	user, err := database.GetGitUser()
+	user, err := gf.db.GetGitUser()
 
 	if err != nil {
 		return err
@@ -237,9 +240,9 @@ func (gf *GitFunctions) CloneRepo(url string, name string) error {
 }
 
 func (gf *GitFunctions) GetGitUser() (data.GitUser, error) {
-	return database.GetGitUser()
+	return gf.db.GetGitUser()
 }
 
 func (gf *GitFunctions) GetGitDirs() ([]data.File, error) {
-	return database.GetGitDirs()
+	return gf.db.GetGitDirs()
 }
