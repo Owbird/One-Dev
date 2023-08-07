@@ -21,14 +21,14 @@ type SharedFunctions struct{}
 // Notify is a method of the SharedFunctions struct that displays a notification message using the beeep package.
 //
 // It takes in a string parameter called message that represents the message to be displayed.
-func (sf SharedFunctions) Notify(message string) {
+func (sf *SharedFunctions) Notify(message string) {
 	beeep.Alert("One Dev", message, "")
 }
 
 // GetWakaToday returns the time spent coding today from WakaTime.
 //
 // It returns a string.
-func (sf SharedFunctions) GetWakaToday() string {
+func (sf *SharedFunctions) GetWakaToday() string {
 
 	waka_cli, err := utils.WakaTimeCli()
 
@@ -49,7 +49,7 @@ func (sf SharedFunctions) GetWakaToday() string {
 // KillProcess kills a process with the specified PID.
 //
 // pid: An integer representing the process ID.
-func (sf SharedFunctions) KillProcess(pid int) error {
+func (sf *SharedFunctions) KillProcess(pid int) error {
 
 	process, err := os.FindProcess(pid)
 
