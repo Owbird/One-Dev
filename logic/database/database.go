@@ -72,23 +72,16 @@ func (db *Database) GetGitDirs() ([]data.File, error) {
 //
 // It returns a string.
 func (db *Database) GetGitUser() (data.GitUser, error) {
-	database.OpenState.Lock()
 
-	defer database.OpenState.Unlock()
-
-	var oneJson data.OneJson
-
-	file, err := os.ReadFile("one.json")
+	one_json, err := db.GetOneJson()
 
 	if err != nil {
-		return data.GitUser{}, nil
+		return data.GitUser{}, err
 	}
 
-	json.Unmarshal(file, &oneJson)
-
 	return data.GitUser{
-		Username: oneJson.Git.Username,
-		Token:    oneJson.Git.Token,
+		Username: one_json.Git.Username,
+		Token:    one_json.Git.Token,
 	}, nil
 }
 
@@ -116,5 +109,27 @@ func (db *Database) EnsureOneDir() {
 
 	}
 
-	log.Println(user_home)
+}
+
+func (db *Database) GetOneJson() (data.OneJson, error) {
+	user_home, _ := utils.UserHome()
+
+	one_json_path := path.Join(user_home, ".onedev", "one.json")
+
+	database.OpenState.Lock()
+
+	defer database.OpenState.Unlock()
+
+	var one_json data.OneJson
+
+	file, err := os.ReadFile(one_json_path)
+
+	if err != nil {
+		return data.OneJson{}, err
+	}
+
+	json.Unmarshal(file, &one_json)
+
+	return one_json, nil
+
 }
