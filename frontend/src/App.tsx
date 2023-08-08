@@ -18,7 +18,7 @@ import { useEffect, useState } from "react";
 
 import { FaGithub, FaHome, FaMoon, FaSun } from "react-icons/fa";
 
-import { EventsOn } from "@go-runtime/runtime";
+import { WindowSetTitle } from "@go-runtime/runtime";
 import Home from "@pages/Home";
 import { IconType } from "react-icons";
 import { IMenuTab, INavItem } from "./interfaces/interfaces";
@@ -63,10 +63,11 @@ function App() {
     } else {
       setTabIndex(tabs.findIndex((x) => x.label === tab.label));
     }
+    WindowSetTitle(`One Dev | ${tab.label}`);
   };
 
   useEffect(() => {
-    EventsOn("error", setError);
+    WindowSetTitle("One Dev | Home");
   }, []);
 
   const NavItem = ({
