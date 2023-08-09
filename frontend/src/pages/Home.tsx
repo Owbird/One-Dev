@@ -1,4 +1,11 @@
-import { VStack } from "@chakra-ui/react";
+import {
+    Tab,
+    TabList,
+    TabPanel,
+    TabPanels,
+    Tabs,
+    VStack,
+} from "@chakra-ui/react";
 import { GetSystemStat, GetWakaToday } from "@go/main/App";
 import { data } from "@go/models";
 import BatteryLevel from "@src/components/home/BatteryLevel";
@@ -12,54 +19,73 @@ import WakaTimeToday from "@src/components/home/WakaTimeToday";
 import { useEffect, useState } from "react";
 
 const Home = () => {
-  const [systemStats, setSystemStats] = useState<data.SystemStats>();
-  const [wakaToday, setWakaToday] = useState("0");
+    const [systemStats, setSystemStats] = useState<data.SystemStats>();
+    const [wakaToday, setWakaToday] = useState("0");
 
-  const _getSystemStat = async () => {
-    const data = await GetSystemStat();
-    setSystemStats(data);
-  };
+    const _getSystemStat = async () => {
+        const data = await GetSystemStat();
+        setSystemStats(data);
+    };
 
-  const _getWakaToday = async () => {
-    const data = await GetWakaToday();
+    const _getWakaToday = async () => {
+        const data = await GetWakaToday();
 
-    setWakaToday(data);
+        setWakaToday(data);
 
-    const timerID = setInterval(async () => {
-      const data = await GetWakaToday();
-      setWakaToday(data);
-    }, 1000 * 60 * 5);
-  };
+        const timerID = setInterval(async () => {
+            const data = await GetWakaToday();
+            setWakaToday(data);
+        }, 1000 * 60 * 5);
+    };
 
-  useEffect(() => {
-    const timerID = setInterval(() => _getSystemStat(), 1000);
-    return () => clearInterval(timerID);
-  }, []);
+    useEffect(() => {
+        const timerID = setInterval(() => _getSystemStat(), 1000);
+        return () => clearInterval(timerID);
+    }, []);
 
-  useEffect(() => {
-    if (systemStats?.hasWaka) {
-      _getWakaToday();
-    }
-  }, [systemStats?.hasWaka]);
+    useEffect(() => {
+        if (systemStats?.hasWaka) {
+            _getWakaToday();
+        }
+    }, [systemStats?.hasWaka]);
 
-  return (
-    <>
-      <Greeting userMeta={systemStats?.userMeta!} />
-      {systemStats && (
+    return (
         <>
-          <VStack alignItems={"flex-start"}>
-            <IPView ip={systemStats.localIP} />
-            <UpTimeView uptime={systemStats.uptime} />
-            <WakaTimeToday time={wakaToday} />
-            <BatteryLevel batteryStats={systemStats.batteryStats} />
-            <RamUsage memoryStats={systemStats.memoryStats} />
-            <CPUUsage cpuStats={systemStats.cpuStats} />
-            <Processess processes={systemStats.processes} />
-          </VStack>
+            <Greeting userMeta={systemStats?.userMeta!} />
+            {systemStats && (
+                <>
+                    <VStack alignItems={"flex-start"}>
+                        <Tabs>
+                            <TabList>
+                                <Tab>Resources</Tab>
+                                <Tab>Processes</Tab>
+                            </TabList>
+
+                            <TabPanels>
+                                <TabPanel>
+                                    <IPView ip={systemStats.localIP} />
+                                    <UpTimeView uptime={systemStats.uptime} />
+                                    <WakaTimeToday time={wakaToday} />
+                                    <BatteryLevel
+                                        batteryStats={systemStats.batteryStats}
+                                    />
+                                    <RamUsage
+                                        memoryStats={systemStats.memoryStats}
+                                    />
+                                    <CPUUsage cpuStats={systemStats.cpuStats} />
+                                </TabPanel>
+                                <TabPanel>
+                                    <Processess
+                                        processes={systemStats.processes}
+                                    />
+                                </TabPanel>
+                            </TabPanels>
+                        </Tabs>
+                    </VStack>
+                </>
+            )}
         </>
-      )}
-    </>
-  );
+    );
 };
 
 export default Home;
