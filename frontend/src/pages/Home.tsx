@@ -16,7 +16,7 @@ import Processess from "@src/components/home/Processess";
 import RamUsage from "@src/components/home/RamUsage";
 import UpTimeView from "@src/components/home/UpTimeView";
 import WakaTimeToday from "@src/components/home/WakaTimeToday";
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 
 const Home = () => {
     const [systemStats, setSystemStats] = useState<data.SystemStats>();
@@ -50,41 +50,37 @@ const Home = () => {
     }, [systemStats?.hasWaka]);
 
     return (
-        <>
+        <Fragment>
             <Greeting userMeta={systemStats?.userMeta!} />
             {systemStats && (
-                <>
-                    <VStack alignItems={"flex-start"}>
-                        <Tabs>
-                            <TabList>
-                                <Tab>Resources</Tab>
-                                <Tab>Processes</Tab>
-                            </TabList>
+                <VStack alignItems={"flex-start"}>
+                    <Tabs>
+                        <TabList>
+                            <Tab>Resources</Tab>
+                            <Tab>Processes</Tab>
+                        </TabList>
 
-                            <TabPanels>
-                                <TabPanel>
-                                    <IPView ip={systemStats.localIP} />
-                                    <UpTimeView uptime={systemStats.uptime} />
-                                    <WakaTimeToday time={wakaToday} />
-                                    <BatteryLevel
-                                        batteryStats={systemStats.batteryStats}
-                                    />
-                                    <RamUsage
-                                        memoryStats={systemStats.memoryStats}
-                                    />
-                                    <CPUUsage cpuStats={systemStats.cpuStats} />
-                                </TabPanel>
-                                <TabPanel>
-                                    <Processess
-                                        processes={systemStats.processes}
-                                    />
-                                </TabPanel>
-                            </TabPanels>
-                        </Tabs>
-                    </VStack>
-                </>
+                        <TabPanels>
+                            <TabPanel>
+                                <IPView ip={systemStats.localIP} />
+                                <UpTimeView uptime={systemStats.uptime} />
+                                <WakaTimeToday time={wakaToday} />
+                                <BatteryLevel
+                                    batteryStats={systemStats.batteryStats}
+                                />
+                                <RamUsage
+                                    memoryStats={systemStats.memoryStats}
+                                />
+                                <CPUUsage cpuStats={systemStats.cpuStats} />
+                            </TabPanel>
+                            <TabPanel>
+                                <Processess processes={systemStats.processes} />
+                            </TabPanel>
+                        </TabPanels>
+                    </Tabs>
+                </VStack>
             )}
-        </>
+        </Fragment>
     );
 };
 
