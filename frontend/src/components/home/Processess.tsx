@@ -28,7 +28,7 @@ const Processess = ({ processes }: { processes: data.Process[] }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = useRef();
 
-  const sortedProcesses = [...processes].sort((a, b) => {
+  const sortedProcesses = processes.sort((a, b) => {
     if (!sortField) {
       return 0;
     }
