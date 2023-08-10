@@ -18,6 +18,7 @@
     "paths": {
       "@src/*": ["./src/*"],
       "@pages/*": ["./src/pages/*"],
+      "@data/*": ["./src/data/*"],
       "@components/*": ["./src/components/*"],
       "@go/*": ["./wailsjs/go/*"],
       "@go-runtime/*": ["./wailsjs/runtime/*"]

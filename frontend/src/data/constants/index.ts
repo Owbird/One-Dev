@@ -1,4 +1,4 @@
-export default [
+export const colors = [
   "gray",
   "red",
   "orange",
