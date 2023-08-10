@@ -30,6 +30,28 @@ export namespace data {
 	        this.usages = source["usages"];
 	    }
 	}
+	export class DiskStats {
+	    path: string;
+	    diskType: string;
+	    total: number;
+	    free: number;
+	    used: number;
+	    usedPercentage: number;
+	
+	    static createFrom(source: any = {}) {
+	        return new DiskStats(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.path = source["path"];
+	        this.diskType = source["diskType"];
+	        this.total = source["total"];
+	        this.free = source["free"];
+	        this.used = source["used"];
+	        this.usedPercentage = source["usedPercentage"];
+	    }
+	}
 	export class File {
 	    parentDir: string;
 	    dir: string;
@@ -467,8 +489,7 @@ export namespace data {
 	    isLaptop: boolean;
 	    uptime: UpTime;
 	    batteryStats: BatteryStats;
-	    // Go type: DiskStats
-	    diskStats: any;
+	    diskStats: DiskStats;
 	    memoryStats: MemoryStats;
 	    cpuStats: CPUStats;
 	    processes: Process[];
@@ -485,7 +506,7 @@ export namespace data {
 	        this.isLaptop = source["isLaptop"];
 	        this.uptime = this.convertValues(source["uptime"], UpTime);
 	        this.batteryStats = this.convertValues(source["batteryStats"], BatteryStats);
-	        this.diskStats = this.convertValues(source["diskStats"], null);
+	        this.diskStats = this.convertValues(source["diskStats"], DiskStats);
 	        this.memoryStats = this.convertValues(source["memoryStats"], MemoryStats);
 	        this.cpuStats = this.convertValues(source["cpuStats"], CPUStats);
 	        this.processes = this.convertValues(source["processes"], Process);

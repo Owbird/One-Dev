@@ -26,6 +26,12 @@ type CPUStats struct {
 }
 
 type DiskStats struct {
+	Path           string  `json:"path"`
+	DiskType       string  `json:"diskType"`
+	Total          uint64  `json:"total"`
+	Free           uint64  `json:"free"`
+	Used           uint64  `json:"used"`
+	UsedPercentage float64 `json:"usedPercentage"`
 }
 
 type MemoryStats struct {

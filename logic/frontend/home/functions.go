@@ -9,6 +9,7 @@ import (
 	"github.com/owbird/one-dev/logic/data"
 	"github.com/owbird/one-dev/logic/utils"
 	"github.com/shirou/gopsutil/cpu"
+	"github.com/shirou/gopsutil/disk"
 	"github.com/shirou/gopsutil/mem"
 	"github.com/shirou/gopsutil/process"
 )
@@ -26,7 +27,18 @@ func (hf *HomeFunctions) GetSystemStat() (data.SystemStats, error) {
 	memory_stats, _ := mem.VirtualMemory()
 	battery_stats, _ := battery.GetAll()
 
+	disk_stats, _ := disk.Usage("/")
+
 	stats := data.SystemStats{}
+
+	stats.DiskStats = data.DiskStats{
+		Path:           "/",
+		DiskType:       disk_stats.Fstype,
+		Total:          disk_stats.Total,
+		Free:           disk_stats.Free,
+		Used:           disk_stats.Used,
+		UsedPercentage: disk_stats.UsedPercent,
+	}
 
 	user, err := user.Current()
 
