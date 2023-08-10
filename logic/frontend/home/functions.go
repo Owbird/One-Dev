@@ -23,8 +23,8 @@ type HomeFunctions struct {
 // GetSystemStat returns system statistics like uptime, cpu usage, memory usage, battery status and processes.
 func (hf *HomeFunctions) GetSystemStat() (data.SystemStats, error) {
 
-	memoryStats, _ := mem.VirtualMemory()
-	batteryStats, _ := battery.GetAll()
+	memory_stats, _ := mem.VirtualMemory()
+	battery_stats, _ := battery.GetAll()
 
 	stats := data.SystemStats{}
 
@@ -45,10 +45,10 @@ func (hf *HomeFunctions) GetSystemStat() (data.SystemStats, error) {
 		stats.UpTime = upTime
 	}
 
-	stats.MemoryStats.Total = memoryStats.Total
-	stats.MemoryStats.Free = memoryStats.Free
-	stats.MemoryStats.Used = memoryStats.Used
-	stats.MemoryStats.UsedPercentage = memoryStats.UsedPercent
+	stats.MemoryStats.Total = memory_stats.Total
+	stats.MemoryStats.Free = memory_stats.Free
+	stats.MemoryStats.Used = memory_stats.Used
+	stats.MemoryStats.UsedPercentage = memory_stats.UsedPercent
 
 	cpu_info, err := cpu.Info()
 
@@ -91,11 +91,11 @@ func (hf *HomeFunctions) GetSystemStat() (data.SystemStats, error) {
 		Usages: cpu_usages,
 	}
 
-	if len(batteryStats) > 0 {
+	if len(battery_stats) > 0 {
 
 		stats.IsLaptop = true
 
-		main_battery := batteryStats[0]
+		main_battery := battery_stats[0]
 
 		stats.BatteryStats.CurrentPower = int(math.Round(main_battery.Current / main_battery.Full * 100))
 
