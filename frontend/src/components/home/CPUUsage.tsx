@@ -1,8 +1,9 @@
-import { Grid, GridItem, HStack, Progress, Text } from "@chakra-ui/react";
+import { Grid, GridItem, HStack, Text } from "@chakra-ui/react";
 import { data } from "@go/models";
 import { colors } from "@src/data/constants";
 import { Fragment } from "react";
 import { BsCpu } from "react-icons/bs";
+import StatProgressBar from "./HomeProgress";
 
 const CPUUsage = ({ cpuStats }: { cpuStats: data.CPUStats }) => {
   return (
@@ -17,13 +18,8 @@ const CPUUsage = ({ cpuStats }: { cpuStats: data.CPUStats }) => {
             <GridItem key={index}>
               <HStack>
                 <Text>{index + 1}</Text>
-                <Progress
-                  width={100}
-                  borderRadius={"md"}
-                  colorScheme={colors[index]}
-                  height="32px"
-                  value={cpu}
-                />
+
+                <StatProgressBar colorScheme={colors[index]} value={cpu} />
                 <Text>{cpu.toFixed(2)}%</Text>
               </HStack>
             </GridItem>

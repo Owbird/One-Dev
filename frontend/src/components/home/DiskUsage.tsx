@@ -1,7 +1,8 @@
-import { HStack, Progress, Text } from "@chakra-ui/react";
+import { HStack, Text } from "@chakra-ui/react";
 import { data } from "@go/models";
 import { Fragment, useEffect, useState } from "react";
 import { BsDisc } from "react-icons/bs";
+import StatProgressBar from "./HomeProgress";
 
 const DiskUsage = ({ diskStats }: { diskStats: data.DiskStats }) => {
   const [color, setColor] = useState("green");
@@ -35,13 +36,7 @@ const DiskUsage = ({ diskStats }: { diskStats: data.DiskStats }) => {
       <Text>Disk: {totalDiskSpace.toFixed(1)} Gb</Text>
       <HStack>
         {<BsDisc />}
-        <Progress
-          width={100}
-          borderRadius={"md"}
-          colorScheme={color}
-          height="32px"
-          value={diskStats.usedPercentage}
-        />
+        <StatProgressBar colorScheme={color} value={diskStats.usedPercentage} />
         <Text>
           ({totalUsed} Gb) {diskStats.usedPercentage.toFixed(2)}%
         </Text>
