@@ -9,6 +9,7 @@ import {
 } from "@chakra-ui/react";
 import { GetGitDirs } from "@go/main/App";
 import { data } from "@go/models";
+import Loader from "@src/components/shared/Loader";
 import { GitRoutes } from "@src/data/constants/routes";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -35,8 +36,8 @@ const LocalRepos = () => {
     } else {
       setSearchRes(
         dirs.filter((dir) =>
-          dir.dir.toLowerCase().includes(searchQuery.toLowerCase())
-        )
+          dir.dir.toLowerCase().includes(searchQuery.toLowerCase()),
+        ),
       );
     }
   };
@@ -44,9 +45,7 @@ const LocalRepos = () => {
   if (isLoading) {
     return (
       <TabPanel>
-        <Center>
-          <Spinner />
-        </Center>
+        <Loader />
       </TabPanel>
     );
   }
