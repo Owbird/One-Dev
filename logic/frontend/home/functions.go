@@ -88,7 +88,11 @@ func (hf *HomeFunctions) GetSystemStat() (data.SystemStats, error) {
 
 	stats.Processes = []data.Process{}
 
-	all_processes, _ := process.Processes()
+	all_processes, err := process.Processes()
+
+	if err != nil {
+		return stats, err
+	}
 
 	for _, current_process := range all_processes {
 		name, _ := current_process.Name()
