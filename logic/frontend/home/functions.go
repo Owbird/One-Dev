@@ -23,13 +23,25 @@ type HomeFunctions struct {
 
 // GetSystemStat returns system statistics like uptime, cpu usage, memory usage, battery status and processes.
 func (hf *HomeFunctions) GetSystemStat() (data.SystemStats, error) {
-
-	memory_stats, _ := mem.VirtualMemory()
-	battery_stats, _ := battery.GetAll()
-
-	disk_stats, _ := disk.Usage("/")
-
 	stats := data.SystemStats{}
+
+	memory_stats, err := mem.VirtualMemory()
+
+	if err != nil {
+		return stats, err
+	}
+
+	battery_stats, err := battery.GetAll()
+
+	if err != nil {
+		return stats, err
+	}
+
+	disk_stats, err := disk.Usage("/")
+
+	if err != nil {
+		return stats, err
+	}
 
 	stats.DiskStats = data.DiskStats{
 		Path:           "/",
