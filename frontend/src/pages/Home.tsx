@@ -10,7 +10,7 @@ import { GetSystemStat, GetWakaToday } from "@go/main/App";
 import { data } from "@go/models";
 import BatteryLevel from "@src/components/home/BatteryLevel";
 import CPUUsage from "@src/components/home/CPUUsage";
-import DiskUsage from "@src/components/home/DiskUsage";
+import FileSystems from "@src/components/home/FileSystems";
 import Greeting from "@src/components/home/Greeting";
 import IPView from "@src/components/home/IPView";
 import Processess from "@src/components/home/Processess";
@@ -63,6 +63,7 @@ const Home = () => {
           <TabList>
             <Tab>Resources</Tab>
             <Tab>Processes</Tab>
+            <Tab>File Systems</Tab>
           </TabList>
 
           <TabPanels>
@@ -72,11 +73,13 @@ const Home = () => {
               <WakaTimeToday time={wakaToday} />
               <BatteryLevel batteryStats={systemStats.batteryStats} />
               <RamUsage memoryStats={systemStats.memoryStats} />
-              <DiskUsage diskStats={systemStats.diskStats} />
               <CPUUsage cpuStats={systemStats.cpuStats} />
             </TabPanel>
             <TabPanel>
               <Processess processes={systemStats.processes} />
+            </TabPanel>
+            <TabPanel>
+              <FileSystems systems={systemStats.diskStats} />
             </TabPanel>
           </TabPanels>
         </Tabs>

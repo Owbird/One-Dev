@@ -33,6 +33,7 @@ export namespace data {
 	export class DiskStats {
 	    path: string;
 	    diskType: string;
+	    device: string;
 	    total: number;
 	    free: number;
 	    used: number;
@@ -46,6 +47,7 @@ export namespace data {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.path = source["path"];
 	        this.diskType = source["diskType"];
+	        this.device = source["device"];
 	        this.total = source["total"];
 	        this.free = source["free"];
 	        this.used = source["used"];
@@ -489,7 +491,7 @@ export namespace data {
 	    isLaptop: boolean;
 	    uptime: UpTime;
 	    batteryStats: BatteryStats;
-	    diskStats: DiskStats;
+	    diskStats: DiskStats[];
 	    memoryStats: MemoryStats;
 	    cpuStats: CPUStats;
 	    processes: Process[];

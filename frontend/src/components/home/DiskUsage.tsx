@@ -33,7 +33,9 @@ const DiskUsage = ({ diskStats }: { diskStats: data.DiskStats }) => {
 
   return (
     <Fragment>
-      <Text>Disk: {totalDiskSpace.toFixed(1)} Gb</Text>
+      <Text>
+        {diskStats.path} || {totalDiskSpace.toFixed(1)} Gb || {diskStats.device}
+      </Text>
       <HStack>
         {<BsDisc />}
         <StatProgressBar colorScheme={color} value={diskStats.usedPercentage} />

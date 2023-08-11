@@ -28,6 +28,7 @@ type CPUStats struct {
 type DiskStats struct {
 	Path           string  `json:"path"`
 	DiskType       string  `json:"diskType"`
+	Device         string  `json:"device"`
 	Total          uint64  `json:"total"`
 	Free           uint64  `json:"free"`
 	Used           uint64  `json:"used"`
@@ -50,7 +51,7 @@ type SystemStats struct {
 	IsLaptop     bool         `json:"isLaptop"`
 	UpTime       UpTime       `json:"uptime"`
 	BatteryStats BatteryStats `json:"batteryStats"`
-	DiskStats    DiskStats    `json:"diskStats"`
+	DiskStats    []DiskStats  `json:"diskStats"`
 	MemoryStats  MemoryStats  `json:"memoryStats"`
 	CPUStats     CPUStats     `json:"cpuStats"`
 	Processes    []Process    `json:"processes"`

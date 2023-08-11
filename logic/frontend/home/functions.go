@@ -4,6 +4,7 @@ import (
 	"math"
 	"os"
 	"os/user"
+	"strings"
 
 	"github.com/distatus/battery"
 	"github.com/owbird/one-dev/logic/data"
@@ -37,19 +38,28 @@ func (hf *HomeFunctions) GetSystemStat() (data.SystemStats, error) {
 		return stats, err
 	}
 
-	disk_stats, err := disk.Usage("/")
+	disk_partitions, err := disk.Partitions(false)
 
 	if err != nil {
 		return stats, err
 	}
 
-	stats.DiskStats = data.DiskStats{
-		Path:           "/",
-		DiskType:       disk_stats.Fstype,
-		Total:          disk_stats.Total,
-		Free:           disk_stats.Free,
-		Used:           disk_stats.Used,
-		UsedPercentage: disk_stats.UsedPercent,
+	for _, disk_partition := range disk_partitions {
+
+		if !strings.Contains(disk_partition.Device, "loop") {
+			disk_stats, _ := disk.Usage(disk_partition.Mountpoint)
+
+			stats.DiskStats = append(stats.DiskStats, data.DiskStats{
+				Path:           "/",
+				DiskType:       disk_stats.Fstype,
+				Device:         disk_partition.Device,
+				Total:          disk_stats.Total,
+				Free:           disk_stats.Free,
+				Used:           disk_stats.Used,
+				UsedPercentage: disk_stats.UsedPercent,
+			})
+		}
+
 	}
 
 	user, err := user.Current()
