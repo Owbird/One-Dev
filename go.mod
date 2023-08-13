@@ -5,7 +5,7 @@ go 1.18
 require (
 	github.com/go-git/go-git/v5 v5.3.0
 	github.com/ostafen/clover v1.2.0
-	github.com/wailsapp/wails/v2 v2.4.1
+	github.com/wailsapp/wails/v2 v2.5.1
 )
 
 require (

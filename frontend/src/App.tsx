@@ -41,9 +41,15 @@ function App() {
 
   const [tabs, setTabs] = useState<IMenuTab[]>([NAV_ITEMS[0].menuTab]);
 
+  const setWindowTitle = (window: string) => {
+    WindowSetTitle(`One Dev | ${window}`);
+  };
+
   const closeTab = (tab: IMenuTab) => {
     setTabs(tabs.filter((x) => x !== tab));
-    setTabIndex(tabs.length - 2);
+    const nextTabIndex = tabs.length - 2;
+    setTabIndex(nextTabIndex);
+    setWindowTitle(tabs[nextTabIndex].label);
   };
 
   const handleMenuClick = (tab: IMenuTab) => {
@@ -53,11 +59,11 @@ function App() {
     } else {
       setTabIndex(tabs.findIndex((x) => x.label === tab.label));
     }
-    WindowSetTitle(`One Dev | ${tab.label}`);
+    setWindowTitle(tab.label);
   };
 
   useEffect(() => {
-    WindowSetTitle("One Dev | Home");
+    setWindowTitle("Home");
   }, []);
 
   const navItems = NAV_ITEMS.map((item, index) => (
