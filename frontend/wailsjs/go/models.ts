@@ -487,34 +487,30 @@ export namespace data {
 	        this.minutes = source["minutes"];
 	    }
 	}
-	export class SystemStats {
+	export class SystemResources {
+	    hasWaka: boolean;
 	    isLaptop: boolean;
+	    localIP: string;
 	    uptime: UpTime;
 	    batteryStats: BatteryStats;
-	    diskStats: DiskStats[];
 	    memoryStats: MemoryStats;
 	    cpuStats: CPUStats;
-	    processes: Process[];
 	    userMeta: UserMeta;
-	    hasWaka: boolean;
-	    localIP: string;
 	
 	    static createFrom(source: any = {}) {
-	        return new SystemStats(source);
+	        return new SystemResources(source);
 	    }
 	
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.hasWaka = source["hasWaka"];
 	        this.isLaptop = source["isLaptop"];
+	        this.localIP = source["localIP"];
 	        this.uptime = this.convertValues(source["uptime"], UpTime);
 	        this.batteryStats = this.convertValues(source["batteryStats"], BatteryStats);
-	        this.diskStats = this.convertValues(source["diskStats"], DiskStats);
 	        this.memoryStats = this.convertValues(source["memoryStats"], MemoryStats);
 	        this.cpuStats = this.convertValues(source["cpuStats"], CPUStats);
-	        this.processes = this.convertValues(source["processes"], Process);
 	        this.userMeta = this.convertValues(source["userMeta"], UserMeta);
-	        this.hasWaka = source["hasWaka"];
-	        this.localIP = source["localIP"];
 	    }
 	
 		convertValues(a: any, classs: any, asMap: boolean = false): any {

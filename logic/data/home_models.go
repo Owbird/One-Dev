@@ -47,15 +47,19 @@ type UserMeta struct {
 	UserName string `json:"userName"`
 }
 
-type SystemStats struct {
+type SystemResources struct {
+	HasWaka      bool         `json:"hasWaka"`
 	IsLaptop     bool         `json:"isLaptop"`
+	LocalIP      string       `json:"localIP"`
 	UpTime       UpTime       `json:"uptime"`
 	BatteryStats BatteryStats `json:"batteryStats"`
-	DiskStats    []DiskStats  `json:"diskStats"`
 	MemoryStats  MemoryStats  `json:"memoryStats"`
 	CPUStats     CPUStats     `json:"cpuStats"`
-	Processes    []Process    `json:"processes"`
 	UserMeta     UserMeta     `json:"userMeta"`
-	HasWaka      bool         `json:"hasWaka"`
-	LocalIP      string       `json:"localIP"`
+}
+
+type SystemStats struct {
+	Resources   SystemResources `json:"resources"`
+	Processes   []Process       `json:"processes"`
+	FileSystems []DiskStats     `json:"fileSystems"`
 }

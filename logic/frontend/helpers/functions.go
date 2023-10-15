@@ -1,4 +1,4 @@
-package shared
+package helpers
 
 import (
 	"fmt"
@@ -9,26 +9,26 @@ import (
 	"github.com/owbird/one-dev/logic/utils"
 )
 
-// NewInstance returns a new instance of SharedFunctions.
+// NewInstance returns a new instance of HelperFunctions.
 //
-// Returns a pointer to a SharedFunctions struct.
-func NewInstance() *SharedFunctions {
-	return &SharedFunctions{}
+// Returns a pointer to a HelperFunctions struct.
+func NewInstance() *HelperFunctions {
+	return &HelperFunctions{}
 }
 
-type SharedFunctions struct{}
+type HelperFunctions struct{}
 
-// Notify is a method of the SharedFunctions struct that displays a notification message using the beeep package.
+// Notify is a method of the HelperFunctions struct that displays a notification message using the beeep package.
 //
 // It takes in a string parameter called message that represents the message to be displayed.
-func (sf *SharedFunctions) Notify(message string) {
+func (sf *HelperFunctions) Notify(message string) {
 	beeep.Alert("One Dev", message, "")
 }
 
 // GetWakaToday returns the time spent coding today from WakaTime.
 //
 // It returns a string.
-func (sf *SharedFunctions) GetWakaToday() string {
+func (sf *HelperFunctions) GetWakaToday() string {
 
 	waka_cli, err := utils.WakaTimeCli()
 
@@ -49,7 +49,7 @@ func (sf *SharedFunctions) GetWakaToday() string {
 // KillProcess kills a process with the specified PID.
 //
 // pid: An integer representing the process ID.
-func (sf *SharedFunctions) KillProcess(pid int) error {
+func (sf *HelperFunctions) KillProcess(pid int) error {
 
 	process, err := os.FindProcess(pid)
 

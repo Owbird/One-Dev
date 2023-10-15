@@ -29,7 +29,7 @@ func main() {
 		Bind: []interface{}{
 			app,
 			app.HomeFunctions,
-			app.SharedFunctions,
+			app.HelperFunctions,
 			app.GitFunctions,
 		},
 	})

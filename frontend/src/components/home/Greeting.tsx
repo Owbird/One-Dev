@@ -1,12 +1,14 @@
 import { Heading, HStack, Text } from "@chakra-ui/react";
+import { GetUserMeta } from "@go/main/App";
 import { data } from "@go/models";
 import { Fragment, useEffect, useState } from "react";
 import { FaMoon, FaSun } from "react-icons/fa";
 
-const Greeting = ({ userMeta }: { userMeta: data.UserMeta }) => {
+const Greeting = () => {
   const [time, setTime] = useState(new Date());
   const [greeting, setGreeting] = useState("");
   const [icon, setIcon] = useState(<></>);
+  const [userMeta, setUserMeta] = useState<data.UserMeta>();
 
   const timeOptions: Intl.DateTimeFormatOptions = {
     weekday: "long",
@@ -37,6 +39,15 @@ const Greeting = ({ userMeta }: { userMeta: data.UserMeta }) => {
 
     setTime(now);
   };
+
+  const getUser = async () => {
+    const userMeta = await GetUserMeta();
+    setUserMeta(userMeta);
+  };
+
+  useEffect(() => {
+    getUser();
+  }, []);
 
   useEffect(() => {
     greet();

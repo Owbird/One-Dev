@@ -22,9 +22,23 @@ func NewInstance() *HomeFunctions {
 type HomeFunctions struct {
 }
 
-// GetSystemStat returns system statistics like uptime, cpu usage, memory usage, battery status and processes.
-func (hf *HomeFunctions) GetSystemStat() (data.SystemStats, error) {
-	stats := data.SystemStats{}
+func (hf *HomeFunctions) GetUserMeta() (data.UserMeta, error) {
+	meta := data.UserMeta{}
+
+	user, err := user.Current()
+
+	if err != nil {
+		return meta, err
+	}
+
+	meta.UserName = user.Username
+	meta.Name = user.Name
+
+	return meta, nil
+}
+
+func (hf *HomeFunctions) GetSystemResources() (data.SystemResources, error) {
+	stats := data.SystemResources{}
 
 	memory_stats, err := mem.VirtualMemory()
 
@@ -38,38 +52,17 @@ func (hf *HomeFunctions) GetSystemStat() (data.SystemStats, error) {
 		return stats, err
 	}
 
-	disk_partitions, err := disk.Partitions(false)
+	cpu_info, err := cpu.Info()
 
 	if err != nil {
 		return stats, err
 	}
 
-	for _, disk_partition := range disk_partitions {
-
-		if !strings.Contains(disk_partition.Device, "loop") {
-			disk_stats, _ := disk.Usage(disk_partition.Mountpoint)
-
-			stats.DiskStats = append(stats.DiskStats, data.DiskStats{
-				Path:           "/",
-				DiskType:       disk_stats.Fstype,
-				Device:         disk_partition.Device,
-				Total:          disk_stats.Total,
-				Free:           disk_stats.Free,
-				Used:           disk_stats.Used,
-				UsedPercentage: disk_stats.UsedPercent,
-			})
-		}
-
-	}
-
-	user, err := user.Current()
+	cpu_usages, err := cpu.Percent(0, true)
 
 	if err != nil {
-		return data.SystemStats{}, err
+		return stats, err
 	}
-
-	stats.UserMeta.UserName = user.Username
-	stats.UserMeta.Name = user.Name
 
 	upTime, err := utils.GetUptime()
 
@@ -83,45 +76,6 @@ func (hf *HomeFunctions) GetSystemStat() (data.SystemStats, error) {
 	stats.MemoryStats.Free = memory_stats.Free
 	stats.MemoryStats.Used = memory_stats.Used
 	stats.MemoryStats.UsedPercentage = memory_stats.UsedPercent
-
-	cpu_info, err := cpu.Info()
-
-	if err != nil {
-		return data.SystemStats{}, err
-	}
-
-	cpu_usages, err := cpu.Percent(0, true)
-
-	if err != nil {
-		return data.SystemStats{}, err
-	}
-
-	stats.Processes = []data.Process{}
-
-	all_processes, err := process.Processes()
-
-	if err != nil {
-		return stats, err
-	}
-
-	for _, current_process := range all_processes {
-		name, _ := current_process.Name()
-		cpu_usage, _ := current_process.CPUPercent()
-		memory_usage, _ := current_process.MemoryPercent()
-		username, _ := current_process.Username()
-		pid := current_process.Pid
-
-		process := data.Process{
-			Name:        name,
-			CPUUsage:    cpu_usage,
-			MemoryUsage: float64(memory_usage),
-			Pid:         pid,
-			Username:    username,
-		}
-
-		stats.Processes = append(stats.Processes, process)
-
-	}
 
 	stats.CPUStats = data.CPUStats{
 		Model:  cpu_info[0].ModelName,
@@ -164,5 +118,65 @@ func (hf *HomeFunctions) GetSystemStat() (data.SystemStats, error) {
 
 	stats.LocalIP = ip
 
+	return stats, nil
+}
+
+func (hf *HomeFunctions) GetSystemProcesses() ([]data.Process, error) {
+
+	stats := []data.Process{}
+
+	all_processes, err := process.Processes()
+
+	if err != nil {
+		return stats, err
+	}
+
+	for _, current_process := range all_processes {
+		name, _ := current_process.Name()
+		cpu_usage, _ := current_process.CPUPercent()
+		memory_usage, _ := current_process.MemoryPercent()
+		username, _ := current_process.Username()
+		pid := current_process.Pid
+
+		process := data.Process{
+			Name:        name,
+			CPUUsage:    cpu_usage,
+			MemoryUsage: float64(memory_usage),
+			Pid:         pid,
+			Username:    username,
+		}
+
+		stats = append(stats, process)
+
+	}
+	return stats, nil
+}
+
+func (hf *HomeFunctions) GetFileSystems() ([]data.DiskStats, error) {
+	stats := []data.DiskStats{}
+
+	disk_partitions, err := disk.Partitions(false)
+
+	if err != nil {
+		return []data.DiskStats{}, err
+	}
+
+	for _, disk_partition := range disk_partitions {
+
+		if !strings.Contains(disk_partition.Device, "loop") {
+			disk_stats, _ := disk.Usage(disk_partition.Mountpoint)
+
+			stats = append(stats, data.DiskStats{
+				Path:           "/",
+				DiskType:       disk_stats.Fstype,
+				Device:         disk_partition.Device,
+				Total:          disk_stats.Total,
+				Free:           disk_stats.Free,
+				Used:           disk_stats.Used,
+				UsedPercentage: disk_stats.UsedPercent,
+			})
+		}
+
+	}
 	return stats, nil
 }

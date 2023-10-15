@@ -6,6 +6,8 @@ export function ChangeBranch(arg1:string,arg2:string):Promise<void>;
 
 export function CloneRepo(arg1:string,arg2:string):Promise<void>;
 
+export function GetFileSystems():Promise<Array<data.DiskStats>>;
+
 export function GetGitDirs():Promise<Array<data.File>>;
 
 export function GetGitUser():Promise<data.GitUser>;
@@ -14,7 +16,11 @@ export function GetRemoteRepos():Promise<Array<data.RemoteRepo>>;
 
 export function GetRepo(arg1:string):Promise<data.Repo>;
 
-export function GetSystemStat():Promise<data.SystemStats>;
+export function GetSystemProcesses():Promise<Array<data.Process>>;
+
+export function GetSystemResources():Promise<data.SystemResources>;
+
+export function GetUserMeta():Promise<data.UserMeta>;
 
 export function GetWakaToday():Promise<string>;
 

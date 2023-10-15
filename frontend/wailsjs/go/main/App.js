@@ -10,6 +10,10 @@ export function CloneRepo(arg1, arg2) {
   return window['go']['main']['App']['CloneRepo'](arg1, arg2);
 }
 
+export function GetFileSystems() {
+  return window['go']['main']['App']['GetFileSystems']();
+}
+
 export function GetGitDirs() {
   return window['go']['main']['App']['GetGitDirs']();
 }
@@ -26,8 +30,16 @@ export function GetRepo(arg1) {
   return window['go']['main']['App']['GetRepo'](arg1);
 }
 
-export function GetSystemStat() {
-  return window['go']['main']['App']['GetSystemStat']();
+export function GetSystemProcesses() {
+  return window['go']['main']['App']['GetSystemProcesses']();
+}
+
+export function GetSystemResources() {
+  return window['go']['main']['App']['GetSystemResources']();
+}
+
+export function GetUserMeta() {
+  return window['go']['main']['App']['GetUserMeta']();
 }
 
 export function GetWakaToday() {

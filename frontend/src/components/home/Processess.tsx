@@ -17,11 +17,12 @@ import {
   Tr,
   useDisclosure,
 } from "@chakra-ui/react";
-import { KillProcess } from "@go/main/App";
+import { GetSystemProcesses, KillProcess } from "@go/main/App";
 import { data } from "@go/models";
-import { Fragment, MutableRefObject, useRef, useState } from "react";
+import { Fragment, MutableRefObject, useEffect, useRef, useState } from "react";
 
-const Processess = ({ processes }: { processes: data.Process[] }) => {
+const Processess = () => {
+  const [processes, setProcesses] = useState<data.Process[]>([]);
   const [sortField, setSortField] = useState<string>("name");
   const [filteredProcesses, setFilteredProcesses] =
     useState<data.Process[]>(processes);
@@ -85,6 +86,17 @@ const Processess = ({ processes }: { processes: data.Process[] }) => {
       ),
     );
   };
+
+  const getProcesses = async () => {
+    const _processes = await GetSystemProcesses();
+    setProcesses(_processes);
+    setFilteredProcesses(_processes);
+  };
+
+  useEffect(() => {
+    const timerID = setInterval(() => getProcesses(), 1000);
+    return () => clearInterval(timerID);
+  }, []);
 
   return (
     <Fragment>

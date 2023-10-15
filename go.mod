@@ -3,6 +3,7 @@ module github.com/owbird/one-dev
 go 1.18
 
 require (
+	github.com/distatus/battery v0.11.0
 	github.com/go-git/go-git/v5 v5.3.0
 	github.com/ostafen/clover v1.2.0
 	github.com/wailsapp/wails/v2 v2.5.1
@@ -44,12 +45,11 @@ require (
 	github.com/yusufpapurcu/wmi v1.2.2 // indirect
 	go.opencensus.io v0.22.5 // indirect
 	gopkg.in/warnings.v0 v0.1.2 // indirect
-	howett.net/plist v0.0.0-20181124034731-591f970eefbb // indirect
+	howett.net/plist v1.0.0 // indirect
 )
 
 require (
 	github.com/bep/debounce v1.2.1 // indirect
-	github.com/distatus/battery v0.10.0
 	github.com/gen2brain/beeep v0.0.0-20230307103607-6e717729cb4f
 	github.com/go-ole/go-ole v1.2.6 // indirect
 	github.com/google/uuid v1.1.2 // indirect
@@ -72,7 +72,7 @@ require (
 	golang.org/x/crypto v0.1.0 // indirect
 	golang.org/x/exp v0.0.0-20220303212507-bbda1eaf7a17 // indirect
 	golang.org/x/net v0.7.0 // indirect
-	golang.org/x/sys v0.6.0 // indirect
+	golang.org/x/sys v0.9.0 // indirect
 	golang.org/x/text v0.7.0 // indirect
 )
 

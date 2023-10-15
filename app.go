@@ -6,20 +6,20 @@ import (
 
 	"github.com/owbird/one-dev/logic/database"
 	"github.com/owbird/one-dev/logic/frontend/git"
+	"github.com/owbird/one-dev/logic/frontend/helpers"
 	"github.com/owbird/one-dev/logic/frontend/home"
-	"github.com/owbird/one-dev/logic/frontend/shared"
 )
 
 type App struct {
 	ctx context.Context
-	*shared.SharedFunctions
+	*helpers.HelperFunctions
 	*home.HomeFunctions
 	*git.GitFunctions
 }
 
 func NewApp() *App {
 	return &App{
-		SharedFunctions: shared.NewInstance(),
+		HelperFunctions: helpers.NewInstance(),
 		HomeFunctions:   home.NewInstance(),
 		GitFunctions:    git.NewInstance(),
 	}
