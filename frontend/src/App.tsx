@@ -16,8 +16,8 @@ import NavItem from "@components/app/NavItem";
 import SidebarContent from "@components/app/SidebarContent";
 import { IMenuTab, INavItem } from "@data/interfaces";
 import { WindowSetTitle } from "@go-runtime/runtime";
-import Home from "@pages/Home";
 import Git from "@pages/git/Git";
+import Home from "@src/pages/home/Home";
 
 const NAV_ITEMS: INavItem[] = [
   {
