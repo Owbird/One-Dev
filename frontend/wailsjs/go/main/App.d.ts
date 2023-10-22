@@ -16,6 +16,8 @@ export function GetRemoteRepos():Promise<Array<data.RemoteRepo>>;
 
 export function GetRepo(arg1:string):Promise<data.Repo>;
 
+export function GetSettings():Promise<data.OneJson>;
+
 export function GetSystemProcesses():Promise<Array<data.Process>>;
 
 export function GetSystemResources():Promise<data.SystemResources>;
@@ -27,3 +29,5 @@ export function GetWakaToday():Promise<string>;
 export function KillProcess(arg1:number):Promise<void>;
 
 export function Notify(arg1:string):Promise<void>;
+
+export function SaveSettings(arg1:data.OneJson):Promise<void>;

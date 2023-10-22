@@ -112,9 +112,8 @@ func (db *Database) EnsureOneDir() {
 }
 
 func (db *Database) GetOneJson() (data.OneJson, error) {
-	user_home, _ := utils.UserHome()
 
-	one_json_path := path.Join(user_home, ".onedev", "one.json")
+	one_json_path := utils.GetOneJsonPath()
 
 	database.OpenState.Lock()
 

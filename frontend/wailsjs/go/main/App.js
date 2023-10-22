@@ -30,6 +30,10 @@ export function GetRepo(arg1) {
   return window['go']['main']['App']['GetRepo'](arg1);
 }
 
+export function GetSettings() {
+  return window['go']['main']['App']['GetSettings']();
+}
+
 export function GetSystemProcesses() {
   return window['go']['main']['App']['GetSystemProcesses']();
 }
@@ -52,4 +56,8 @@ export function KillProcess(arg1) {
 
 export function Notify(arg1) {
   return window['go']['main']['App']['Notify'](arg1);
+}
+
+export function SaveSettings(arg1) {
+  return window['go']['main']['App']['SaveSettings'](arg1);
 }

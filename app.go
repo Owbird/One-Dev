@@ -8,6 +8,7 @@ import (
 	"github.com/owbird/one-dev/logic/frontend/git"
 	"github.com/owbird/one-dev/logic/frontend/helpers"
 	"github.com/owbird/one-dev/logic/frontend/home"
+	"github.com/owbird/one-dev/logic/frontend/settings"
 )
 
 type App struct {
@@ -15,13 +16,15 @@ type App struct {
 	*helpers.HelperFunctions
 	*home.HomeFunctions
 	*git.GitFunctions
+	*settings.SettingsFunctions
 }
 
 func NewApp() *App {
 	return &App{
-		HelperFunctions: helpers.NewInstance(),
-		HomeFunctions:   home.NewInstance(),
-		GitFunctions:    git.NewInstance(),
+		HelperFunctions:   helpers.NewInstance(),
+		HomeFunctions:     home.NewInstance(),
+		GitFunctions:      git.NewInstance(),
+		SettingsFunctions: settings.NewInstance(),
 	}
 }
 
