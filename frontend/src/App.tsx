@@ -19,7 +19,7 @@ import { IMenuTab, INavItem } from "@data/interfaces";
 import { WindowSetTitle } from "@go-runtime/runtime";
 import Git from "@pages/git/Git";
 import Home from "@src/pages/home/Home";
-import Settings from "./pages/settings/settings";
+import Settings from "./pages/settings/Settings";
 
 const NAV_ITEMS: INavItem[] = [
   {
@@ -125,7 +125,6 @@ function App() {
         }}
         transition=".3s ease"
       >
-        {tabIndex}
         <Tabs index={tabIndex} onChange={(index) => setTabIndex(index)}>
           <TabList>{tabList}</TabList>
 
