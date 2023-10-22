@@ -1,6 +1,7 @@
 import {
   Box,
   CloseButton,
+  Divider,
   HStack,
   Tab,
   TabList,
@@ -8,9 +9,9 @@ import {
   TabPanels,
   Tabs,
 } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 
-import { FaGithub, FaHome } from "react-icons/fa";
+import { FaCog, FaGithub, FaHome } from "react-icons/fa";
 
 import NavItem from "@components/app/NavItem";
 import SidebarContent from "@components/app/SidebarContent";
@@ -18,6 +19,7 @@ import { IMenuTab, INavItem } from "@data/interfaces";
 import { WindowSetTitle } from "@go-runtime/runtime";
 import Git from "@pages/git/Git";
 import Home from "@src/pages/home/Home";
+import Settings from "./pages/settings/settings";
 
 const NAV_ITEMS: INavItem[] = [
   {
@@ -34,32 +36,44 @@ const NAV_ITEMS: INavItem[] = [
       body: <Git />,
     },
   },
+  {
+    icon: FaCog,
+    menuTab: {
+      label: "Settings",
+      body: <Settings />,
+    },
+  },
 ];
 
 function App() {
   const [tabIndex, setTabIndex] = useState(0);
 
-  const [tabs, setTabs] = useState<IMenuTab[]>([NAV_ITEMS[0].menuTab]);
+  const [openedTabs, setOpenedTabs] = useState<IMenuTab[]>([
+    NAV_ITEMS[0].menuTab,
+  ]);
 
   const setWindowTitle = (window: string) => {
     WindowSetTitle(`One Dev | ${window}`);
   };
 
   const closeTab = (tab: IMenuTab) => {
-    setTabs(tabs.filter((x) => x !== tab));
-    const nextTabIndex = tabs.length - 2;
+    setOpenedTabs(openedTabs.filter((x) => x !== tab));
+    const nextTabIndex = openedTabs.length - 2;
     setTabIndex(nextTabIndex);
-    setWindowTitle(tabs[nextTabIndex].label);
+    setWindowTitle(openedTabs[nextTabIndex].label);
   };
 
   const handleMenuClick = (tab: IMenuTab) => {
-    if (!tabs.find((x) => tab.label === x.label)) {
-      setTabs([...tabs, tab]);
-      setTabIndex(tabs.length);
-    } else {
-      setTabIndex(tabs.findIndex((x) => x.label === tab.label));
-    }
+    const isTabOpened = openedTabs.find((x) => x.label === tab.label);
     setWindowTitle(tab.label);
+
+    if (!isTabOpened) {
+      const newOpenedTabs = [...openedTabs, tab];
+      setOpenedTabs([...newOpenedTabs]);
+      setTabIndex(newOpenedTabs.findIndex((x) => x.label === tab.label));
+    } else {
+      setTabIndex(openedTabs.findIndex((x) => x.label === tab.label));
+    }
   };
 
   useEffect(() => {
@@ -67,23 +81,24 @@ function App() {
   }, []);
 
   const navItems = NAV_ITEMS.map((item, index) => (
-    <NavItem
-      onClick={handleMenuClick}
-      isActive={index === tabIndex}
-      key={index}
-      icon={item.icon}
-      tab={{
-        label: item.menuTab.label,
-        body: item.menuTab.body,
-      }}
-    />
+    <Fragment>
+      {/* Divide Settings from rest of nav */}
+      {item.menuTab.label === "Settings" && <Divider />}
+      <NavItem
+        onClick={handleMenuClick}
+        isActive={item.menuTab.label === openedTabs[tabIndex].label}
+        key={index}
+        icon={item.icon}
+        tab={item.menuTab}
+      />
+    </Fragment>
   ));
 
-  const tabPanels = tabs.map((tabBody, index) => (
+  const tabPanels = openedTabs.map((tabBody, index) => (
     <TabPanel key={index}>{tabBody.body}</TabPanel>
   ));
 
-  const tabList = tabs.map((tab, index) => (
+  const tabList = openedTabs.map((tab, index) => (
     <HStack key={index}>
       <Tab key={index}>{tab.label}</Tab>
       {tab.label !== "Home" && (
@@ -110,6 +125,7 @@ function App() {
         }}
         transition=".3s ease"
       >
+        {tabIndex}
         <Tabs index={tabIndex} onChange={(index) => setTabIndex(index)}>
           <TabList>{tabList}</TabList>
 
