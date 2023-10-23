@@ -14,6 +14,7 @@ import {
 import { GetGitTokens, GetSettings, SaveSettings } from "@go/main/App";
 import { data } from "@go/models";
 import Loader from "@src/components/shared/Loader";
+import { enqueueSnackbar } from "notistack";
 import { useEffect, useState } from "react";
 
 function Settings() {
@@ -43,6 +44,8 @@ function Settings() {
     } as data.OneJson;
 
     await SaveSettings(newSettings);
+
+    enqueueSnackbar("Settings saved", { variant: "success" });
   };
 
   const findAvailableGitTokens = async () => {
