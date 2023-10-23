@@ -5,11 +5,15 @@ import {
   Flex,
   Heading,
   Input,
+  Radio,
+  RadioGroup,
+  Stack,
   Text,
   VStack,
 } from "@chakra-ui/react";
-import { GetSettings, SaveSettings } from "@go/main/App";
+import { GetGitTokens, GetSettings, SaveSettings } from "@go/main/App";
 import { data } from "@go/models";
+import Loader from "@src/components/shared/Loader";
 import { useEffect, useState } from "react";
 
 function Settings() {
@@ -17,6 +21,8 @@ function Settings() {
     username: "",
     token: "",
   });
+  const [availableGitTokens, setAvailableGitTokens] = useState<string[]>();
+  const [isLoading, setIsLoading] = useState(false);
 
   const updateGitSettings = (key: string, value: string) => {
     setGitSettings({
@@ -39,9 +45,29 @@ function Settings() {
     await SaveSettings(newSettings);
   };
 
+  const findAvailableGitTokens = async () => {
+    setIsLoading(true);
+
+    const tokens = await GetGitTokens();
+
+    setIsLoading(false);
+
+    setAvailableGitTokens(tokens);
+  };
+
   useEffect(() => {
     getSettings();
   }, []);
+
+  const gitTokensRadio = availableGitTokens?.map((token) => (
+    <Radio key={token} value={token}>
+      {token}
+    </Radio>
+  ));
+
+  if (isLoading) {
+    return <Loader />;
+  }
 
   return (
     <Box p={4}>
@@ -78,6 +104,22 @@ function Settings() {
                 size="lg"
                 variant="filled"
               />
+              {availableGitTokens && (
+                <RadioGroup
+                  onChange={(value) => updateGitSettings("token", value)}
+                  value={gitSettings.token}
+                >
+                  <Stack direction="column">{gitTokensRadio}</Stack>
+                </RadioGroup>
+              )}
+              <Button
+                onClick={findAvailableGitTokens}
+                colorScheme="teal"
+                size="xs"
+                mt={8}
+              >
+                Find available Tokens
+              </Button>
             </VStack>
           </Box>
           <Divider />

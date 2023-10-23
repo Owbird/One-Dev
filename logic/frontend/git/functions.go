@@ -189,6 +189,11 @@ func (gf *GitFunctions) ChangeBranch(repoPath string, branch string) {
 
 }
 
+// CloneRepo clones a Git repository from the given URL and name.
+//
+// url: the URL of the repository to clone.
+// name: the name of the repository.
+// error: returns an error if there was a problem cloning the repository.
 func (gf *GitFunctions) CloneRepo(url string, name string) error {
 	home, err := utils.UserHome()
 
@@ -239,10 +244,79 @@ func (gf *GitFunctions) CloneRepo(url string, name string) error {
 	return nil
 }
 
+// GetGitUser returns the GitUser object and an error.
+//
+// No parameters.
+// Returns a GitUser object and an error.
 func (gf *GitFunctions) GetGitUser() (data.GitUser, error) {
 	return gf.db.GetGitUser()
 }
 
+// GetGitDirs returns a list of Git directories.
+//
+// It does not take any parameters.
+// It returns a slice of data.File and an error.
 func (gf *GitFunctions) GetGitDirs() ([]data.File, error) {
 	return gf.db.GetGitDirs()
+}
+
+// GetGitTokens returns a slice of strings representing Git tokens and an error.
+//
+// This function retrieves the list of Git directories from the database and
+// iterates over each directory. For each directory, it opens the corresponding
+// Git repository and retrieves the list of remotes. For each remote, it extracts
+// the token from the URL and adds it to the tokens slice. Finally, it returns
+// the tokens slice and any error that occurred during the process.
+func (gf *GitFunctions) GetGitTokens() ([]string, error) {
+	tokens := []string{}
+
+	git_dirs, err := gf.db.GetGitDirs()
+
+	if err != nil {
+		return []string{}, err
+	}
+
+	for _, dir := range git_dirs {
+		repo, err := git.PlainOpen(dir.ParentDir)
+
+		if err != nil {
+			return tokens, err
+		}
+
+		remotes, err := repo.Remotes()
+
+		if err != nil {
+			return tokens, err
+		}
+
+		for _, remote := range remotes {
+			// url = https://<token>@github.com/<user>/<repo>.git
+			for _, url := range remote.Config().URLs {
+				at_parts := strings.Split(url, "@") // [https://<token>, @github.com/<user>/<repo>.git]
+
+				if len(at_parts) == 2 {
+					http_parts := strings.Split(at_parts[0], "https://") // ["",<token>]
+
+					token := http_parts[1]
+
+					already_exists := false
+
+					// Check if token has already been appended
+					for _, t := range tokens {
+						if t == token {
+							already_exists = true
+							break
+						}
+					}
+
+					if !already_exists {
+						tokens = append(tokens, token)
+					}
+
+				}
+			}
+		}
+	}
+
+	return tokens, nil
 }

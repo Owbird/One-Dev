@@ -18,6 +18,10 @@ export function GetGitDirs() {
   return window['go']['main']['App']['GetGitDirs']();
 }
 
+export function GetGitTokens() {
+  return window['go']['main']['App']['GetGitTokens']();
+}
+
 export function GetGitUser() {
   return window['go']['main']['App']['GetGitUser']();
 }

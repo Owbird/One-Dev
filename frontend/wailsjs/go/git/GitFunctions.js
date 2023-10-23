@@ -14,6 +14,10 @@ export function GetGitDirs() {
   return window['go']['git']['GitFunctions']['GetGitDirs']();
 }
 
+export function GetGitTokens() {
+  return window['go']['git']['GitFunctions']['GetGitTokens']();
+}
+
 export function GetGitUser() {
   return window['go']['git']['GitFunctions']['GetGitUser']();
 }

@@ -8,6 +8,8 @@ export function CloneRepo(arg1:string,arg2:string):Promise<void>;
 
 export function GetGitDirs():Promise<Array<data.File>>;
 
+export function GetGitTokens():Promise<Array<string>>;
+
 export function GetGitUser():Promise<data.GitUser>;
 
 export function GetRemoteRepos():Promise<Array<data.RemoteRepo>>;
