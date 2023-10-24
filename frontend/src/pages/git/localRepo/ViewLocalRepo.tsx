@@ -64,22 +64,33 @@ const ViewLocalRepo = () => {
     </option>
   ));
 
-  const tagsComponent = repoData?.tags.map((tag, index) => (
-    <option key={index} value={tag}>
-      {tag}
-    </option>
-  ));
+  const tagsComponent =
+    repoData?.tags === null ? (
+      <Select placeholder={"No tags"}></Select>
+    ) : (
+      <Select placeholder={repoData?.currentBranch}>
+        {repoData?.tags.map((tag, index) => (
+          <option key={index} value={tag}>
+            {tag}
+          </option>
+        ))}
+      </Select>
+    );
 
-  const changesComponent = repoData?.changes.map((change) => (
-    <Fragment key={change.file}>
-      <HStack>
-        <Text>{change.file}</Text>
-        <Badge colorScheme={getChangeColor(change.change)}>
-          {change.change}
-        </Badge>
-      </HStack>
-    </Fragment>
-  ));
+  const changesComponent = !repoData?.changes ? (
+    <Text>No local changes</Text>
+  ) : (
+    repoData?.changes.map((change) => (
+      <Fragment key={change.file}>
+        <HStack>
+          <Text>{change.file}</Text>
+          <Badge colorScheme={getChangeColor(change.change)}>
+            {change.change}
+          </Badge>
+        </HStack>
+      </Fragment>
+    ))
+  );
 
   const commitsComponent = repoData?.commits.map((commit) => (
     <Fragment key={commit.hash}>
@@ -124,13 +135,7 @@ const ViewLocalRepo = () => {
             {branches}
           </Select>
           <AiOutlineTag size={60} />
-          {repoData?.tags === null ? (
-            <Select placeholder={"No tags"}></Select>
-          ) : (
-            <Select placeholder={repoData?.currentBranch}>
-              {tagsComponent}
-            </Select>
-          )}
+          {tagsComponent}
         </HStack>
 
         <Tabs>
@@ -140,13 +145,7 @@ const ViewLocalRepo = () => {
           </TabList>
 
           <TabPanels>
-            <TabPanel>
-              {!repoData?.changes ? (
-                <Text>No local changes</Text>
-              ) : (
-                changesComponent
-              )}
-            </TabPanel>
+            <TabPanel>{changesComponent}</TabPanel>
             <TabPanel>{repoData?.commits && commitsComponent}</TabPanel>
           </TabPanels>
         </Tabs>
