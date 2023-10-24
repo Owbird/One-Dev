@@ -1,5 +1,6 @@
 import {
   Badge,
+  Box,
   Center,
   HStack,
   Heading,
@@ -145,8 +146,18 @@ const ViewLocalRepo = () => {
           </TabList>
 
           <TabPanels>
-            <TabPanel>{changesComponent}</TabPanel>
-            <TabPanel>{repoData?.commits && commitsComponent}</TabPanel>
+            <TabPanel>
+              <Box overflowY="auto" maxHeight="100vh">
+                {changesComponent}
+              </Box>
+            </TabPanel>
+            <TabPanel>
+              {repoData?.commits && (
+                <Box overflowY="auto" maxHeight="100vh">
+                  {commitsComponent}
+                </Box>
+              )}
+            </TabPanel>
           </TabPanels>
         </Tabs>
       </Stack>
