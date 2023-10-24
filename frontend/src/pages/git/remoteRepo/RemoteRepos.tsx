@@ -26,6 +26,9 @@ const RemoteRepos = () => {
       })
       .catch((err) => {
         enqueueSnackbar(err, { variant: "error" });
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   }, []);
 
