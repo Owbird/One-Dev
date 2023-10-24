@@ -73,7 +73,7 @@ func (gf *GitFunctions) GetRepo(path string) (data.Repo, error) {
 			Message:   commit.Message,
 			Committer: commit.Committer.Name,
 			Hash:      commit.Hash.String(),
-			Date:      commit.Committer.When.Format("2nd January, 2006"),
+			Date:      commit.Committer.When.Format("Mon Jan 02 15:04:05 2006"),
 		})
 
 		return nil
