@@ -44,6 +44,22 @@ const RemoteRepos = () => {
     );
   }
 
+  const repoGridItem = repos?.map((repo) => (
+    <GridItem
+      key={repo.id}
+      onClick={() => handleRepoView(repo)}
+      w="100%"
+      h="100%"
+      p={5}
+      bg="blue.500"
+    >
+      <p>
+        {repo.name}
+        {repo.private ? " (private)" : "(public)"}
+      </p>
+    </GridItem>
+  ));
+
   return (
     <TabPanel>
       <Grid
@@ -59,21 +75,7 @@ const RemoteRepos = () => {
               onClose={onClose}
               repo={activeRepo!}
             />
-            {repos.map((repo) => (
-              <GridItem
-                key={repo.id}
-                onClick={() => handleRepoView(repo)}
-                w="100%"
-                h="100%"
-                p={5}
-                bg="blue.500"
-              >
-                <p>
-                  {repo.name}
-                  {repo.private ? " (private)" : "(public)"}
-                </p>
-              </GridItem>
-            ))}
+            {repoGridItem}
           </Fragment>
         )}
       </Grid>
