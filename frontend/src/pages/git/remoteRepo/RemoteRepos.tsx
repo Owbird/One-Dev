@@ -1,13 +1,7 @@
-import {
-  Center,
-  Grid,
-  GridItem,
-  Spinner,
-  TabPanel,
-  useDisclosure,
-} from "@chakra-ui/react";
+import { Grid, GridItem, TabPanel, useDisclosure } from "@chakra-ui/react";
 import { GetRemoteRepos } from "@go/main/App";
 import { data } from "@go/models";
+import Loader from "@src/components/shared/Loader";
 import { enqueueSnackbar } from "notistack";
 import { Fragment, useEffect, useState } from "react";
 import ViewRemoteRepoModal from "./ViewRemoteRepo";
@@ -40,9 +34,7 @@ const RemoteRepos = () => {
   if (isLoading) {
     return (
       <TabPanel>
-        <Center>
-          <Spinner />
-        </Center>
+        <Loader />
       </TabPanel>
     );
   }
