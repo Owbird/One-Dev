@@ -1,12 +1,4 @@
-import {
-  Center,
-  Divider,
-  Grid,
-  GridItem,
-  Input,
-  Spinner,
-  TabPanel,
-} from "@chakra-ui/react";
+import { Divider, Grid, GridItem, Input, TabPanel } from "@chakra-ui/react";
 import { GetGitDirs } from "@go/main/App";
 import { data } from "@go/models";
 import Loader from "@src/components/shared/Loader";
@@ -49,6 +41,21 @@ const LocalRepos = () => {
       </TabPanel>
     );
   }
+
+  const repoGridItem = (searchRes ?? dirs).map((dir) => (
+    <GridItem
+      key={dir.parentDir}
+      onClick={() =>
+        navigate(`${GitRoutes.LocalRepoView}?dir=${dir.parentDir}`)
+      }
+      w="100%"
+      h="100%"
+      p={5}
+      bg="blue.500"
+    >
+      <p>{dir.dir}</p>
+    </GridItem>
+  ));
   return (
     <TabPanel>
       <Divider width={20} />
@@ -65,20 +72,7 @@ const LocalRepos = () => {
         templateColumns="repeat(5, 1fr)"
         gap={6}
       >
-        {(searchRes ?? dirs).map((dir) => (
-          <GridItem
-            key={dir.parentDir}
-            onClick={() =>
-              navigate(`${GitRoutes.LocalRepoView}?dir=${dir.parentDir}`)
-            }
-            w="100%"
-            h="100%"
-            p={5}
-            bg="blue.500"
-          >
-            <p>{dir.dir}</p>
-          </GridItem>
-        ))}
+        {repoGridItem}
       </Grid>
     </TabPanel>
   );

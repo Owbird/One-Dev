@@ -54,17 +54,58 @@ const ViewLocalRepo = () => {
     GetRepo(repoData?.parentDir!).then(setRepoData);
   };
 
-  return repoData?.currentBranch == "" ? (
-    <Fragment>
+  const branches = repoData?.branches.map((branch, index) => (
+    <option
+      selected={branch.toLowerCase() === repoData!.currentBranch.toLowerCase()}
+      key={index}
+      value={branch}
+    >
+      {branch}
+    </option>
+  ));
+
+  const tagsComponent = repoData?.tags.map((tag, index) => (
+    <option key={index} value={tag}>
+      {tag}
+    </option>
+  ));
+
+  const changesComponent = repoData?.changes.map((change) => (
+    <Fragment key={change.file}>
       <HStack>
-        <IoIosArrowBack onClick={() => navigate(-1)} size={50} />
-        <Heading>{repoData?.dir}</Heading>
+        <Text>{change.file}</Text>
+        <Badge colorScheme={getChangeColor(change.change)}>
+          {change.change}
+        </Badge>
       </HStack>
-      <Center>
-        <Heading>Empty Repo?</Heading>
-      </Center>
     </Fragment>
-  ) : (
+  ));
+
+  const commitsComponent = repoData?.commits.map((commit) => (
+    <Fragment key={commit.hash}>
+      <Text>{commit.message}</Text>
+      <Text color={"gray.500"}>
+        {commit.committer} | {commit.date}
+      </Text>
+    </Fragment>
+  ));
+
+  // Repo is empty
+  if (repoData?.currentBranch === "") {
+    return (
+      <Fragment>
+        <HStack>
+          <IoIosArrowBack onClick={() => navigate(-1)} size={50} />
+          <Heading>{repoData?.dir}</Heading>
+        </HStack>
+        <Center>
+          <Heading>Empty Repo?</Heading>
+        </Center>
+      </Fragment>
+    );
+  }
+
+  return (
     <Fragment>
       <HStack>
         <IoIosArrowBack onClick={() => navigate(-1)} size={50} />
@@ -80,28 +121,14 @@ const ViewLocalRepo = () => {
             placeholder={repoData?.currentBranch}
             defaultValue={repoData?.currentBranch}
           >
-            {repoData?.branches.map((branch, index) => (
-              <option
-                selected={
-                  branch.toLowerCase() === repoData!.currentBranch.toLowerCase()
-                }
-                key={index}
-                value={branch}
-              >
-                {branch}
-              </option>
-            ))}
+            {branches}
           </Select>
           <AiOutlineTag size={60} />
           {repoData?.tags === null ? (
             <Select placeholder={"No tags"}></Select>
           ) : (
             <Select placeholder={repoData?.currentBranch}>
-              {repoData?.tags.map((tag, index) => (
-                <option key={index} value={tag}>
-                  {tag}
-                </option>
-              ))}
+              {tagsComponent}
             </Select>
           )}
         </HStack>
@@ -117,29 +144,10 @@ const ViewLocalRepo = () => {
               {!repoData?.changes ? (
                 <Text>No local changes</Text>
               ) : (
-                repoData?.changes.map((change) => (
-                  <Fragment key={change.file}>
-                    <HStack>
-                      <Text>{change.file}</Text>
-                      <Badge colorScheme={getChangeColor(change.change)}>
-                        {change.change}
-                      </Badge>
-                    </HStack>
-                  </Fragment>
-                ))
+                changesComponent
               )}
             </TabPanel>
-            <TabPanel>
-              {repoData?.commits &&
-                repoData?.commits.map((commit) => (
-                  <Fragment key={commit.hash}>
-                    <Text>{commit.message}</Text>
-                    <Text color={"gray.500"}>
-                      {commit.committer} | {commit.date}
-                    </Text>
-                  </Fragment>
-                ))}
-            </TabPanel>
+            <TabPanel>{repoData?.commits && commitsComponent}</TabPanel>
           </TabPanels>
         </Tabs>
       </Stack>
