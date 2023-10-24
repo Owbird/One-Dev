@@ -428,7 +428,8 @@ export namespace data {
 	
 	export class RepoCommit {
 	    message: string;
-	    committer: string;
+	    committerName: string;
+	    committerEmail: string;
 	    hash: string;
 	    date: string;
 	
@@ -439,7 +440,8 @@ export namespace data {
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.message = source["message"];
-	        this.committer = source["committer"];
+	        this.committerName = source["committerName"];
+	        this.committerEmail = source["committerEmail"];
 	        this.hash = source["hash"];
 	        this.date = source["date"];
 	    }

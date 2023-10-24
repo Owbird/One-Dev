@@ -70,10 +70,11 @@ func (gf *GitFunctions) GetRepo(path string) (data.Repo, error) {
 	git_log.ForEach((func(commit *object.Commit) error {
 
 		git_repo.Commits = append(git_repo.Commits, data.RepoCommit{
-			Message:   commit.Message,
-			Committer: commit.Committer.Name,
-			Hash:      commit.Hash.String(),
-			Date:      commit.Committer.When.Format("Mon Jan 02 15:04:05 2006"),
+			Message:        commit.Message,
+			CommitterName:  commit.Committer.Name,
+			CommitterEmail: commit.Committer.Email,
+			Hash:           commit.Hash.String(),
+			Date:           commit.Committer.When.Format("Mon Jan 02 15:04:05 2006"),
 		})
 
 		return nil

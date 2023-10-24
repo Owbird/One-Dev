@@ -97,7 +97,7 @@ const ViewLocalRepo = () => {
     <Fragment key={commit.hash}>
       <Text>{commit.message}</Text>
       <Text color={"gray.500"}>
-        {commit.committer} | {commit.date}
+        {`${commit.committerName} <${commit.committerEmail}>`} | {commit.date}
       </Text>
     </Fragment>
   ));

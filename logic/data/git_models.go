@@ -17,10 +17,11 @@ type Repo struct {
 }
 
 type RepoCommit struct {
-	Message   string `json:"message"`
-	Committer string `json:"committer"`
-	Hash      string `json:"hash"`
-	Date      string `json:"date"`
+	Message        string `json:"message"`
+	CommitterName  string `json:"committerName"`
+	CommitterEmail string `json:"committerEmail"`
+	Hash           string `json:"hash"`
+	Date           string `json:"date"`
 }
 
 type GitUser struct {
