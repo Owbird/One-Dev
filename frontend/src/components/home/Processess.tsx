@@ -5,6 +5,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogOverlay,
+  Box,
   Button,
   Input,
   Table,
@@ -98,72 +99,77 @@ const Processess = () => {
     return () => clearInterval(timerID);
   }, []);
 
+  const sortedProcessesComponent = sortedProcesses.map((process, index) => (
+    <Tr
+      onClick={() => handleClick(process)}
+      _hover={{ bg: "gray.100" }}
+      key={index}
+    >
+      <Td>{process.pid}</Td>
+      <Td overflow={"scroll"} maxWidth={"50px"}>
+        {process.name}
+      </Td>
+      <Td>{process.username}</Td>
+      <Td>{process.memoryUsage.toFixed(2)}%</Td>
+      <Td>{process.cpuUsage.toFixed(2)}%</Td>
+    </Tr>
+  ));
+
   return (
     <Fragment>
       <Input
         onChange={(event) => handleSearch(event.target.value)}
         placeholder="PID, Process, User"
       />
-      <TableContainer>
-        <Table variant="simple">
-          <TableCaption>Processes</TableCaption>
-          <Thead>
-            <Tr>
-              <Th onClick={() => handleSort("pid")}>Pid</Th>
-              <Th onClick={() => handleSort("name")}>Process</Th>
-              <Th onClick={() => handleSort("username")}>User</Th>
-              <Th onClick={() => handleSort("memory")}>Memory</Th>
-              <Th onClick={() => handleSort("cpu")}>CPU</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            <AlertDialog
-              isOpen={isOpen}
-              leastDestructiveRef={cancelRef as MutableRefObject<any>}
-              onClose={onClose}
-            >
-              <AlertDialogOverlay>
-                <AlertDialogContent>
-                  <AlertDialogHeader fontSize="lg" fontWeight="bold">
-                    Kill Process "{activeProcess?.name} - {activeProcess?.pid}"
-                  </AlertDialogHeader>
-
-                  <AlertDialogBody>
-                    Are you sure? You can't undo this action afterwards.
-                  </AlertDialogBody>
-
-                  <AlertDialogFooter>
-                    <Button onClick={onClose}>Cancel</Button>
-                    <Button
-                      colorScheme="red"
-                      onClick={() => killProcess(activeProcess?.pid!)}
-                      ml={3}
-                    >
-                      Kill
-                    </Button>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialogOverlay>
-            </AlertDialog>
-
-            {sortedProcesses.map((process, index) => (
-              <Tr
-                onClick={() => handleClick(process)}
-                _hover={{ bg: "gray.100" }}
-                key={index}
-              >
-                <Td>{process.pid}</Td>
-                <Td overflow={"scroll"} maxWidth={"50px"}>
-                  {process.name}
-                </Td>
-                <Td>{process.username}</Td>
-                <Td>{process.memoryUsage.toFixed(2)}%</Td>
-                <Td>{process.cpuUsage.toFixed(2)}%</Td>
+      <Box overflowY={"auto"} maxHeight={"100vh"}>
+        <TableContainer>
+          <Table variant="simple">
+            <TableCaption>Processes</TableCaption>
+            <Thead>
+              <Tr>
+                <Th onClick={() => handleSort("pid")}>Pid</Th>
+                <Th onClick={() => handleSort("name")}>Process</Th>
+                <Th onClick={() => handleSort("username")}>User</Th>
+                <Th onClick={() => handleSort("memory")}>Memory</Th>
+                <Th onClick={() => handleSort("cpu")}>CPU</Th>
               </Tr>
-            ))}
-          </Tbody>
-        </Table>
-      </TableContainer>
+            </Thead>
+            <Tbody>
+              <AlertDialog
+                isOpen={isOpen}
+                leastDestructiveRef={cancelRef as MutableRefObject<any>}
+                onClose={onClose}
+              >
+                <AlertDialogOverlay>
+                  <AlertDialogContent>
+                    <AlertDialogHeader fontSize="lg" fontWeight="bold">
+                      Kill Process "{activeProcess?.name} - {activeProcess?.pid}
+                      "
+                    </AlertDialogHeader>
+
+                    <AlertDialogBody>
+                      Are you sure? You can't undo this action afterwards.
+                    </AlertDialogBody>
+
+                    <AlertDialogFooter>
+                      <Button onClick={onClose}>Cancel</Button>
+                      <Button
+                        colorScheme="red"
+                        onClick={() => killProcess(activeProcess?.pid!)}
+                        ml={3}
+                      >
+                        Kill
+                      </Button>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialogOverlay>
+              </AlertDialog>
+
+              {sortedProcessesComponent}
+            </Tbody>
+          </Table>
+        </TableContainer>
+      </Box>
     </Fragment>
   );
 };
