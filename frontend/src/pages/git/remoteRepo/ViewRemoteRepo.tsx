@@ -1,5 +1,7 @@
 import {
+  Avatar,
   Button,
+  Flex,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -7,19 +9,22 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  Text,
 } from "@chakra-ui/react";
 import { CloneRepo } from "@go/git/GitFunctions";
 import { data } from "@go/models";
-import { useState } from "react";
+import { FC, useState } from "react";
 
-const ViewRemoteRepoModal = ({
-  isOpen,
-  onClose,
-  repo,
-}: {
+interface ViewRemoteRepoModalProps {
   isOpen: boolean;
   onClose: () => void;
   repo: data.RemoteRepo;
+}
+
+const ViewRemoteRepoModal: FC<ViewRemoteRepoModalProps> = ({
+  isOpen,
+  onClose,
+  repo,
 }) => {
   const [isCloning, setIsCloning] = useState(false);
 
@@ -28,6 +33,7 @@ const ViewRemoteRepoModal = ({
     await CloneRepo(repo.htmlURL, repo.name);
     setIsCloning(false);
   };
+
   return (
     <Modal
       closeOnOverlayClick={!isCloning}
@@ -38,10 +44,24 @@ const ViewRemoteRepoModal = ({
       <ModalOverlay />
       {repo && (
         <ModalContent>
-          <ModalHeader>{repo.name}</ModalHeader>
+          <ModalHeader>
+            <Flex align="center">
+              <Avatar size="sm" src={repo.owner.avatarURL} />
+              <Text ml={2}>{repo.owner.login}</Text>
+            </Flex>
+          </ModalHeader>
           {!isCloning && <ModalCloseButton />}
           <ModalBody>
             {repo.description === "" ? "No description" : repo.description}
+            <Text mt={2}>
+              Language: {repo.language}
+              <br />
+              Stars: {repo.stargazersCount}
+              <br />
+              Forks: {repo.forksCount}
+              <br />
+              Watchers: {repo.watchersCount}
+            </Text>
           </ModalBody>
 
           <ModalFooter>
