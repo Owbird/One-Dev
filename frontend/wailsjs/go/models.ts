@@ -426,6 +426,52 @@ export namespace data {
 	}
 	
 	
+	export class RepoContributors {
+	    contributor: string;
+	    percentage: string;
+	    totalCommits: number;
+	
+	    static createFrom(source: any = {}) {
+	        return new RepoContributors(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.contributor = source["contributor"];
+	        this.percentage = source["percentage"];
+	        this.totalCommits = source["totalCommits"];
+	    }
+	}
+	export class RepoAnalytics {
+	    contributors: RepoContributors[];
+	
+	    static createFrom(source: any = {}) {
+	        return new RepoAnalytics(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.contributors = this.convertValues(source["contributors"], RepoContributors);
+	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
+	}
 	export class RepoCommit {
 	    message: string;
 	    committerName: string;
@@ -466,6 +512,7 @@ export namespace data {
 	    tags: string[];
 	    changes: RepoChange[];
 	    commits: RepoCommit[];
+	    analytics: RepoAnalytics;
 	    parentDir: string;
 	    dir: string;
 	
@@ -480,6 +527,7 @@ export namespace data {
 	        this.tags = source["tags"];
 	        this.changes = this.convertValues(source["changes"], RepoChange);
 	        this.commits = this.convertValues(source["commits"], RepoCommit);
+	        this.analytics = this.convertValues(source["analytics"], RepoAnalytics);
 	        this.parentDir = source["parentDir"];
 	        this.dir = source["dir"];
 	    }
@@ -502,6 +550,8 @@ export namespace data {
 		    return a;
 		}
 	}
+	
+	
 	
 	
 	export class UserMeta {

@@ -67,6 +67,8 @@ func (gf *GitFunctions) GetRepo(path string) (data.Repo, error) {
 		return git_repo, nil
 	}
 
+	contributor_commits := make(map[string]int)
+
 	git_log.ForEach((func(commit *object.Commit) error {
 
 		git_repo.Commits = append(git_repo.Commits, data.RepoCommit{
@@ -77,8 +79,21 @@ func (gf *GitFunctions) GetRepo(path string) (data.Repo, error) {
 			Date:           commit.Committer.When.Format("Mon Jan 02 15:04:05 2006"),
 		})
 
+		contributor_id := fmt.Sprintf("%s <%s>", commit.Committer.Name, commit.Committer.Email)
+		contributor_commits[contributor_id]++
+
 		return nil
 	}))
+
+	for contributor, commits := range contributor_commits {
+		percentage := float64(commits) / float64(len(git_repo.Commits)) * 100
+		formattedPercentage := fmt.Sprintf("%.2f", percentage) // Format the percentage to two decimal places
+		git_repo.Analytics.Contributors = append(git_repo.Analytics.Contributors, data.RepoContributors{
+			Contributor:  contributor,
+			TotalCommits: commits,
+			Percentage:   formattedPercentage,
+		})
+	}
 
 	branches, err := repo.Branches()
 

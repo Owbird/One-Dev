@@ -143,6 +143,7 @@ const ViewLocalRepo = () => {
           <TabList>
             <Tab>Changes</Tab>
             <Tab>History</Tab>
+            <Tab>Analytics</Tab>
           </TabList>
 
           <TabPanels>
@@ -157,6 +158,34 @@ const ViewLocalRepo = () => {
                   {commitsComponent}
                 </Box>
               )}
+            </TabPanel>
+            <TabPanel>
+              <TabPanel>
+                <Box>
+                  <Heading as="h2" size="lg" mb={2}>
+                    Contributors ({repoData?.analytics.contributors.length})
+                  </Heading>
+                  {repoData?.analytics.contributors.map(
+                    (contributor, index) => (
+                      <Box
+                        key={index}
+                        bg="gray.100"
+                        p={4}
+                        mb={2}
+                        borderRadius="md"
+                      >
+                        <Heading as="h3" size="md">
+                          {contributor.contributor}
+                        </Heading>
+                        <Text>
+                          Total Contributions: {contributor.totalCommits} (
+                          {contributor.percentage}%)
+                        </Text>
+                      </Box>
+                    ),
+                  )}
+                </Box>
+              </TabPanel>
             </TabPanel>
           </TabPanels>
         </Tabs>

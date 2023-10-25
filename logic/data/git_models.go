@@ -7,12 +7,23 @@ type RepoChange struct {
 	Change string `json:"change"`
 }
 
+type RepoContributors struct {
+	Contributor  string `json:"contributor"`
+	Percentage   string `json:"percentage"`
+	TotalCommits int    `json:"totalCommits"`
+}
+
+type RepoAnalytics struct {
+	Contributors []RepoContributors `json:"contributors"`
+}
+
 type Repo struct {
-	CurrentBranch string       `json:"currentBranch"`
-	Branches      []string     `json:"branches"`
-	Tags          []string     `json:"tags"`
-	Changes       []RepoChange `json:"changes"`
-	Commits       []RepoCommit `json:"commits"`
+	CurrentBranch string        `json:"currentBranch"`
+	Branches      []string      `json:"branches"`
+	Tags          []string      `json:"tags"`
+	Changes       []RepoChange  `json:"changes"`
+	Commits       []RepoCommit  `json:"commits"`
+	Analytics     RepoAnalytics `json:"analytics"`
 	File
 }
 
