@@ -38,7 +38,7 @@ type GitFunctions struct {
 func (gf *GitFunctions) GetRepo(path string) (data.Repo, error) {
 	log.Println("[+] Getting git dir")
 
-	git_repo := data.Repo{
+	gitRepo := data.Repo{
 		File: data.File{
 			ParentDir: path,
 			Dir:       filepath.Base(path),
@@ -54,24 +54,24 @@ func (gf *GitFunctions) GetRepo(path string) (data.Repo, error) {
 	head, err := repo.Head()
 
 	if err != nil {
-		return git_repo, nil
+		return gitRepo, nil
 	}
 
 	branch := head.Name()
 
-	git_repo.CurrentBranch = branch.Short()
+	gitRepo.CurrentBranch = branch.Short()
 
-	git_log, err := repo.Log(&git.LogOptions{})
+	gitLog, err := repo.Log(&git.LogOptions{})
 
 	if err != nil {
-		return git_repo, nil
+		return gitRepo, nil
 	}
 
-	contributor_commits := make(map[string]int)
+	contributorCommits := make(map[string]int)
 
-	git_log.ForEach((func(commit *object.Commit) error {
+	gitLog.ForEach((func(commit *object.Commit) error {
 
-		git_repo.Commits = append(git_repo.Commits, data.RepoCommit{
+		gitRepo.Commits = append(gitRepo.Commits, data.RepoCommit{
 			Message:        commit.Message,
 			CommitterName:  commit.Committer.Name,
 			CommitterEmail: commit.Committer.Email,
@@ -79,16 +79,16 @@ func (gf *GitFunctions) GetRepo(path string) (data.Repo, error) {
 			Date:           commit.Committer.When.Format("Mon Jan 02 15:04:05 2006"),
 		})
 
-		contributor_id := fmt.Sprintf("%s <%s>", commit.Committer.Name, commit.Committer.Email)
-		contributor_commits[contributor_id]++
+		contributorID := fmt.Sprintf("%s <%s>", commit.Committer.Name, commit.Committer.Email)
+		contributorCommits[contributorID]++
 
 		return nil
 	}))
 
-	for contributor, commits := range contributor_commits {
-		percentage := float64(commits) / float64(len(git_repo.Commits)) * 100
+	for contributor, commits := range contributorCommits {
+		percentage := float64(commits) / float64(len(gitRepo.Commits)) * 100
 		formattedPercentage := fmt.Sprintf("%.2f", percentage) // Format the percentage to two decimal places
-		git_repo.Analytics.Contributors = append(git_repo.Analytics.Contributors, data.RepoContributors{
+		gitRepo.Analytics.Contributors = append(gitRepo.Analytics.Contributors, data.RepoContributors{
 			Contributor:  contributor,
 			TotalCommits: commits,
 			Percentage:   formattedPercentage,
@@ -98,12 +98,12 @@ func (gf *GitFunctions) GetRepo(path string) (data.Repo, error) {
 	branches, err := repo.Branches()
 
 	if err != nil {
-		return git_repo, nil
+		return gitRepo, nil
 	}
 
 	branches.ForEach(func(branch *plumbing.Reference) error {
 
-		git_repo.Branches = append(git_repo.Branches, branch.Name().Short())
+		gitRepo.Branches = append(gitRepo.Branches, branch.Name().Short())
 
 		return nil
 	})
@@ -116,7 +116,7 @@ func (gf *GitFunctions) GetRepo(path string) (data.Repo, error) {
 
 	tags.ForEach(func(tag *plumbing.Reference) error {
 
-		git_repo.Tags = append(git_repo.Tags, tag.Name().Short())
+		gitRepo.Tags = append(gitRepo.Tags, tag.Name().Short())
 
 		return nil
 	})
@@ -126,7 +126,7 @@ func (gf *GitFunctions) GetRepo(path string) (data.Repo, error) {
 	res, err := exec.Command("git", "-C", path, "status", "-s").Output()
 
 	if err != nil {
-		return git_repo, nil
+		return gitRepo, nil
 	}
 
 	status := strings.Split(string(res), "\n")
@@ -141,12 +141,12 @@ func (gf *GitFunctions) GetRepo(path string) (data.Repo, error) {
 				Change: changes[0],
 			}
 
-			git_repo.Changes = append(git_repo.Changes, change)
+			gitRepo.Changes = append(gitRepo.Changes, change)
 		}
 
 	}
 
-	return git_repo, nil
+	return gitRepo, nil
 }
 
 // GetRemoteRepos retrieves the list of remote repositories for the authenticated user
@@ -286,13 +286,13 @@ func (gf *GitFunctions) GetGitDirs() ([]data.File, error) {
 func (gf *GitFunctions) GetGitTokens() ([]string, error) {
 	tokens := []string{}
 
-	git_dirs, err := gf.db.GetGitDirs()
+	gitDirs, err := gf.db.GetGitDirs()
 
 	if err != nil {
 		return []string{}, err
 	}
 
-	for _, dir := range git_dirs {
+	for _, dir := range gitDirs {
 		repo, err := git.PlainOpen(dir.ParentDir)
 
 		if err != nil {
@@ -308,24 +308,24 @@ func (gf *GitFunctions) GetGitTokens() ([]string, error) {
 		for _, remote := range remotes {
 			// url = https://<token>@github.com/<user>/<repo>.git
 			for _, url := range remote.Config().URLs {
-				at_parts := strings.Split(url, "@") // [https://<token>, @github.com/<user>/<repo>.git]
+				atParts := strings.Split(url, "@") // [https://<token>, @github.com/<user>/<repo>.git]
 
-				if len(at_parts) == 2 {
-					http_parts := strings.Split(at_parts[0], "https://") // ["",<token>]
+				if len(atParts) == 2 {
+					httpParts := strings.Split(atParts[0], "https://") // ["",<token>]
 
-					token := http_parts[1]
+					token := httpParts[1]
 
-					already_exists := false
+					alreadyExists := false
 
 					// Check if token has already been appended
 					for _, t := range tokens {
 						if t == token {
-							already_exists = true
+							alreadyExists = true
 							break
 						}
 					}
 
-					if !already_exists {
+					if !alreadyExists {
 						tokens = append(tokens, token)
 					}
 

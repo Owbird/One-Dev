@@ -30,13 +30,13 @@ func (sf *HelperFunctions) Notify(message string) {
 // It returns a string.
 func (sf *HelperFunctions) GetWakaToday() string {
 
-	waka_cli, err := utils.WakaTimeCli()
+	wakaCli, err := utils.WakaTimeCli()
 
 	if err != nil {
 		return "0 seconds Today"
 	}
 
-	res, err := exec.Command(waka_cli, "--today").Output()
+	res, err := exec.Command(wakaCli, "--today").Output()
 
 	if err != nil {
 		return "0 seconds Today"

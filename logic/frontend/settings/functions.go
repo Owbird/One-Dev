@@ -32,15 +32,15 @@ func (sf *SettingsFunctions) GetSettings() (data.OneJson, error) {
 // It takes a parameter `settings` of type `data.OneJson` which represents the settings to be saved.
 // It returns an error if there was any issue while saving the settings.
 func (sf *SettingsFunctions) SaveSettings(settings data.OneJson) error {
-	one_json, err := json.MarshalIndent(settings, "", "\t")
+	oneJson, err := json.MarshalIndent(settings, "", "\t")
 
-	one_json_path := utils.GetOneJsonPath()
+	oneJsonPath := utils.GetOneJsonPath()
 
 	if err != nil {
 		return err
 	}
 
-	err = os.WriteFile(one_json_path, one_json, 0644)
+	err = os.WriteFile(oneJsonPath, oneJson, 0644)
 
 	if err != nil {
 		return err

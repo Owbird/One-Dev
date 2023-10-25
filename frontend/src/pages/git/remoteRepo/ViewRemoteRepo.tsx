@@ -25,7 +25,7 @@ const ViewRemoteRepoModal = ({
 
   const handleClone = async () => {
     setIsCloning(true);
-    await CloneRepo(repo.html_url, repo.name);
+    await CloneRepo(repo.htmlURL, repo.name);
     setIsCloning(false);
   };
   return (

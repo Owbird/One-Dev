@@ -40,25 +40,25 @@ func (hf *HomeFunctions) GetUserMeta() (data.UserMeta, error) {
 func (hf *HomeFunctions) GetSystemResources() (data.SystemResources, error) {
 	stats := data.SystemResources{}
 
-	memory_stats, err := mem.VirtualMemory()
+	memoryStats, err := mem.VirtualMemory()
 
 	if err != nil {
 		return stats, err
 	}
 
-	battery_stats, err := battery.GetAll()
+	batteryStats, err := battery.GetAll()
 
 	if err != nil {
 		return stats, err
 	}
 
-	cpu_info, err := cpu.Info()
+	cpuInfo, err := cpu.Info()
 
 	if err != nil {
 		return stats, err
 	}
 
-	cpu_usages, err := cpu.Percent(0, true)
+	cpuUsages, err := cpu.Percent(0, true)
 
 	if err != nil {
 		return stats, err
@@ -72,26 +72,26 @@ func (hf *HomeFunctions) GetSystemResources() (data.SystemResources, error) {
 		stats.UpTime = upTime
 	}
 
-	stats.MemoryStats.Total = memory_stats.Total
-	stats.MemoryStats.Free = memory_stats.Free
-	stats.MemoryStats.Used = memory_stats.Used
-	stats.MemoryStats.UsedPercentage = memory_stats.UsedPercent
+	stats.MemoryStats.Total = memoryStats.Total
+	stats.MemoryStats.Free = memoryStats.Free
+	stats.MemoryStats.Used = memoryStats.Used
+	stats.MemoryStats.UsedPercentage = memoryStats.UsedPercent
 
 	stats.CPUStats = data.CPUStats{
-		Model:  cpu_info[0].ModelName,
-		Cores:  len(cpu_info),
-		Usages: cpu_usages,
+		Model:  cpuInfo[0].ModelName,
+		Cores:  len(cpuInfo),
+		Usages: cpuUsages,
 	}
 
-	if len(battery_stats) > 0 {
+	if len(batteryStats) > 0 {
 
 		stats.IsLaptop = true
 
-		main_battery := battery_stats[0]
+		mainBattery := batteryStats[0]
 
-		stats.BatteryStats.CurrentPower = int(math.Round(main_battery.Current / main_battery.Full * 100))
+		stats.BatteryStats.CurrentPower = int(math.Round(mainBattery.Current / mainBattery.Full * 100))
 
-		stats.BatteryStats.ChargingState = main_battery.State.String()
+		stats.BatteryStats.ChargingState = mainBattery.State.String()
 	} else {
 
 		stats.IsLaptop = false
@@ -100,13 +100,13 @@ func (hf *HomeFunctions) GetSystemResources() (data.SystemResources, error) {
 
 	}
 
-	wk_cli_path, err := utils.WakaTimeCli()
+	wkCliPath, err := utils.WakaTimeCli()
 
 	if err != nil {
 		return stats, err
 	}
 
-	_, err = os.Stat(wk_cli_path)
+	_, err = os.Stat(wkCliPath)
 
 	stats.HasWaka = err == nil
 
@@ -125,22 +125,22 @@ func (hf *HomeFunctions) GetSystemProcesses() ([]data.Process, error) {
 
 	stats := []data.Process{}
 
-	all_processes, err := process.Processes()
+	allProcesses, err := process.Processes()
 
 	if err != nil {
 		return stats, err
 	}
 
-	for _, current_process := range all_processes {
-		name, _ := current_process.Name()
-		cpu_usage, _ := current_process.CPUPercent()
-		memory_usage, _ := current_process.MemoryPercent()
-		username, _ := current_process.Username()
-		pid := current_process.Pid
+	for _, currentProcess := range allProcesses {
+		name, _ := currentProcess.Name()
+		cpuUsage, _ := currentProcess.CPUPercent()
+		memory_usage, _ := currentProcess.MemoryPercent()
+		username, _ := currentProcess.Username()
+		pid := currentProcess.Pid
 
 		process := data.Process{
 			Name:        name,
-			CPUUsage:    cpu_usage,
+			CPUUsage:    cpuUsage,
 			MemoryUsage: float64(memory_usage),
 			Pid:         pid,
 			Username:    username,
@@ -155,25 +155,25 @@ func (hf *HomeFunctions) GetSystemProcesses() ([]data.Process, error) {
 func (hf *HomeFunctions) GetFileSystems() ([]data.DiskStats, error) {
 	stats := []data.DiskStats{}
 
-	disk_partitions, err := disk.Partitions(false)
+	diskPartitions, err := disk.Partitions(false)
 
 	if err != nil {
 		return []data.DiskStats{}, err
 	}
 
-	for _, disk_partition := range disk_partitions {
+	for _, diskPartition := range diskPartitions {
 
-		if !strings.Contains(disk_partition.Device, "loop") {
-			disk_stats, _ := disk.Usage(disk_partition.Mountpoint)
+		if !strings.Contains(diskPartition.Device, "loop") {
+			diskStats, _ := disk.Usage(diskPartition.Mountpoint)
 
 			stats = append(stats, data.DiskStats{
 				Path:           "/",
-				DiskType:       disk_stats.Fstype,
-				Device:         disk_partition.Device,
-				Total:          disk_stats.Total,
-				Free:           disk_stats.Free,
-				Used:           disk_stats.Used,
-				UsedPercentage: disk_stats.UsedPercent,
+				DiskType:       diskStats.Fstype,
+				Device:         diskPartition.Device,
+				Total:          diskStats.Total,
+				Free:           diskStats.Free,
+				Used:           diskStats.Used,
+				UsedPercentage: diskStats.UsedPercent,
 			})
 		}
 

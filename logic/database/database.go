@@ -44,13 +44,13 @@ func (db *Database) GetGitDirs() ([]data.File, error) {
 
 		if d.IsDir() {
 
-			dir_name := d.Name()
+			dirName := d.Name()
 
-			if string(dir_name[0]) == "." && dir_name != ".git" {
+			if string(dirName[0]) == "." && dirName != ".git" {
 				return filepath.SkipDir
 			}
 
-			if dir_name == ".git" {
+			if dirName == ".git" {
 				dir := data.File{
 					ParentDir: filepath.Dir(path),
 					Dir:       filepath.Base(filepath.Dir(path)),
@@ -73,35 +73,35 @@ func (db *Database) GetGitDirs() ([]data.File, error) {
 // It returns a string.
 func (db *Database) GetGitUser() (data.GitUser, error) {
 
-	one_json, err := db.GetOneJson()
+	oneJson, err := db.GetOneJson()
 
 	if err != nil {
 		return data.GitUser{}, err
 	}
 
 	return data.GitUser{
-		Username: one_json.Git.Username,
-		Token:    one_json.Git.Token,
+		Username: oneJson.Git.Username,
+		Token:    oneJson.Git.Token,
 	}, nil
 }
 
 func (db *Database) EnsureOneDir() {
-	user_home, err := utils.UserHome()
+	userHome, err := utils.UserHome()
 
 	if err != nil {
 		log.Fatalln(err)
 	}
 
-	one_dir := path.Join(user_home, ".onedev")
+	oneDir := path.Join(userHome, ".onedev")
 
-	os.Mkdir(one_dir, 0755)
+	os.Mkdir(oneDir, 0755)
 
-	one_json := path.Join(one_dir, "one.json")
+	oneJson := path.Join(oneDir, "one.json")
 
-	_, err = os.Stat(one_json)
+	_, err = os.Stat(oneJson)
 
 	if err != nil {
-		_, err := os.Create(one_json)
+		_, err := os.Create(oneJson)
 
 		if err != nil {
 			log.Fatalln(err)
@@ -113,22 +113,22 @@ func (db *Database) EnsureOneDir() {
 
 func (db *Database) GetOneJson() (data.OneJson, error) {
 
-	one_json_path := utils.GetOneJsonPath()
+	oneJsonPath := utils.GetOneJsonPath()
 
 	database.OpenState.Lock()
 
 	defer database.OpenState.Unlock()
 
-	var one_json data.OneJson
+	var oneJson data.OneJson
 
-	file, err := os.ReadFile(one_json_path)
+	file, err := os.ReadFile(oneJsonPath)
 
 	if err != nil {
 		return data.OneJson{}, err
 	}
 
-	json.Unmarshal(file, &one_json)
+	json.Unmarshal(file, &oneJson)
 
-	return one_json, nil
+	return oneJson, nil
 
 }
