@@ -100,7 +100,9 @@ function App() {
 
   const tabList = openedTabs.map((tab, index) => (
     <HStack key={index}>
-      <Tab key={index}>{tab.label}</Tab>
+      <Tab onClick={() => setWindowTitle(tab.label)} key={index}>
+        {tab.label}
+      </Tab>
       {tab.label !== "Home" && (
         <CloseButton onClick={() => closeTab(tab)} size={"sm"} color={"red"} />
       )}
