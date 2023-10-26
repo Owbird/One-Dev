@@ -74,6 +74,21 @@ const ViewLocalRepo = () => {
     }
   };
 
+  // Repo is empty || Repo is broken
+  if (repoData?.currentBranch === "") {
+    return (
+      <Fragment>
+        <HStack>
+          <IoIosArrowBack onClick={() => navigate(-1)} size={50} />
+          <Heading>{repoData?.dir}</Heading>
+        </HStack>
+        <Center>
+          <Heading>Empty Repo?</Heading>
+        </Center>
+      </Fragment>
+    );
+  }
+
   const branches = repoData?.branches.map((branch, index) => (
     <option
       selected={branch.toLowerCase() === repoData!.currentBranch.toLowerCase()}
@@ -140,21 +155,6 @@ const ViewLocalRepo = () => {
       <Center>
         <Loader />
       </Center>
-    );
-  }
-
-  // Repo is empty
-  if (repoData?.currentBranch === "") {
-    return (
-      <Fragment>
-        <HStack>
-          <IoIosArrowBack onClick={() => navigate(-1)} size={50} />
-          <Heading>{repoData?.dir}</Heading>
-        </HStack>
-        <Center>
-          <Heading>Empty Repo?</Heading>
-        </Center>
-      </Fragment>
     );
   }
 
