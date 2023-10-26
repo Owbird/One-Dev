@@ -11,10 +11,14 @@ import { GetGitDirs } from "@go/main/App";
 import { data } from "@go/models";
 import Loader from "@src/components/shared/Loader";
 import { GitRoutes } from "@src/data/constants/routes";
-import { useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const LocalRepos = () => {
+interface LocalReposProps {
+  updateCount: (value: number) => void;
+}
+
+const LocalRepos: FC<LocalReposProps> = ({ updateCount }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [isTakingLong, setIsTakingLong] = useState(false);
 
@@ -26,6 +30,7 @@ const LocalRepos = () => {
   useEffect(() => {
     GetGitDirs().then((dirs) => {
       setDirs(dirs);
+      updateCount(dirs.length);
       setIsLoading(false);
     });
   }, []);
