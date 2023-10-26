@@ -177,6 +177,10 @@ const ViewLocalRepo = () => {
               <TabPanel>
                 <Box>
                   <Heading as="h2" size="lg" mb={2}>
+                    Total Commits
+                  </Heading>
+                  <Text>{repoData?.commits.length}</Text>
+                  <Heading as="h2" size="lg" mb={2}>
                     Contributors ({repoData?.analytics.contributors.length})
                   </Heading>
                   {contributorsComponent}
