@@ -32,7 +32,7 @@ const NAV_ITEMS: INavItem[] = [
   {
     icon: FaGithub,
     menuTab: {
-      label: "Git",
+      label: "Git & Github",
       body: <Git />,
     },
   },
