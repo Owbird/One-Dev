@@ -102,6 +102,20 @@ const ViewLocalRepo = () => {
     </Fragment>
   ));
 
+  const contributorsComponent = repoData?.analytics.contributors.map(
+    (contributor, index) => (
+      <Box key={index} bg="gray.100" p={4} mb={2} borderRadius="md">
+        <Heading as="h3" size="md">
+          {contributor.contributor}
+        </Heading>
+        <Text>
+          Total Contributions: {contributor.totalCommits} (
+          {contributor.percentage}%)
+        </Text>
+      </Box>
+    ),
+  );
+
   // Repo is empty
   if (repoData?.currentBranch === "") {
     return (
@@ -165,25 +179,7 @@ const ViewLocalRepo = () => {
                   <Heading as="h2" size="lg" mb={2}>
                     Contributors ({repoData?.analytics.contributors.length})
                   </Heading>
-                  {repoData?.analytics.contributors.map(
-                    (contributor, index) => (
-                      <Box
-                        key={index}
-                        bg="gray.100"
-                        p={4}
-                        mb={2}
-                        borderRadius="md"
-                      >
-                        <Heading as="h3" size="md">
-                          {contributor.contributor}
-                        </Heading>
-                        <Text>
-                          Total Contributions: {contributor.totalCommits} (
-                          {contributor.percentage}%)
-                        </Text>
-                      </Box>
-                    ),
-                  )}
+                  {contributorsComponent}
                 </Box>
               </TabPanel>
             </TabPanel>
