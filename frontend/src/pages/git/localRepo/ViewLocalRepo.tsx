@@ -16,6 +16,7 @@ import {
 import { ChangeBranch, GetRepo } from "@go/main/App";
 import { data } from "@go/models";
 import Loader from "@src/components/shared/Loader";
+import { SnackbarMessage, enqueueSnackbar } from "notistack";
 import { Fragment, useEffect, useState } from "react";
 import { AiOutlineBranches, AiOutlineTag } from "react-icons/ai";
 import { IoIosArrowBack } from "react-icons/io";
@@ -60,8 +61,17 @@ const ViewLocalRepo = () => {
   };
 
   const handleBranchChnage = async (branch: string) => {
-    await ChangeBranch(repoData?.parentDir!, branch);
-    GetRepo(repoData?.parentDir!).then(setRepoData);
+    try {
+      setIsLoading(true);
+
+      await ChangeBranch(repoData?.parentDir!, branch);
+      await getRepo(repoData?.parentDir!);
+    } catch (error) {
+      const errorText: SnackbarMessage = error as string;
+      enqueueSnackbar(errorText, { variant: "error" });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const branches = repoData?.branches.map((branch, index) => (

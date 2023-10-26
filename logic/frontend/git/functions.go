@@ -184,24 +184,23 @@ func (gf *GitFunctions) GetRemoteRepos() ([]data.RemoteRepo, error) {
 //
 // It takes in the repository path and the name of the branch as parameters.
 // There is no return value.
-func (gf *GitFunctions) ChangeBranch(repoPath string, branch string) {
+func (gf *GitFunctions) ChangeBranch(repoPath string, branch string) error {
 
-	repo, err := git.PlainOpen(repoPath)
+	// Has a hanging issue
+	// err = worktree.Checkout(&git.CheckoutOptions{
+	// 	Branch: plumbing.NewBranchReferenceName(branch),
+	// })
+
+	cmd := exec.Command("git", "checkout", branch)
+	cmd.Dir = repoPath
+
+	output, err := cmd.CombinedOutput()
 
 	if err != nil {
-		log.Fatalln((err))
-
+		return fmt.Errorf(string(output))
 	}
 
-	worktree, err := repo.Worktree()
-
-	if err != nil {
-		log.Fatalln(err)
-	}
-
-	worktree.Checkout(&git.CheckoutOptions{
-		Branch: plumbing.NewBranchReferenceName(branch),
-	})
+	return nil
 
 }
 
