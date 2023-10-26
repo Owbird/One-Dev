@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io/fs"
 	"log"
 	"os"
 	"os/exec"
@@ -144,6 +145,26 @@ func (gf *GitFunctions) GetRepo(path string) (data.Repo, error) {
 			gitRepo.Changes = append(gitRepo.Changes, change)
 		}
 
+	}
+
+	technologiesCounter := make(map[string]int)
+
+	filepath.Walk(path, func(path string, info fs.FileInfo, err error) error {
+		if !info.IsDir() {
+			ext := filepath.Ext(path)
+			ext = strings.TrimPrefix(ext, ".")
+			if ext != "" {
+				technologiesCounter[ext]++
+			}
+		}
+		return nil
+	})
+
+	for technology, count := range technologiesCounter {
+		gitRepo.Analytics.Technologies = append(gitRepo.Analytics.Technologies, data.TechnologyCounter{
+			Technology: technology,
+			Count:      count,
+		})
 	}
 
 	return gitRepo, nil

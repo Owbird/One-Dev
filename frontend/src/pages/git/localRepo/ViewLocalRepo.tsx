@@ -150,6 +150,17 @@ const ViewLocalRepo = () => {
     ),
   );
 
+  const technologiesComponent = repoData?.analytics.technologies.map(
+    (technology, index) => (
+      <Box key={index} bg="gray.100" p={4} mb={2} borderRadius="md">
+        <Heading as="h3" size="md">
+          {technology.technology}
+        </Heading>
+        <Text>Count: {technology.count} </Text>
+      </Box>
+    ),
+  );
+
   if (isLoading) {
     return (
       <Center>
@@ -212,6 +223,12 @@ const ViewLocalRepo = () => {
                   </Heading>
                   <Box overflowY="auto" maxHeight="400">
                     {contributorsComponent}
+                  </Box>
+                  <Heading as="h2" size="lg" mb={2}>
+                    Technologies ({repoData?.analytics.technologies.length})
+                  </Heading>
+                  <Box overflowY="auto" maxHeight="400">
+                    {technologiesComponent}
                   </Box>
                 </Box>
               </TabPanel>

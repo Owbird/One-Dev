@@ -13,8 +13,14 @@ type RepoContributors struct {
 	TotalCommits int    `json:"totalCommits"`
 }
 
+type TechnologyCounter struct {
+	Technology string `json:"technology"`
+	Count      int    `json:"count"`
+}
+
 type RepoAnalytics struct {
-	Contributors []RepoContributors `json:"contributors"`
+	Contributors []RepoContributors  `json:"contributors"`
+	Technologies []TechnologyCounter `json:"technologies"`
 }
 
 type Repo struct {
