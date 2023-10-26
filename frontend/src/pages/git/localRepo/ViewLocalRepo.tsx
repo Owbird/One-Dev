@@ -183,7 +183,9 @@ const ViewLocalRepo = () => {
                   <Heading as="h2" size="lg" mb={2}>
                     Contributors ({repoData?.analytics.contributors.length})
                   </Heading>
-                  {contributorsComponent}
+                  <Box overflowY="auto" maxHeight="400">
+                    {contributorsComponent}
+                  </Box>
                 </Box>
               </TabPanel>
             </TabPanel>
