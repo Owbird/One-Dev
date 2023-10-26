@@ -13,6 +13,7 @@ import {
   Tabs,
   Text,
 } from "@chakra-ui/react";
+import { WindowSetTitle } from "@go-runtime/runtime";
 import { ChangeBranch, GetRepo } from "@go/main/App";
 import { data } from "@go/models";
 import Loader from "@src/components/shared/Loader";
@@ -40,6 +41,12 @@ const ViewLocalRepo = () => {
   useEffect(() => {
     getRepo(dir!);
   }, []);
+
+  useEffect(() => {
+    if (repoData) {
+      WindowSetTitle(`One Dev | Git & Github | ${repoData?.dir}`);
+    }
+  }, [repoData]);
 
   const getChangeColor = (change: string): string => {
     switch (change) {
