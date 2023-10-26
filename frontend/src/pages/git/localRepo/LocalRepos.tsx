@@ -1,4 +1,12 @@
-import { Divider, Grid, GridItem, Input, TabPanel } from "@chakra-ui/react";
+import {
+  Center,
+  Divider,
+  Grid,
+  GridItem,
+  Input,
+  TabPanel,
+  Text,
+} from "@chakra-ui/react";
 import { GetGitDirs } from "@go/main/App";
 import { data } from "@go/models";
 import Loader from "@src/components/shared/Loader";
@@ -8,6 +16,7 @@ import { useNavigate } from "react-router-dom";
 
 const LocalRepos = () => {
   const [isLoading, setIsLoading] = useState(true);
+  const [isTakingLong, setIsTakingLong] = useState(false);
 
   const [dirs, setDirs] = useState<data.File[]>([]);
   const [searchRes, setSearchRes] = useState<data.File[]>();
@@ -20,6 +29,15 @@ const LocalRepos = () => {
       setIsLoading(false);
     });
   }, []);
+
+  useEffect(() => {
+    setTimeout(() => {
+      if (isLoading) {
+        setIsTakingLong(true);
+      }
+    }, 15000);
+  }, []);
+
   const handleSearch = (query: string) => {
     setSearchQuery(query);
 
@@ -37,7 +55,10 @@ const LocalRepos = () => {
   if (isLoading) {
     return (
       <TabPanel>
-        <Loader />
+        <Center>
+          <Loader />
+          {isTakingLong && <Text>This is taking longer than expected!</Text>}
+        </Center>
       </TabPanel>
     );
   }
