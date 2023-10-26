@@ -15,6 +15,7 @@ import {
 } from "@chakra-ui/react";
 import { ChangeBranch, GetRepo } from "@go/main/App";
 import { data } from "@go/models";
+import Loader from "@src/components/shared/Loader";
 import { Fragment, useEffect, useState } from "react";
 import { AiOutlineBranches, AiOutlineTag } from "react-icons/ai";
 import { IoIosArrowBack } from "react-icons/io";
@@ -22,13 +23,21 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 const ViewLocalRepo = () => {
   const [repoData, setRepoData] = useState<data.Repo>();
+  const [isLoading, setIsLoading] = useState(false);
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const dir = queryParams.get("dir");
   const navigate = useNavigate();
 
+  const getRepo = async (dir: string) => {
+    setIsLoading(true);
+    const repo = await GetRepo(dir);
+    setRepoData(repo);
+    setIsLoading(false);
+  };
+
   useEffect(() => {
-    GetRepo(dir!).then(setRepoData);
+    getRepo(dir!);
   }, []);
 
   const getChangeColor = (change: string): string => {
@@ -115,6 +124,14 @@ const ViewLocalRepo = () => {
       </Box>
     ),
   );
+
+  if (isLoading) {
+    return (
+      <Center>
+        <Loader />
+      </Center>
+    );
+  }
 
   // Repo is empty
   if (repoData?.currentBranch === "") {
