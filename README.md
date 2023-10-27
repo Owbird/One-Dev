@@ -18,12 +18,19 @@ Everything you need as a developer is a tab away.
   - [x] Processes
   - [x] File Systems
 
+- :bell: Notifications
+
+  - Power
+    - [x] Plug && Unplug
+    - [x] Low battery
+
 - :construction: Github
 
   - Local repos index
     - [ ] Add
     - [ ] Commit
     - [ ] Push
+    - [ ] Pull
     - [x] Analytics
   - Remote repos
     - [x] Clone
