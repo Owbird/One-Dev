@@ -2,11 +2,9 @@ package database
 
 import (
 	"encoding/json"
-	"io/fs"
 	"log"
 	"os"
 	"path"
-	"path/filepath"
 
 	"sync"
 
@@ -24,48 +22,6 @@ var database Database
 
 func NewInstance() *Database {
 	return &Database{}
-}
-
-// GetGitDirs returns a slice of data File structs representing Git directories.
-//
-// This function returns a slice of data File structs.
-func (db *Database) GetGitDirs() ([]data.File, error) {
-
-	dirs := []data.File{}
-
-	log.Println("[+] Reading Git dirs")
-	home, err := utils.UserHome()
-
-	if err != nil {
-		log.Fatalln(err)
-	}
-
-	filepath.WalkDir(home, func(path string, d fs.DirEntry, err error) error {
-
-		if d.IsDir() {
-
-			dirName := d.Name()
-
-			if string(dirName[0]) == "." && dirName != ".git" {
-				return filepath.SkipDir
-			}
-
-			if dirName == ".git" {
-				dir := data.File{
-					ParentDir: filepath.Dir(path),
-					Dir:       filepath.Base(filepath.Dir(path)),
-				}
-
-				dirs = append(dirs, dir)
-
-				// database.IndexGitDir(dir)
-			}
-		}
-
-		return nil
-	})
-
-	return dirs, nil
 }
 
 // GetGitToken retrieves the Git token from the database.

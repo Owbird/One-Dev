@@ -288,12 +288,46 @@ func (gf *GitFunctions) GetGitUser() (data.GitUser, error) {
 	return gf.db.GetGitUser()
 }
 
-// GetGitDirs returns a list of Git directories.
+// GetGitDirs returns a slice of data File structs representing Git directories.
 //
-// It does not take any parameters.
-// It returns a slice of data.File and an error.
+// This function returns a slice of data File structs.
 func (gf *GitFunctions) GetGitDirs() ([]data.File, error) {
-	return gf.db.GetGitDirs()
+
+	dirs := []data.File{}
+
+	log.Println("[+] Reading Git dirs")
+	home, err := utils.UserHome()
+
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	filepath.WalkDir(home, func(path string, d fs.DirEntry, err error) error {
+
+		if d.IsDir() {
+
+			dirName := d.Name()
+
+			if string(dirName[0]) == "." && dirName != ".git" {
+				return filepath.SkipDir
+			}
+
+			if dirName == ".git" {
+				dir := data.File{
+					ParentDir: filepath.Dir(path),
+					Dir:       filepath.Base(filepath.Dir(path)),
+				}
+
+				dirs = append(dirs, dir)
+
+				// database.IndexGitDir(dir)
+			}
+		}
+
+		return nil
+	})
+
+	return dirs, nil
 }
 
 // GetGitTokens returns a slice of strings representing Git tokens and an error.
@@ -306,7 +340,7 @@ func (gf *GitFunctions) GetGitDirs() ([]data.File, error) {
 func (gf *GitFunctions) GetGitTokens() ([]string, error) {
 	tokens := []string{}
 
-	gitDirs, err := gf.db.GetGitDirs()
+	gitDirs, err := gf.GetGitDirs()
 
 	if err != nil {
 		return []string{}, err
