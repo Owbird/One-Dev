@@ -149,7 +149,7 @@ func (gf *GitFunctions) GetRepo(path string) (data.Repo, error) {
 
 	technologiesCounter := make(map[string]int)
 
-	filepath.Walk(path, func(path string, info fs.FileInfo, err error) error {
+	filepath.WalkDir(path, func(path string, info fs.DirEntry, err error) error {
 		if !info.IsDir() {
 			ext := filepath.Ext(path)
 			ext = strings.TrimPrefix(ext, ".")
