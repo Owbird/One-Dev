@@ -2,6 +2,7 @@ import {
   Badge,
   Box,
   Center,
+  Divider,
   HStack,
   Heading,
   Select,
@@ -131,14 +132,19 @@ const ViewLocalRepo: FC<IViewLocalRepoProps> = ({ repo }) => {
     ))
   );
 
-  const commitsComponent = repoData?.commits.map((commit) => (
-    <Fragment key={commit.hash}>
-      <Text>{commit.message}</Text>
-      <Text color={"gray.500"}>
-        {`${commit.committerName} <${commit.committerEmail}>`} | {commit.date}
-      </Text>
-    </Fragment>
-  ));
+  const commitsComponent = (
+    <Box p={4} borderWidth="1px" borderRadius="md">
+      {repoData?.commits.map((commit) => (
+        <Fragment key={commit.hash}>
+          <Text fontSize="lg">{commit.message}</Text>
+          <Text fontSize="sm" color="gray.500">
+            {`${commit.committerName} <${commit.committerEmail}> | ${commit.date}`}
+          </Text>
+          <Divider my={2} />
+        </Fragment>
+      ))}
+    </Box>
+  );
 
   const contributorsComponent = repoData?.analytics.contributors.map(
     (contributor, index) => (
