@@ -9,7 +9,7 @@ import {
   TabPanels,
   Tabs,
 } from "@chakra-ui/react";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect } from "react";
 
 import { FaCog, FaGithub, FaHome } from "react-icons/fa";
 
@@ -19,7 +19,9 @@ import { IMenuTab, INavItem } from "@data/interfaces";
 import { WindowSetTitle } from "@go-runtime/runtime";
 import Git from "@pages/git/Git";
 import Home from "@src/pages/home/Home";
+import { useAtom } from "jotai";
 import Settings from "./pages/settings/Settings";
+import { openedTabsAtom, tabIndexAtom } from "./states/TabsAtom";
 
 const NAV_ITEMS: INavItem[] = [
   {
@@ -46,11 +48,8 @@ const NAV_ITEMS: INavItem[] = [
 ];
 
 function App() {
-  const [tabIndex, setTabIndex] = useState(0);
-
-  const [openedTabs, setOpenedTabs] = useState<IMenuTab[]>([
-    NAV_ITEMS[0].menuTab,
-  ]);
+  const [tabIndex, setTabIndex] = useAtom(tabIndexAtom);
+  const [openedTabs, setOpenedTabs] = useAtom(openedTabsAtom);
 
   const setWindowTitle = (window: string) => {
     WindowSetTitle(`One Dev | ${window}`);
@@ -78,7 +77,12 @@ function App() {
 
   useEffect(() => {
     setWindowTitle("Home");
+    setOpenedTabs([NAV_ITEMS[0].menuTab]);
   }, []);
+
+  if (openedTabs.length === 0) {
+    return <Fragment></Fragment>;
+  }
 
   const navItems = NAV_ITEMS.map((item, index) => (
     <Fragment>
@@ -86,6 +90,7 @@ function App() {
       {item.menuTab.label === "Settings" && <Divider />}
       <NavItem
         onClick={handleMenuClick}
+        // isActive={true}
         isActive={item.menuTab.label === openedTabs[tabIndex].label}
         key={index}
         icon={item.icon}
