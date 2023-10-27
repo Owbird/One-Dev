@@ -21,7 +21,7 @@ import Git from "@pages/git/Git";
 import Home from "@src/pages/home/Home";
 import { useAtom } from "jotai";
 import Settings from "./pages/settings/Settings";
-import { openedTabsAtom, tabIndexAtom } from "./states/TabsAtom";
+import { openedTabsAtom, tabIndexAtom } from "./states/nav/TabsAtom";
 
 const NAV_ITEMS: INavItem[] = [
   {
