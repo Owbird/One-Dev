@@ -10,9 +10,7 @@ import {
 import { GetGitDirs } from "@go/main/App";
 import { data } from "@go/models";
 import Loader from "@src/components/shared/Loader";
-import { GitRoutes } from "@src/data/constants/routes";
 import { FC, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 interface LocalReposProps {
   updateCount: (value: number) => void;
@@ -25,7 +23,6 @@ const LocalRepos: FC<LocalReposProps> = ({ updateCount }) => {
   const [dirs, setDirs] = useState<data.File[]>([]);
   const [searchRes, setSearchRes] = useState<data.File[]>();
   const [searchQuery, setSearchQuery] = useState("");
-  const navigate = useNavigate();
 
   useEffect(() => {
     GetGitDirs().then((dirs) => {
@@ -71,9 +68,7 @@ const LocalRepos: FC<LocalReposProps> = ({ updateCount }) => {
   const repoGridItem = (searchRes ?? dirs).map((dir) => (
     <GridItem
       key={dir.parentDir}
-      onClick={() =>
-        navigate(`${GitRoutes.LocalRepoView}?dir=${dir.parentDir}`)
-      }
+      onClick={() => {}}
       w="100%"
       h="100%"
       p={5}
