@@ -10,24 +10,21 @@ import {
 import { GetGitDirs } from "@go/main/App";
 import { data } from "@go/models";
 import Loader from "@src/components/shared/Loader";
-import { FC, useEffect, useState } from "react";
+import { localReposAtom } from "@src/states/git/LocalReposAtom";
+import { useAtom } from "jotai";
+import { useEffect, useState } from "react";
 
-interface LocalReposProps {
-  updateCount: (value: number) => void;
-}
-
-const LocalRepos: FC<LocalReposProps> = ({ updateCount }) => {
-  const [isLoading, setIsLoading] = useState(true);
+const LocalRepos = () => {
   const [isTakingLong, setIsTakingLong] = useState(false);
 
-  const [dirs, setDirs] = useState<data.File[]>([]);
+  const [dirs, setDirs] = useAtom(localReposAtom);
+  const [isLoading, setIsLoading] = useState(dirs.length === 0);
   const [searchRes, setSearchRes] = useState<data.File[]>();
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     GetGitDirs().then((dirs) => {
       setDirs(dirs);
-      updateCount(dirs.length);
       setIsLoading(false);
     });
   }, []);

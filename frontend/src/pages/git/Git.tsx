@@ -1,22 +1,28 @@
 import { Box, Tab, TabList, TabPanels, Tabs } from "@chakra-ui/react";
-import { useState } from "react";
+import { localReposAtom } from "@src/states/git/LocalReposAtom";
+import { remoteReposAtom } from "@src/states/git/RemoteReposAtom";
+import { useAtomValue } from "jotai";
 import LocalRepos from "./localRepo/LocalRepos";
 import RemoteRepos from "./remoteRepo/RemoteRepos";
 
 const Git = () => {
-  const [totalLocal, setTotalLocal] = useState<number | undefined>();
-  const [totalRemote, setTotalRemote] = useState<number | undefined>();
+  const totalLocal = useAtomValue(localReposAtom);
+  const totalRemote = useAtomValue(remoteReposAtom);
   return (
     <Box>
       <Tabs>
         <TabList>
-          <Tab>Local {totalLocal && `(${totalLocal})`} </Tab>
-          <Tab>Remote {totalRemote && `(${totalRemote})`} </Tab>
+          <Tab>
+            Local {totalLocal.length !== 0 && `(${totalLocal.length})`}{" "}
+          </Tab>
+          <Tab>
+            Remote {totalRemote.length !== 0 && `(${totalRemote.length})`}{" "}
+          </Tab>
         </TabList>
 
         <TabPanels>
-          <LocalRepos updateCount={setTotalLocal} />
-          <RemoteRepos updateCount={setTotalRemote} />
+          <LocalRepos />
+          <RemoteRepos />
         </TabPanels>
       </Tabs>
     </Box>

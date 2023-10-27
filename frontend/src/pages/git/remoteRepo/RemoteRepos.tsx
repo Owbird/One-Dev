@@ -2,25 +2,22 @@ import { Grid, GridItem, TabPanel, useDisclosure } from "@chakra-ui/react";
 import { GetRemoteRepos } from "@go/main/App";
 import { data } from "@go/models";
 import Loader from "@src/components/shared/Loader";
+import { remoteReposAtom } from "@src/states/git/RemoteReposAtom";
+import { useAtom } from "jotai";
 import { enqueueSnackbar } from "notistack";
-import { FC, Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import ViewRemoteRepoModal from "./ViewRemoteRepo";
 
-interface RemoteReposProps {
-  updateCount: (value: number) => void;
-}
-
-const RemoteRepos: FC<RemoteReposProps> = ({ updateCount }) => {
-  const [repos, setRepos] = useState<data.RemoteRepo[]>();
+const RemoteRepos = () => {
+  const [repos, setRepos] = useAtom(remoteReposAtom);
   const [activeRepo, setActiveRepo] = useState<data.RemoteRepo>();
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(repos.length === 0);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {
     GetRemoteRepos()
       .then((repos) => {
         setRepos(repos);
-        updateCount(repos.length);
         setIsLoading(false);
       })
       .catch((err) => {
