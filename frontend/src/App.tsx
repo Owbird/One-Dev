@@ -56,10 +56,16 @@ function App() {
   };
 
   const closeTab = (tab: IMenuTab) => {
-    setOpenedTabs(openedTabs.filter((x) => x !== tab));
-    const nextTabIndex = openedTabs.length - 2;
+    const currentIndex = openedTabs.findIndex((x) => x === tab);
+    const nextTabIndex = currentIndex - 1;
+
+    const newTabs = openedTabs.filter((x) => x.label !== tab.label);
+
+    setOpenedTabs(newTabs);
+
     setTabIndex(nextTabIndex);
-    setWindowTitle(openedTabs[nextTabIndex].label);
+
+    setWindowTitle(newTabs[nextTabIndex].label);
   };
 
   const handleMenuClick = (tab: IMenuTab) => {
@@ -99,8 +105,8 @@ function App() {
     </Fragment>
   ));
 
-  const tabPanels = openedTabs.map((tabBody, index) => (
-    <TabPanel key={index}>{tabBody.body}</TabPanel>
+  const tabPanels = openedTabs.map((tab, index) => (
+    <TabPanel key={index}>{tab.body}</TabPanel>
   ));
 
   const tabList = openedTabs.map((tab, index) => (
@@ -124,7 +130,6 @@ function App() {
       minH="100vh"
     >
       <SidebarContent>{navItems}</SidebarContent>
-
       <Box
         ml={{
           base: 0,

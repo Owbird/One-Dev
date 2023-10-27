@@ -41,11 +41,22 @@ const LocalRepos = () => {
   }, []);
 
   const viewRepo = (repo: data.File) => {
-    setOpenedTabs([
-      ...openedTabs,
-      { body: <ViewLocalRepo repo={repo.parentDir} />, label: repo.dir },
-    ]);
-    setTabIndex(openedTabs.length);
+    const alreadyOpenedIndex = openedTabs.findIndex(
+      (x) => x.label === repo.dir,
+    );
+
+    if (alreadyOpenedIndex === -1) {
+      setOpenedTabs([
+        ...openedTabs,
+        {
+          body: <ViewLocalRepo key={repo.parentDir} repo={repo.parentDir} />,
+          label: repo.dir,
+        },
+      ]);
+      setTabIndex(openedTabs.length);
+    } else {
+      setTabIndex(alreadyOpenedIndex);
+    }
   };
 
   const handleSearch = (query: string) => {
