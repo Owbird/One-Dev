@@ -18,18 +18,16 @@ import { ChangeBranch, GetRepo } from "@go/main/App";
 import { data } from "@go/models";
 import Loader from "@src/components/shared/Loader";
 import { SnackbarMessage, enqueueSnackbar } from "notistack";
-import { Fragment, useEffect, useState } from "react";
+import { FC, Fragment, useEffect, useState } from "react";
 import { AiOutlineBranches, AiOutlineTag } from "react-icons/ai";
-import { IoIosArrowBack } from "react-icons/io";
-import { useLocation, useNavigate } from "react-router-dom";
 
-const ViewLocalRepo = () => {
+interface IViewLocalRepoProps {
+  repo: string;
+}
+
+const ViewLocalRepo: FC<IViewLocalRepoProps> = ({ repo }) => {
   const [repoData, setRepoData] = useState<data.Repo>();
   const [isLoading, setIsLoading] = useState(false);
-  const location = useLocation();
-  const queryParams = new URLSearchParams(location.search);
-  const dir = queryParams.get("dir");
-  const navigate = useNavigate();
 
   const getRepo = async (dir: string) => {
     setIsLoading(true);
@@ -39,7 +37,7 @@ const ViewLocalRepo = () => {
   };
 
   useEffect(() => {
-    getRepo(dir!);
+    getRepo(repo!);
   }, []);
 
   useEffect(() => {
@@ -86,7 +84,6 @@ const ViewLocalRepo = () => {
     return (
       <Fragment>
         <HStack>
-          <IoIosArrowBack onClick={() => navigate(-1)} size={50} />
           <Heading>{repoData?.dir}</Heading>
         </HStack>
         <Center>
@@ -179,7 +176,6 @@ const ViewLocalRepo = () => {
   return (
     <Fragment>
       <HStack>
-        <IoIosArrowBack onClick={() => navigate(-1)} size={50} />
         <Heading>{repoData?.dir}</Heading>
         <AiOutlineBranches /> <Badge>{repoData?.branches.length}</Badge>
         <Badge color={"green"}>{repoData?.currentBranch}</Badge>

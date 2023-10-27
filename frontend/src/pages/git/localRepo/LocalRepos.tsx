@@ -11,12 +11,15 @@ import { GetGitDirs } from "@go/main/App";
 import { data } from "@go/models";
 import Loader from "@src/components/shared/Loader";
 import { localReposAtom } from "@src/states/git/LocalReposAtom";
+import { openedTabsAtom, tabIndexAtom } from "@src/states/nav/TabsAtom";
 import { useAtom } from "jotai";
 import { useEffect, useState } from "react";
+import ViewLocalRepo from "./ViewLocalRepo";
 
 const LocalRepos = () => {
   const [isTakingLong, setIsTakingLong] = useState(false);
-
+  const [tabIndex, setTabIndex] = useAtom(tabIndexAtom);
+  const [openedTabs, setOpenedTabs] = useAtom(openedTabsAtom);
   const [dirs, setDirs] = useAtom(localReposAtom);
   const [isLoading, setIsLoading] = useState(dirs.length === 0);
   const [searchRes, setSearchRes] = useState<data.File[]>();
@@ -36,6 +39,14 @@ const LocalRepos = () => {
       }
     }, 15000);
   }, []);
+
+  const viewRepo = (repo: data.File) => {
+    setOpenedTabs([
+      ...openedTabs,
+      { body: <ViewLocalRepo repo={repo.parentDir} />, label: repo.dir },
+    ]);
+    setTabIndex(openedTabs.length);
+  };
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
@@ -65,7 +76,9 @@ const LocalRepos = () => {
   const repoGridItem = (searchRes ?? dirs).map((dir) => (
     <GridItem
       key={dir.parentDir}
-      onClick={() => {}}
+      onClick={() => {
+        viewRepo(dir);
+      }}
       w="100%"
       h="100%"
       p={5}
