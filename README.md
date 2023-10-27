@@ -16,6 +16,7 @@ Everything you need as a developer is a tab away.
   - [x] Ram
   - [x] CPU
   - [x] Processes
+  - [x] File Systems
 
 - :construction: Github
 
@@ -23,8 +24,6 @@ Everything you need as a developer is a tab away.
     - [ ] Add
     - [ ] Commit
     - [ ] Push
+    - [x] Analytics
   - Remote repos
     - [x] Clone
-
-- :no_entry: Browser
-- :no_entry: Code
