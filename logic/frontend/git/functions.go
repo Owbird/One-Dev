@@ -10,6 +10,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strings"
+	"sync"
 
 	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing"
@@ -38,6 +39,8 @@ type GitFunctions struct {
 // It returns a data.Repo struct.
 func (gf *GitFunctions) GetRepo(path string) (data.Repo, error) {
 	log.Println("[+] Getting git dir")
+
+	wg := sync.WaitGroup{}
 
 	gitRepo := data.Repo{
 		File: data.File{
@@ -70,31 +73,37 @@ func (gf *GitFunctions) GetRepo(path string) (data.Repo, error) {
 
 	contributorCommits := make(map[string]int)
 
-	gitLog.ForEach((func(commit *object.Commit) error {
+	// Handle Commits
+	wg.Add(1)
+	go func() {
+		gitLog.ForEach((func(commit *object.Commit) error {
 
-		gitRepo.Commits = append(gitRepo.Commits, data.RepoCommit{
-			Message:        commit.Message,
-			CommitterName:  commit.Committer.Name,
-			CommitterEmail: commit.Committer.Email,
-			Hash:           commit.Hash.String(),
-			Date:           commit.Committer.When.Format("Mon Jan 02 15:04:05 2006"),
-		})
+			gitRepo.Commits = append(gitRepo.Commits, data.RepoCommit{
+				Message:        commit.Message,
+				CommitterName:  commit.Committer.Name,
+				CommitterEmail: commit.Committer.Email,
+				Hash:           commit.Hash.String(),
+				Date:           commit.Committer.When.Format("Mon Jan 02 15:04:05 2006"),
+			})
 
-		contributorID := fmt.Sprintf("%s <%s>", commit.Committer.Name, commit.Committer.Email)
-		contributorCommits[contributorID]++
+			contributorID := fmt.Sprintf("%s <%s>", commit.Committer.Name, commit.Committer.Email)
+			contributorCommits[contributorID]++
 
-		return nil
-	}))
+			return nil
+		}))
 
-	for contributor, commits := range contributorCommits {
-		percentage := float64(commits) / float64(len(gitRepo.Commits)) * 100
-		formattedPercentage := fmt.Sprintf("%.2f", percentage) // Format the percentage to two decimal places
-		gitRepo.Analytics.Contributors = append(gitRepo.Analytics.Contributors, data.RepoContributors{
-			Contributor:  contributor,
-			TotalCommits: commits,
-			Percentage:   formattedPercentage,
-		})
-	}
+		for contributor, commits := range contributorCommits {
+			percentage := float64(commits) / float64(len(gitRepo.Commits)) * 100
+			formattedPercentage := fmt.Sprintf("%.2f", percentage) // Format the percentage to two decimal places
+			gitRepo.Analytics.Contributors = append(gitRepo.Analytics.Contributors, data.RepoContributors{
+				Contributor:  contributor,
+				TotalCommits: commits,
+				Percentage:   formattedPercentage,
+			})
+		}
+
+		wg.Done()
+	}()
 
 	branches, err := repo.Branches()
 
@@ -149,23 +158,31 @@ func (gf *GitFunctions) GetRepo(path string) (data.Repo, error) {
 
 	technologiesCounter := make(map[string]int)
 
-	filepath.WalkDir(path, func(path string, info fs.DirEntry, err error) error {
-		if !info.IsDir() {
-			ext := filepath.Ext(path)
-			ext = strings.TrimPrefix(ext, ".")
-			if ext != "" {
-				technologiesCounter[ext]++
+	// Handle technologies counter
+	wg.Add(1)
+	go func() {
+		filepath.WalkDir(path, func(path string, info fs.DirEntry, err error) error {
+			if !info.IsDir() {
+				ext := filepath.Ext(path)
+				ext = strings.TrimPrefix(ext, ".")
+				if ext != "" {
+					technologiesCounter[ext]++
+				}
 			}
-		}
-		return nil
-	})
-
-	for technology, count := range technologiesCounter {
-		gitRepo.Analytics.Technologies = append(gitRepo.Analytics.Technologies, data.TechnologyCounter{
-			Technology: technology,
-			Count:      count,
+			return nil
 		})
-	}
+
+		for technology, count := range technologiesCounter {
+			gitRepo.Analytics.Technologies = append(gitRepo.Analytics.Technologies, data.TechnologyCounter{
+				Technology: technology,
+				Count:      count,
+			})
+		}
+
+		wg.Done()
+	}()
+
+	wg.Wait()
 
 	return gitRepo, nil
 }
