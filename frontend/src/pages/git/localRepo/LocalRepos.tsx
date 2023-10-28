@@ -84,20 +84,6 @@ const LocalRepos = () => {
     );
   }
 
-  const repoGridItem = (searchRes ?? dirs).map((dir) => (
-    <GridItem
-      key={dir.parentDir}
-      onClick={() => {
-        viewRepo(dir);
-      }}
-      w="100%"
-      h="100%"
-      p={5}
-      bg="blue.500"
-    >
-      <p>{dir.dir}</p>
-    </GridItem>
-  ));
   return (
     <TabPanel>
       <Divider width={20} />
@@ -114,7 +100,20 @@ const LocalRepos = () => {
         templateColumns="repeat(5, 1fr)"
         gap={6}
       >
-        {repoGridItem}
+        {(searchRes ?? dirs).map((dir) => (
+          <GridItem
+            key={dir.parentDir}
+            onClick={() => {
+              viewRepo(dir);
+            }}
+            w="100%"
+            h="100%"
+            p={5}
+            bg="blue.500"
+          >
+            <p>{dir.dir}</p>
+          </GridItem>
+        ))}
       </Grid>
     </TabPanel>
   );

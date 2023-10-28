@@ -2,10 +2,8 @@ import {
   Badge,
   Box,
   Center,
-  Divider,
   HStack,
   Heading,
-  Select,
   Stack,
   Tab,
   TabList,
@@ -17,6 +15,12 @@ import {
 import { WindowSetTitle } from "@go-runtime/runtime";
 import { ChangeBranch, GetRepo } from "@go/main/App";
 import { data } from "@go/models";
+import LocalBranches from "@src/components/git/local/LocalBranches";
+import RepoChanges from "@src/components/git/local/RepoChanges";
+import RepoCommits from "@src/components/git/local/RepoCommits";
+import RepoContributors from "@src/components/git/local/RepoContributors";
+import RepoTags from "@src/components/git/local/RepoTags";
+import RepoTechnologies from "@src/components/git/local/RepoTechnologies";
 import Loader from "@src/components/shared/Loader";
 import { SnackbarMessage, enqueueSnackbar } from "notistack";
 import { FC, Fragment, useEffect, useState } from "react";
@@ -47,25 +51,6 @@ const ViewLocalRepo: FC<IViewLocalRepoProps> = ({ repo }) => {
     }
   }, [repoData]);
 
-  const getChangeColor = (change: string): string => {
-    switch (change) {
-      case "N":
-        return "green";
-      case " ":
-        return "yellow";
-      case "M":
-        return "yellow";
-      case "A":
-        return "green";
-      case "D":
-        return "red";
-      default:
-        break;
-    }
-
-    return "gray";
-  };
-
   const handleBranchChnage = async (branch: string) => {
     try {
       setIsLoading(true);
@@ -94,83 +79,6 @@ const ViewLocalRepo: FC<IViewLocalRepoProps> = ({ repo }) => {
     );
   }
 
-  const branches = repoData?.branches.map((branch, index) => (
-    <option
-      selected={branch.toLowerCase() === repoData!.currentBranch.toLowerCase()}
-      key={index}
-      value={branch}
-    >
-      {branch}
-    </option>
-  ));
-
-  const tagsComponent =
-    repoData?.tags === null ? (
-      <Select placeholder={"No tags"}></Select>
-    ) : (
-      <Select placeholder={repoData?.currentBranch}>
-        {repoData?.tags.map((tag, index) => (
-          <option key={index} value={tag}>
-            {tag}
-          </option>
-        ))}
-      </Select>
-    );
-
-  const changesComponent = !repoData?.changes ? (
-    <Text>No local changes</Text>
-  ) : (
-    repoData?.changes.map((change) => (
-      <Fragment key={change.file}>
-        <HStack>
-          <Text>{change.file}</Text>
-          <Badge colorScheme={getChangeColor(change.change)}>
-            {change.change}
-          </Badge>
-        </HStack>
-      </Fragment>
-    ))
-  );
-
-  const commitsComponent = (
-    <Box p={4} borderWidth="1px" borderRadius="md">
-      {repoData?.commits.map((commit) => (
-        <Fragment key={commit.hash}>
-          <Text fontSize="lg">{commit.message}</Text>
-          <Text fontSize="sm" color="gray.500">
-            {`${commit.committerName} <${commit.committerEmail}> | ${commit.date}`}
-          </Text>
-          <Divider my={2} />
-        </Fragment>
-      ))}
-    </Box>
-  );
-
-  const contributorsComponent = repoData?.analytics.contributors.map(
-    (contributor, index) => (
-      <Box key={index} bg="gray.100" p={4} mb={2} borderRadius="md">
-        <Heading as="h3" size="md">
-          {contributor.contributor}
-        </Heading>
-        <Text>
-          Total Contributions: {contributor.totalCommits} (
-          {contributor.percentage}%)
-        </Text>
-      </Box>
-    ),
-  );
-
-  const technologiesComponent = repoData?.analytics.technologies.map(
-    (technology, index) => (
-      <Box key={index} bg="gray.100" p={4} mb={2} borderRadius="md">
-        <Heading as="h3" size="md">
-          {technology.technology}
-        </Heading>
-        <Text>Count: {technology.count} </Text>
-      </Box>
-    ),
-  );
-
   if (isLoading) {
     return (
       <Center>
@@ -189,15 +97,13 @@ const ViewLocalRepo: FC<IViewLocalRepoProps> = ({ repo }) => {
       <Stack ml={5} mt={5} width={500}>
         <HStack>
           <AiOutlineBranches size={60} />
-          <Select
-            onChange={(event) => handleBranchChnage(event.target.value)}
-            placeholder={repoData?.currentBranch}
-            defaultValue={repoData?.currentBranch}
-          >
-            {branches}
-          </Select>
+          <LocalBranches
+            branches={repoData?.branches}
+            currentBranch={repoData?.currentBranch}
+            onBranchChange={handleBranchChnage}
+          />
           <AiOutlineTag size={60} />
-          {tagsComponent}
+          <RepoTags tags={repoData?.tags!} />
         </HStack>
 
         <Tabs>
@@ -210,15 +116,13 @@ const ViewLocalRepo: FC<IViewLocalRepoProps> = ({ repo }) => {
           <TabPanels>
             <TabPanel>
               <Box overflowY="auto" maxHeight="100vh">
-                {changesComponent}
+                <RepoChanges changes={repoData?.changes} />
               </Box>
             </TabPanel>
             <TabPanel>
-              {repoData?.commits && (
-                <Box overflowY="auto" maxHeight="100vh">
-                  {commitsComponent}
-                </Box>
-              )}
+              <Box overflowY="auto" maxHeight="100vh">
+                <RepoCommits commits={repoData?.commits!} />
+              </Box>
             </TabPanel>
             <TabPanel>
               <TabPanel>
@@ -231,13 +135,17 @@ const ViewLocalRepo: FC<IViewLocalRepoProps> = ({ repo }) => {
                     Contributors ({repoData?.analytics.contributors.length})
                   </Heading>
                   <Box overflowY="auto" maxHeight="400">
-                    {contributorsComponent}
+                    <RepoContributors
+                      contributors={repoData?.analytics.contributors!}
+                    />
                   </Box>
                   <Heading as="h2" size="lg" mb={2}>
                     Technologies ({repoData?.analytics.technologies.length})
                   </Heading>
                   <Box overflowY="auto" maxHeight="400">
-                    {technologiesComponent}
+                    <RepoTechnologies
+                      technologies={repoData?.analytics.technologies!}
+                    />
                   </Box>
                 </Box>
               </TabPanel>

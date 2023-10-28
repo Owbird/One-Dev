@@ -426,12 +426,12 @@ export namespace data {
 	}
 	
 	
-	export class TechnologyCounter {
+	export class RepoTechnologies {
 	    technology: string;
 	    count: number;
 	
 	    static createFrom(source: any = {}) {
-	        return new TechnologyCounter(source);
+	        return new RepoTechnologies(source);
 	    }
 	
 	    constructor(source: any = {}) {
@@ -458,7 +458,7 @@ export namespace data {
 	}
 	export class RepoAnalytics {
 	    contributors: RepoContributors[];
-	    technologies: TechnologyCounter[];
+	    technologies: RepoTechnologies[];
 	
 	    static createFrom(source: any = {}) {
 	        return new RepoAnalytics(source);
@@ -467,7 +467,7 @@ export namespace data {
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.contributors = this.convertValues(source["contributors"], RepoContributors);
-	        this.technologies = this.convertValues(source["technologies"], TechnologyCounter);
+	        this.technologies = this.convertValues(source["technologies"], RepoTechnologies);
 	    }
 	
 		convertValues(a: any, classs: any, asMap: boolean = false): any {
@@ -570,6 +570,7 @@ export namespace data {
 	
 	
 	
+	
 	export class UserMeta {
 	    name: string;
 	    userName: string;
@@ -644,7 +645,6 @@ export namespace data {
 		    return a;
 		}
 	}
-	
 	
 
 }

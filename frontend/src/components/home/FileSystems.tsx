@@ -16,10 +16,13 @@ const FileSystems = () => {
     getFileSystems();
   }, []);
 
-  const disks = fileSystems.map((disk) => (
-    <DiskUsage key={disk.device} diskStats={disk} />
-  ));
-  return <div>{disks}</div>;
+  return (
+    <div>
+      {fileSystems.map((disk) => (
+        <DiskUsage key={disk.device} diskStats={disk} />
+      ))}
+    </div>
+  );
 };
 
 export default FileSystems;

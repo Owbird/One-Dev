@@ -1,25 +1,17 @@
-import {
-  Box,
-  CloseButton,
-  Divider,
-  HStack,
-  Tab,
-  TabList,
-  TabPanel,
-  TabPanels,
-  Tabs,
-} from "@chakra-ui/react";
+import { Box, TabList, Tabs } from "@chakra-ui/react";
 import { Fragment, useEffect } from "react";
 
 import { FaCog, FaGithub, FaHome } from "react-icons/fa";
 
-import NavItem from "@components/app/NavItem";
 import SidebarContent from "@components/app/SidebarContent";
 import { IMenuTab, INavItem } from "@data/interfaces";
 import { WindowSetTitle } from "@go-runtime/runtime";
 import Git from "@pages/git/Git";
 import Home from "@src/pages/home/Home";
 import { useAtom } from "jotai";
+import NavItems from "./components/app/NavItems";
+import NavTabList from "./components/app/NavTabList";
+import NavTabPanels from "./components/app/NavTabPanels";
 import Settings from "./pages/settings/Settings";
 import { openedTabsAtom, tabIndexAtom } from "./states/nav/TabsAtom";
 
@@ -90,36 +82,6 @@ function App() {
     return <Fragment></Fragment>;
   }
 
-  const navItems = NAV_ITEMS.map((item, index) => (
-    <Fragment>
-      {/* Divide Settings from rest of nav */}
-      {item.menuTab.label === "Settings" && <Divider />}
-      <NavItem
-        onClick={handleMenuClick}
-        // isActive={true}
-        isActive={item.menuTab.label === openedTabs[tabIndex].label}
-        key={index}
-        icon={item.icon}
-        tab={item.menuTab}
-      />
-    </Fragment>
-  ));
-
-  const tabPanels = openedTabs.map((tab, index) => (
-    <TabPanel key={index}>{tab.body}</TabPanel>
-  ));
-
-  const tabList = openedTabs.map((tab, index) => (
-    <HStack key={index}>
-      <Tab onClick={() => setWindowTitle(tab.label)} key={index}>
-        {tab.label}
-      </Tab>
-      {tab.label !== "Home" && (
-        <CloseButton onClick={() => closeTab(tab)} size={"sm"} color={"red"} />
-      )}
-    </HStack>
-  ));
-
   return (
     <Box
       as="section"
@@ -129,7 +91,13 @@ function App() {
       }}
       minH="100vh"
     >
-      <SidebarContent>{navItems}</SidebarContent>
+      <SidebarContent>
+        <NavItems
+          handleMenuClick={handleMenuClick}
+          currentLabel={openedTabs[tabIndex].label}
+          navItems={NAV_ITEMS}
+        />
+      </SidebarContent>
       <Box
         ml={{
           base: 0,
@@ -138,9 +106,15 @@ function App() {
         transition=".3s ease"
       >
         <Tabs index={tabIndex} onChange={(index) => setTabIndex(index)}>
-          <TabList>{tabList}</TabList>
+          <TabList>
+            <NavTabList
+              tabs={openedTabs}
+              onTabClick={setWindowTitle}
+              closeTab={closeTab}
+            />
+          </TabList>
 
-          <TabPanels>{tabPanels}</TabPanels>
+          <NavTabPanels panels={openedTabs} />
         </Tabs>
       </Box>
     </Box>
