@@ -184,6 +184,23 @@ func (gf *GitFunctions) GetRepo(path string) (data.Repo, error) {
 
 	wg.Wait()
 
+	//Handle frontend null data with empty arrays
+	if len(gitRepo.Tags) == 0 {
+		gitRepo.Tags = []string{}
+	}
+
+	if len(gitRepo.Branches) == 0 {
+		gitRepo.Branches = []string{}
+	}
+
+	if len(gitRepo.Commits) == 0 {
+		gitRepo.Commits = []data.RepoCommit{}
+	}
+
+	if len(gitRepo.Changes) == 0 {
+		gitRepo.Changes = []data.RepoChange{}
+	}
+
 	return gitRepo, nil
 }
 
