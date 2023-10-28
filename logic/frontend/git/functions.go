@@ -173,7 +173,7 @@ func (gf *GitFunctions) GetRepo(path string) (data.Repo, error) {
 		})
 
 		for technology, count := range technologiesCounter {
-			gitRepo.Analytics.Technologies = append(gitRepo.Analytics.Technologies, data.TechnologyCounter{
+			gitRepo.Analytics.Technologies = append(gitRepo.Analytics.Technologies, data.RepoTechnologies{
 				Technology: technology,
 				Count:      count,
 			})
