@@ -510,7 +510,7 @@ export namespace data {
 	}
 	export class RepoChange {
 	    file: string;
-	    change: string;
+	    status: string;
 	
 	    static createFrom(source: any = {}) {
 	        return new RepoChange(source);
@@ -519,7 +519,7 @@ export namespace data {
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.file = source["file"];
-	        this.change = source["change"];
+	        this.status = source["status"];
 	    }
 	}
 	export class Repo {

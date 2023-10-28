@@ -5,8 +5,8 @@ import { FC, Fragment } from "react";
 interface IRepoChangesProps {
   changes: data.RepoChange[] | undefined;
 }
-const getChangeColor = (change: string): string => {
-  switch (change) {
+const getChangeColor = (status: string): string => {
+  switch (status) {
     case "N":
       return "green";
     case " ":
@@ -14,6 +14,7 @@ const getChangeColor = (change: string): string => {
     case "M":
       return "yellow";
     case "A":
+    case "U":
       return "green";
     case "D":
       return "red";
@@ -32,8 +33,8 @@ const RepoChanges: FC<IRepoChangesProps> = ({ changes }) => {
       {changes.map((change) => (
         <HStack key={change.file}>
           <Text>{change.file}</Text>
-          <Badge colorScheme={getChangeColor(change.change)}>
-            {change.change}
+          <Badge colorScheme={getChangeColor(change.status)}>
+            {change.status}
           </Badge>
         </HStack>
       ))}

@@ -4,7 +4,7 @@ import "time"
 
 type RepoChange struct {
 	File   string `json:"file"`
-	Change string `json:"change"`
+	Status string `json:"status"`
 }
 
 type RepoContributors struct {

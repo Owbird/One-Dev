@@ -142,13 +142,21 @@ func (gf *GitFunctions) GetRepo(path string) (data.Repo, error) {
 	status := strings.Split(string(res), "\n")
 
 	for _, stat := range status {
+		// <status> <file>
 		changes := strings.Split(strings.Trim(stat, " "), " ")
 
 		if changes[0] != "" {
 
+			status := changes[0]
+
+			// Untracked file
+			if status == "??" {
+				status = "U"
+			}
+
 			change := data.RepoChange{
 				File:   changes[1],
-				Change: changes[0],
+				Status: status,
 			}
 
 			gitRepo.Changes = append(gitRepo.Changes, change)
