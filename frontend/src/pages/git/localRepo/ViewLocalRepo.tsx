@@ -25,6 +25,7 @@ import Loader from "@src/components/shared/Loader";
 import { SnackbarMessage, enqueueSnackbar } from "notistack";
 import { FC, Fragment, useEffect, useState } from "react";
 import { AiOutlineBranches, AiOutlineTag } from "react-icons/ai";
+import { FaSync } from "react-icons/fa";
 
 interface IViewLocalRepoProps {
   repo: string;
@@ -93,6 +94,9 @@ const ViewLocalRepo: FC<IViewLocalRepoProps> = ({ repo }) => {
         <Heading>{repoData?.dir}</Heading>
         <AiOutlineBranches /> <Badge>{repoData?.branches.length}</Badge>
         <Badge color={"green"}>{repoData?.currentBranch}</Badge>
+        <Box pl={60}>
+          <FaSync onClick={() => getRepo(repoData?.parentDir!)} />
+        </Box>
       </HStack>
       <Stack ml={5} mt={5} width={500}>
         <HStack>
