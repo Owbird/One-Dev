@@ -148,8 +148,6 @@ func (gf *GitFunctions) GetRepo(path string) (data.Repo, error) {
 		// <status> <file>
 		changes := strings.Split(strings.Trim(formattedStat, " "), " ")
 
-		log.Println(changes)
-
 		if changes[0] != "" {
 
 			status := changes[0]
@@ -436,4 +434,43 @@ func (gf *GitFunctions) GetGitTokens() ([]string, error) {
 	}
 
 	return tokens, nil
+}
+
+// CreateCommit commits changes to the Git repository.
+//
+// The function takes a `CreateCommit` struct as a parameter, which contains the
+// necessary information for creating a commit. The `CreateCommit` struct has the
+// following fields:
+//   - `Repo`: the path to the Git repository.
+//   - `Files`: a list of file paths to be added to the commit.
+//   - `Message`: the commit message.
+//
+// The function returns an error if there is any issue with adding files or
+// committing the changes.
+func (gf *GitFunctions) CreateCommit(commit data.CreateCommit) error {
+	// worktree.Add has an issue
+	log.Println("[+] Commiting changes")
+
+	for _, file := range commit.Files {
+		cmd := exec.Command("git", "add", file)
+		cmd.Dir = commit.Repo
+
+		output, err := cmd.CombinedOutput()
+
+		if err != nil {
+			return fmt.Errorf(string(output))
+		}
+
+	}
+
+	cmd := exec.Command("git", "commit", "-m", commit.Message)
+	cmd.Dir = commit.Repo
+
+	output, err := cmd.CombinedOutput()
+
+	if err != nil {
+		return fmt.Errorf(string(output))
+	}
+
+	return nil
 }

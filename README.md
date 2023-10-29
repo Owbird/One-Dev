@@ -27,8 +27,8 @@ Everything you need as a developer is a tab away.
 - :construction: Github
 
   - Local repos index
-    - [ ] Add
-    - [ ] Commit
+    - [x] Add
+    - [x] Commit
     - [ ] Push
     - [ ] Pull
     - [x] Analytics

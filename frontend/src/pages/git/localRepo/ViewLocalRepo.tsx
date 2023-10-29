@@ -118,7 +118,11 @@ const ViewLocalRepo: FC<IViewLocalRepoProps> = ({ repo }) => {
           <TabPanels>
             <TabPanel>
               <Box overflowY="auto" maxHeight="100vh">
-                <RepoChanges changes={repoData?.changes} />
+                <RepoChanges
+                  changes={repoData?.changes}
+                  parentDir={repoData?.parentDir!}
+                  refreshRepo={() => getRepo(repoData?.parentDir!)}
+                />
               </Box>
             </TabPanel>
             <TabPanel>

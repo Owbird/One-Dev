@@ -6,6 +6,8 @@ export function ChangeBranch(arg1:string,arg2:string):Promise<void>;
 
 export function CloneRepo(arg1:string,arg2:string):Promise<void>;
 
+export function CreateCommit(arg1:data.CreateCommit):Promise<void>;
+
 export function GetGitDirs():Promise<Array<data.File>>;
 
 export function GetGitTokens():Promise<Array<string>>;

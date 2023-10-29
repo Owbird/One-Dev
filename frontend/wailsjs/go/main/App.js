@@ -10,6 +10,10 @@ export function CloneRepo(arg1, arg2) {
   return window['go']['main']['App']['CloneRepo'](arg1, arg2);
 }
 
+export function CreateCommit(arg1) {
+  return window['go']['main']['App']['CreateCommit'](arg1);
+}
+
 export function GetFileSystems() {
   return window['go']['main']['App']['GetFileSystems']();
 }

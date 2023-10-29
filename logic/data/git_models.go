@@ -7,6 +7,12 @@ type RepoChange struct {
 	Status string `json:"status"`
 }
 
+type CreateCommit struct {
+	Message string   `json:"message"`
+	Files   []string `json:"files"`
+	Repo    string   `json:"repo"`
+}
+
 type RepoContributors struct {
 	Contributor  string `json:"contributor"`
 	Percentage   string `json:"percentage"`

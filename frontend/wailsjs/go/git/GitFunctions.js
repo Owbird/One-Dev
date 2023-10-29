@@ -10,6 +10,10 @@ export function CloneRepo(arg1, arg2) {
   return window['go']['git']['GitFunctions']['CloneRepo'](arg1, arg2);
 }
 
+export function CreateCommit(arg1) {
+  return window['go']['git']['GitFunctions']['CreateCommit'](arg1);
+}
+
 export function GetGitDirs() {
   return window['go']['git']['GitFunctions']['GetGitDirs']();
 }

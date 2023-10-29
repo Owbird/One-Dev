@@ -30,6 +30,22 @@ export namespace data {
 	        this.usages = source["usages"];
 	    }
 	}
+	export class CreateCommit {
+	    message: string;
+	    files: string[];
+	    repo: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new CreateCommit(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.message = source["message"];
+	        this.files = source["files"];
+	        this.repo = source["repo"];
+	    }
+	}
 	export class DiskStats {
 	    path: string;
 	    diskType: string;
