@@ -10,17 +10,15 @@ import {
   TabPanel,
   TabPanels,
   Tabs,
-  Text,
 } from "@chakra-ui/react";
 import { WindowSetTitle } from "@go-runtime/runtime";
 import { ChangeBranch, GetRepo } from "@go/main/App";
 import { data } from "@go/models";
 import LocalBranches from "@src/components/git/local/LocalBranches";
+import RepoAnalytics from "@src/components/git/local/RepoAnalytics";
 import RepoChanges from "@src/components/git/local/RepoChanges";
 import RepoCommits from "@src/components/git/local/RepoCommits";
-import RepoContributors from "@src/components/git/local/RepoContributors";
 import RepoTags from "@src/components/git/local/RepoTags";
-import RepoTechnologies from "@src/components/git/local/RepoTechnologies";
 import Loader from "@src/components/shared/Loader";
 import { SnackbarMessage, enqueueSnackbar } from "notistack";
 import { FC, Fragment, useEffect, useState } from "react";
@@ -129,30 +127,10 @@ const ViewLocalRepo: FC<IViewLocalRepoProps> = ({ repo }) => {
               </Box>
             </TabPanel>
             <TabPanel>
-              <TabPanel>
-                <Box>
-                  <Heading as="h2" size="lg" mb={2}>
-                    Total Commits
-                  </Heading>
-                  <Text>{repoData?.commits.length}</Text>
-                  <Heading as="h2" size="lg" mb={2}>
-                    Contributors ({repoData?.analytics.contributors.length})
-                  </Heading>
-                  <Box overflowY="auto" maxHeight="400">
-                    <RepoContributors
-                      contributors={repoData?.analytics.contributors!}
-                    />
-                  </Box>
-                  <Heading as="h2" size="lg" mb={2}>
-                    Technologies ({repoData?.analytics.technologies.length})
-                  </Heading>
-                  <Box overflowY="auto" maxHeight="400">
-                    <RepoTechnologies
-                      technologies={repoData?.analytics.technologies!}
-                    />
-                  </Box>
-                </Box>
-              </TabPanel>
+              <RepoAnalytics
+                totalCommits={repoData?.commits.length!}
+                analytics={repoData?.analytics!}
+              />
             </TabPanel>
           </TabPanels>
         </Tabs>
