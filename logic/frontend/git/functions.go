@@ -142,8 +142,13 @@ func (gf *GitFunctions) GetRepo(path string) (data.Repo, error) {
 	status := strings.Split(string(res), "\n")
 
 	for _, stat := range status {
+		// for staged files
+		formattedStat := strings.ReplaceAll(stat, "  ", " ")
+
 		// <status> <file>
-		changes := strings.Split(strings.Trim(stat, " "), " ")
+		changes := strings.Split(strings.Trim(formattedStat, " "), " ")
+
+		log.Println(changes)
 
 		if changes[0] != "" {
 
