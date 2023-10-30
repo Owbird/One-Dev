@@ -105,31 +105,91 @@ func (gf *GitFunctions) GetRepo(path string) (data.Repo, error) {
 		wg.Done()
 	}()
 
-	branches, err := repo.Branches()
+	localBranchesErrCh := make(chan error, 1)
+	remoteBranchesErrCh := make(chan error, 1)
+	tagsErrCh := make(chan error, 1)
 
-	if err != nil {
-		return gitRepo, nil
+	// Handle Local Branches
+	wg.Add(1)
+	go func() {
+		log.Println("[+] Gettting repo local branches")
+		branches, err := repo.Branches()
+
+		localBranchesErrCh <- err
+
+		branches.ForEach(func(branch *plumbing.Reference) error {
+
+			gitRepo.LocalBranches = append(gitRepo.LocalBranches, branch.Name().Short())
+
+			return nil
+		})
+
+		close(localBranchesErrCh)
+
+		wg.Done()
+	}()
+
+	localBranchesErrVal := <-localBranchesErrCh
+
+	if localBranchesErrVal != nil {
+		return gitRepo, localBranchesErrVal
 	}
 
-	branches.ForEach(func(branch *plumbing.Reference) error {
+	// Handle remote branchess
+	wg.Add(1)
+	go func() {
+		log.Println("[+] Gettting repo remote branches")
+		remote, _ := repo.Remote("origin")
 
-		gitRepo.Branches = append(gitRepo.Branches, branch.Name().Short())
+		remotes, err := remote.List(&git.ListOptions{})
 
-		return nil
-	})
+		remoteBranchesErrCh <- err
 
-	tags, err := repo.Tags()
+		for _, remote := range remotes {
+			remoteBranch := remote.Name()
 
-	if err != nil {
-		log.Println(err)
+			if strings.Contains(remoteBranch.String(), "heads") {
+				gitRepo.RemoteBranches = append(gitRepo.RemoteBranches, fmt.Sprintf("remotes/origin/%s", remoteBranch.Short()))
+			}
+
+		}
+
+		close(remoteBranchesErrCh)
+
+		wg.Done()
+	}()
+
+	remoteBranchesErrVal := <-remoteBranchesErrCh
+
+	if remoteBranchesErrVal != nil {
+		return gitRepo, remoteBranchesErrVal
 	}
 
-	tags.ForEach(func(tag *plumbing.Reference) error {
+	// Handle tags
+	wg.Add(1)
+	go func() {
+		log.Println("[+] Getting repo tags")
+		tags, _ := repo.Tags()
 
-		gitRepo.Tags = append(gitRepo.Tags, tag.Name().Short())
+		tagsErrCh <- err
 
-		return nil
-	})
+		tags.ForEach(func(tag *plumbing.Reference) error {
+
+			gitRepo.Tags = append(gitRepo.Tags, tag.Name().Short())
+
+			return nil
+		})
+
+		close(tagsErrCh)
+
+		wg.Done()
+	}()
+
+	tagsErrVal := <-remoteBranchesErrCh
+
+	if tagsErrVal != nil {
+		return gitRepo, tagsErrVal
+	}
 
 	// go-git worktree.Status() has an issue
 	// https://github.com/go-git/go-git/issues/181
@@ -200,8 +260,8 @@ func (gf *GitFunctions) GetRepo(path string) (data.Repo, error) {
 		gitRepo.Tags = []string{}
 	}
 
-	if len(gitRepo.Branches) == 0 {
-		gitRepo.Branches = []string{}
+	if len(gitRepo.LocalBranches) == 0 {
+		gitRepo.RemoteBranches = []string{}
 	}
 
 	if len(gitRepo.Commits) == 0 {

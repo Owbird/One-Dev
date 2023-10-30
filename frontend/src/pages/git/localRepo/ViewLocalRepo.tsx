@@ -14,7 +14,7 @@ import {
 import { WindowSetTitle } from "@go-runtime/runtime";
 import { ChangeBranch, GetRepo } from "@go/main/App";
 import { data } from "@go/models";
-import LocalBranches from "@src/components/git/local/LocalBranches";
+import LocalBranches from "@src/components/git/local/RepoBranches";
 import RepoAnalytics from "@src/components/git/local/RepoAnalytics";
 import RepoChanges from "@src/components/git/local/RepoChanges";
 import RepoCommits from "@src/components/git/local/RepoCommits";
@@ -90,7 +90,10 @@ const ViewLocalRepo: FC<IViewLocalRepoProps> = ({ repo }) => {
     <Fragment>
       <HStack>
         <Heading>{repoData?.dir}</Heading>
-        <AiOutlineBranches /> <Badge>{repoData?.branches.length}</Badge>
+        <AiOutlineBranches />{" "}
+        <Badge>
+          {repoData?.localBranches.length! + repoData?.remoteBranches.length!}
+        </Badge>
         <Badge color={"green"}>{repoData?.currentBranch}</Badge>
         <Box pl={60}>
           <FaSync onClick={() => getRepo(repoData?.parentDir!)} />
@@ -100,7 +103,8 @@ const ViewLocalRepo: FC<IViewLocalRepoProps> = ({ repo }) => {
         <HStack>
           <AiOutlineBranches size={60} />
           <LocalBranches
-            branches={repoData?.branches}
+            localBranches={repoData?.localBranches}
+            remoteBranches={repoData?.remoteBranches}
             currentBranch={repoData?.currentBranch}
             onBranchChange={handleBranchChnage}
           />

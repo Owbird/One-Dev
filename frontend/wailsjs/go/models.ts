@@ -540,7 +540,8 @@ export namespace data {
 	}
 	export class Repo {
 	    currentBranch: string;
-	    branches: string[];
+	    localBranches: string[];
+	    remoteBranches: string[];
 	    tags: string[];
 	    changes: RepoChange[];
 	    commits: RepoCommit[];
@@ -555,7 +556,8 @@ export namespace data {
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.currentBranch = source["currentBranch"];
-	        this.branches = source["branches"];
+	        this.localBranches = source["localBranches"];
+	        this.remoteBranches = source["remoteBranches"];
 	        this.tags = source["tags"];
 	        this.changes = this.convertValues(source["changes"], RepoChange);
 	        this.commits = this.convertValues(source["commits"], RepoCommit);
