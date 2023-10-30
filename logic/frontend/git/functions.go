@@ -105,9 +105,9 @@ func (gf *GitFunctions) GetRepo(path string) (data.Repo, error) {
 		wg.Done()
 	}()
 
-	localBranchesErrCh := make(chan error, 1)
-	remoteBranchesErrCh := make(chan error, 1)
-	tagsErrCh := make(chan error, 1)
+	localBranchesErr := make(chan error, 1)
+	remoteBranchesErr := make(chan error, 1)
+	tagsErr := make(chan error, 1)
 
 	// Handle Local Branches
 	wg.Add(1)
@@ -115,7 +115,7 @@ func (gf *GitFunctions) GetRepo(path string) (data.Repo, error) {
 		log.Println("[+] Gettting repo local branches")
 		branches, err := repo.Branches()
 
-		localBranchesErrCh <- err
+		localBranchesErr <- err
 
 		branches.ForEach(func(branch *plumbing.Reference) error {
 
@@ -124,26 +124,29 @@ func (gf *GitFunctions) GetRepo(path string) (data.Repo, error) {
 			return nil
 		})
 
-		close(localBranchesErrCh)
+		close(localBranchesErr)
 
 		wg.Done()
+
 	}()
 
-	localBranchesErrVal := <-localBranchesErrCh
+	localBranchesErrVal := <-localBranchesErr
 
 	if localBranchesErrVal != nil {
-		return gitRepo, localBranchesErrVal
+		return gitRepo, nil
 	}
 
 	// Handle remote branchess
 	wg.Add(1)
 	go func() {
 		log.Println("[+] Gettting repo remote branches")
-		remote, _ := repo.Remote("origin")
+		remote, err := repo.Remote("origin")
+
+		remoteBranchesErr <- err
 
 		remotes, err := remote.List(&git.ListOptions{})
 
-		remoteBranchesErrCh <- err
+		remoteBranchesErr <- err
 
 		for _, remote := range remotes {
 			remoteBranch := remote.Name()
@@ -154,15 +157,15 @@ func (gf *GitFunctions) GetRepo(path string) (data.Repo, error) {
 
 		}
 
-		close(remoteBranchesErrCh)
+		close(remoteBranchesErr)
 
 		wg.Done()
 	}()
 
-	remoteBranchesErrVal := <-remoteBranchesErrCh
+	remoteBranchesErrVal := <-remoteBranchesErr
 
 	if remoteBranchesErrVal != nil {
-		return gitRepo, remoteBranchesErrVal
+		return gitRepo, nil
 	}
 
 	// Handle tags
@@ -171,7 +174,7 @@ func (gf *GitFunctions) GetRepo(path string) (data.Repo, error) {
 		log.Println("[+] Getting repo tags")
 		tags, _ := repo.Tags()
 
-		tagsErrCh <- err
+		tagsErr <- err
 
 		tags.ForEach(func(tag *plumbing.Reference) error {
 
@@ -180,15 +183,15 @@ func (gf *GitFunctions) GetRepo(path string) (data.Repo, error) {
 			return nil
 		})
 
-		close(tagsErrCh)
+		close(tagsErr)
 
 		wg.Done()
 	}()
 
-	tagsErrVal := <-remoteBranchesErrCh
+	tagsErrVal := <-remoteBranchesErr
 
 	if tagsErrVal != nil {
-		return gitRepo, tagsErrVal
+		return gitRepo, nil
 	}
 
 	// go-git worktree.Status() has an issue
