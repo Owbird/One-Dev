@@ -14,8 +14,8 @@ import {
 import { WindowSetTitle } from "@go-runtime/runtime";
 import { ChangeBranch, GetRepo } from "@go/main/App";
 import { data } from "@go/models";
-import LocalBranches from "@src/components/git/local/RepoBranches";
 import RepoAnalytics from "@src/components/git/local/RepoAnalytics";
+import RepoBranches from "@src/components/git/local/RepoBranches";
 import RepoChanges from "@src/components/git/local/RepoChanges";
 import RepoCommits from "@src/components/git/local/RepoCommits";
 import RepoTags from "@src/components/git/local/RepoTags";
@@ -102,7 +102,7 @@ const ViewLocalRepo: FC<IViewLocalRepoProps> = ({ repo }) => {
       <Stack ml={5} mt={5} width={500}>
         <HStack>
           <AiOutlineBranches size={60} />
-          <LocalBranches
+          <RepoBranches
             localBranches={repoData?.localBranches}
             remoteBranches={repoData?.remoteBranches}
             currentBranch={repoData?.currentBranch}
