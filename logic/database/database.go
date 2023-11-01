@@ -46,19 +46,14 @@ func (db *Database) GetGitUser() (data.GitUser, error) {
 // This function does not take any parameters.
 // It does not return any values.
 func (db *Database) EnsureOneDir() {
-	userHome, err := utils.UserHome()
 
-	if err != nil {
-		log.Fatalln(err)
-	}
-
-	oneDir := path.Join(userHome, ".onedev")
+	oneDir := utils.GetOneDirPath()
 
 	os.Mkdir(oneDir, 0755)
 
 	oneJson := path.Join(oneDir, "one.json")
 
-	_, err = os.Stat(oneJson)
+	_, err := os.Stat(oneJson)
 
 	if err != nil {
 		_, err := os.Create(oneJson)
@@ -92,4 +87,24 @@ func (db *Database) GetOneJson() (data.OneJson, error) {
 
 	return oneJson, nil
 
+}
+
+func (db *Database) IndexLocalRepos(repos []data.File) error {
+	log.Println("[+] Indexing local repos")
+
+	reposFilePath := path.Join(utils.GetOneDirPath(), "repos.json")
+
+	if _, err := os.Stat(reposFilePath); err != nil {
+		os.Create(reposFilePath)
+	}
+
+	reposJson, err := json.MarshalIndent(repos, "", "\t")
+
+	if err != nil {
+		return err
+	}
+
+	os.WriteFile(reposFilePath, reposJson, 0644)
+
+	return nil
 }

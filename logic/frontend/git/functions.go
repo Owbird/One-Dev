@@ -432,6 +432,8 @@ func (gf *GitFunctions) GetGitDirs() ([]data.File, error) {
 		return nil
 	})
 
+	gf.db.IndexLocalRepos(dirs)
+
 	return dirs, nil
 }
 
