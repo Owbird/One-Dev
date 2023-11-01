@@ -31,6 +31,7 @@ func main() {
 			app.HomeFunctions,
 			app.HelperFunctions,
 			app.GitFunctions,
+			app.DirectoriesFunctions,
 		},
 	})
 

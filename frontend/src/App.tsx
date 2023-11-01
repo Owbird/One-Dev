@@ -1,7 +1,7 @@
 import { Box, Tabs } from "@chakra-ui/react";
 import { Fragment, useEffect } from "react";
 
-import { FaCog, FaGithub, FaHome } from "react-icons/fa";
+import { FaCog, FaFolder, FaGithub, FaHome } from "react-icons/fa";
 
 import SidebarContent from "@components/app/SidebarContent";
 import { IMenuTab, INavItem } from "@data/interfaces";
@@ -12,6 +12,7 @@ import { useAtom } from "jotai";
 import NavItems from "./components/app/NavItems";
 import NavTabList from "./components/app/NavTabList";
 import NavTabPanels from "./components/app/NavTabPanels";
+import Directories from "./pages/Directories/Directories";
 import Settings from "./pages/settings/Settings";
 import { openedTabsAtom, tabIndexAtom } from "./states/nav/TabsAtom";
 
@@ -28,6 +29,13 @@ const NAV_ITEMS: INavItem[] = [
     menuTab: {
       label: "Git & Github",
       body: <Git />,
+    },
+  },
+  {
+    icon: FaFolder,
+    menuTab: {
+      label: "Directories",
+      body: <Directories />,
     },
   },
   {

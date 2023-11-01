@@ -34,3 +34,7 @@ Everything you need as a developer is a tab away.
     - [x] Analytics
   - Remote repos
     - [x] Clone
+
+- :file_folder:
+
+  - [x] Browse directories

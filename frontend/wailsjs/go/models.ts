@@ -46,6 +46,22 @@ export namespace data {
 	        this.repo = source["repo"];
 	    }
 	}
+	export class Directory {
+	    name: string;
+	    isDir: boolean;
+	    path: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new Directory(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.name = source["name"];
+	        this.isDir = source["isDir"];
+	        this.path = source["path"];
+	    }
+	}
 	export class DiskStats {
 	    path: string;
 	    diskType: string;

@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"github.com/owbird/one-dev/backend/database"
+	"github.com/owbird/one-dev/backend/frontend/directories"
 	"github.com/owbird/one-dev/backend/frontend/git"
 	"github.com/owbird/one-dev/backend/frontend/helpers"
 	"github.com/owbird/one-dev/backend/frontend/home"
@@ -17,14 +18,16 @@ type App struct {
 	*home.HomeFunctions
 	*git.GitFunctions
 	*settings.SettingsFunctions
+	*directories.DirectoriesFunctions
 }
 
 func NewApp() *App {
 	return &App{
-		HelperFunctions:   helpers.NewInstance(),
-		HomeFunctions:     home.NewInstance(),
-		GitFunctions:      git.NewInstance(),
-		SettingsFunctions: settings.NewInstance(),
+		HelperFunctions:      helpers.NewInstance(),
+		HomeFunctions:        home.NewInstance(),
+		GitFunctions:         git.NewInstance(),
+		SettingsFunctions:    settings.NewInstance(),
+		DirectoriesFunctions: directories.NewInstance(),
 	}
 }
 
