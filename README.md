@@ -29,7 +29,7 @@ Everything you need as a developer is a tab away.
   - Local repos index
     - [x] Add
     - [x] Commit
-    - [ ] Push
+    - [x] Push
     - [ ] Pull
     - [x] Analytics
   - Remote repos
