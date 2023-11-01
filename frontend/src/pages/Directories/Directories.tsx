@@ -72,7 +72,7 @@ function Directories() {
         {directories.map((directory, index) => (
           <GridItem key={index}>
             <Box
-              onClick={() => handleDirectoryClick(directory)}
+              onDoubleClick={() => handleDirectoryClick(directory)}
               p={4}
               borderWidth="1px"
               borderRadius="md"
