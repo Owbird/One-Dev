@@ -105,8 +105,11 @@ const ViewLocalRepo: FC<IViewLocalRepoProps> = ({ repo }) => {
         <Badge color={"green"}>{repoData?.currentBranch}</Badge>
         <Box pl={60}>
           <HStack>
-            <FaSync onClick={() => getRepo(repoData?.parentDir!)} />
-            <VscRepoPush onClick={pushToOrigin} />
+            <FaSync
+              title="Refresh"
+              onClick={() => getRepo(repoData?.parentDir!)}
+            />
+            <VscRepoPush title="Push" onClick={pushToOrigin} />
           </HStack>
         </Box>
       </HStack>
