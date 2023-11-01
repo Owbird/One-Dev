@@ -7,12 +7,13 @@ import {
   TabPanel,
   Text,
 } from "@chakra-ui/react";
-import { GetIndexedRepos } from "@go/main/App";
+import { GetGitDirs, GetIndexedRepos } from "@go/main/App";
 import { data } from "@go/models";
 import Loader from "@src/components/shared/Loader";
 import { localReposAtom } from "@src/states/git/LocalReposAtom";
 import { openedTabsAtom, tabIndexAtom } from "@src/states/nav/TabsAtom";
 import { useAtom } from "jotai";
+import { enqueueSnackbar } from "notistack";
 import { useEffect, useState } from "react";
 import ViewLocalRepo from "./ViewLocalRepo";
 
@@ -29,6 +30,16 @@ const LocalRepos = () => {
     GetIndexedRepos().then((dirs) => {
       setDirs(dirs);
       setIsLoading(false);
+    });
+  }, []);
+
+  // Update index in background
+  useEffect(() => {
+    GetGitDirs().then((dirs) => {
+      setDirs(dirs);
+      enqueueSnackbar("Local repos index updated", {
+        variant: "success",
+      });
     });
   }, []);
 
