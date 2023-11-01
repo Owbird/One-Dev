@@ -38,6 +38,10 @@ export function GetRepo(arg1) {
   return window['go']['git']['GitFunctions']['GetRepo'](arg1);
 }
 
+export function PullFromOrigin(arg1) {
+  return window['go']['git']['GitFunctions']['PullFromOrigin'](arg1);
+}
+
 export function PushToOrigin(arg1) {
   return window['go']['git']['GitFunctions']['PushToOrigin'](arg1);
 }

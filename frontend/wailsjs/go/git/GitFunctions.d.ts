@@ -20,4 +20,6 @@ export function GetRemoteRepos():Promise<Array<data.RemoteRepo>>;
 
 export function GetRepo(arg1:string):Promise<data.Repo>;
 
+export function PullFromOrigin(arg1:string):Promise<void>;
+
 export function PushToOrigin(arg1:string):Promise<void>;

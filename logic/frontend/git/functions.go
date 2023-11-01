@@ -553,6 +553,7 @@ func (gf *GitFunctions) GetIndexedRepos() ([]data.File, error) {
 	return gf.GetGitDirs()
 }
 
+// PushToOrigin pushes the changes in the Git repository to the origin.
 func (gf *GitFunctions) PushToOrigin(repoDir string) error {
 	log.Println("[+] Pushing to origin")
 
@@ -563,6 +564,26 @@ func (gf *GitFunctions) PushToOrigin(repoDir string) error {
 	}
 
 	err = repo.Push(&git.PushOptions{})
+
+	return err
+}
+
+func (gf *GitFunctions) PullFromOrigin(repoDir string) error {
+	log.Println("[+] Pulling from origin")
+
+	repo, err := git.PlainOpen(repoDir)
+
+	if err != nil {
+		return err
+	}
+
+	worktree, err := repo.Worktree()
+
+	if err != nil {
+		return err
+	}
+
+	err = worktree.Pull(&git.PullOptions{})
 
 	return err
 }

@@ -70,6 +70,10 @@ export function Notify(arg1) {
   return window['go']['main']['App']['Notify'](arg1);
 }
 
+export function PullFromOrigin(arg1) {
+  return window['go']['main']['App']['PullFromOrigin'](arg1);
+}
+
 export function PushToOrigin(arg1) {
   return window['go']['main']['App']['PushToOrigin'](arg1);
 }

@@ -12,7 +12,12 @@ import {
   Tabs,
 } from "@chakra-ui/react";
 import { WindowSetTitle } from "@go-runtime/runtime";
-import { ChangeBranch, GetRepo, PushToOrigin } from "@go/main/App";
+import {
+  ChangeBranch,
+  GetRepo,
+  PullFromOrigin,
+  PushToOrigin,
+} from "@go/main/App";
 import { data } from "@go/models";
 import RepoAnalytics from "@src/components/git/local/RepoAnalytics";
 import RepoBranches from "@src/components/git/local/RepoBranches";
@@ -23,7 +28,7 @@ import Loader from "@src/components/shared/Loader";
 import { SnackbarMessage, enqueueSnackbar } from "notistack";
 import { FC, Fragment, useEffect, useState } from "react";
 import { AiOutlineBranches, AiOutlineTag } from "react-icons/ai";
-import { FaSync } from "react-icons/fa";
+import { FaDownload, FaSync } from "react-icons/fa";
 import { VscRepoPush } from "react-icons/vsc";
 
 interface IViewLocalRepoProps {
@@ -49,6 +54,12 @@ const ViewLocalRepo: FC<IViewLocalRepoProps> = ({ repo }) => {
     await PushToOrigin(repoData?.parentDir!);
     setIsLoading(false);
     enqueueSnackbar("Changes pushed to origin", { variant: "success" });
+  };
+
+  const pullFromOrigin = async () => {
+    setIsLoading(true);
+    await PullFromOrigin(repo);
+    setIsLoading(false);
   };
 
   const getRepo = async (dir: string) => {
@@ -110,6 +121,7 @@ const ViewLocalRepo: FC<IViewLocalRepoProps> = ({ repo }) => {
               onClick={() => getRepo(repoData?.parentDir!)}
             />
             <VscRepoPush title="Push" onClick={pushToOrigin} />
+            <FaDownload title="Pull" onClick={pullFromOrigin} />
           </HStack>
         </Box>
       </HStack>

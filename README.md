@@ -30,7 +30,7 @@ Everything you need as a developer is a tab away.
     - [x] Add
     - [x] Commit
     - [x] Push
-    - [ ] Pull
+    - [x] Pull
     - [x] Analytics
   - Remote repos
     - [x] Clone
