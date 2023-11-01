@@ -552,3 +552,17 @@ func (gf *GitFunctions) GetIndexedRepos() ([]data.File, error) {
 
 	return gf.GetGitDirs()
 }
+
+func (gf *GitFunctions) PushToOrigin(repoDir string) error {
+	log.Println("[+] Pushing to origin")
+
+	repo, err := git.PlainOpen(repoDir)
+
+	if err != nil {
+		return err
+	}
+
+	err = repo.Push(&git.PushOptions{})
+
+	return err
+}

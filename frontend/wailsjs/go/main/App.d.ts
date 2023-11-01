@@ -36,4 +36,6 @@ export function KillProcess(arg1:number):Promise<void>;
 
 export function Notify(arg1:string):Promise<void>;
 
+export function PushToOrigin(arg1:string):Promise<void>;
+
 export function SaveSettings(arg1:data.OneJson):Promise<void>;

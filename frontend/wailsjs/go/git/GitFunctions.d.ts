@@ -19,3 +19,5 @@ export function GetIndexedRepos():Promise<Array<data.File>>;
 export function GetRemoteRepos():Promise<Array<data.RemoteRepo>>;
 
 export function GetRepo(arg1:string):Promise<data.Repo>;
+
+export function PushToOrigin(arg1:string):Promise<void>;

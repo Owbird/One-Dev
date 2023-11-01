@@ -12,7 +12,7 @@ import {
   Tabs,
 } from "@chakra-ui/react";
 import { WindowSetTitle } from "@go-runtime/runtime";
-import { ChangeBranch, GetRepo } from "@go/main/App";
+import { ChangeBranch, GetRepo, PushToOrigin } from "@go/main/App";
 import { data } from "@go/models";
 import RepoAnalytics from "@src/components/git/local/RepoAnalytics";
 import RepoBranches from "@src/components/git/local/RepoBranches";
@@ -24,6 +24,7 @@ import { SnackbarMessage, enqueueSnackbar } from "notistack";
 import { FC, Fragment, useEffect, useState } from "react";
 import { AiOutlineBranches, AiOutlineTag } from "react-icons/ai";
 import { FaSync } from "react-icons/fa";
+import { VscRepoPush } from "react-icons/vsc";
 
 interface IViewLocalRepoProps {
   repo: string;
@@ -32,13 +33,6 @@ interface IViewLocalRepoProps {
 const ViewLocalRepo: FC<IViewLocalRepoProps> = ({ repo }) => {
   const [repoData, setRepoData] = useState<data.Repo>();
   const [isLoading, setIsLoading] = useState(false);
-
-  const getRepo = async (dir: string) => {
-    setIsLoading(true);
-    const repo = await GetRepo(dir);
-    setRepoData(repo);
-    setIsLoading(false);
-  };
 
   useEffect(() => {
     getRepo(repo!);
@@ -49,6 +43,20 @@ const ViewLocalRepo: FC<IViewLocalRepoProps> = ({ repo }) => {
       WindowSetTitle(`One Dev | Git & Github | ${repoData?.dir}`);
     }
   }, [repoData]);
+
+  const pushToOrigin = async () => {
+    setIsLoading(true);
+    await PushToOrigin(repoData?.parentDir!);
+    setIsLoading(false);
+    enqueueSnackbar("Changes pushed to origin", { variant: "success" });
+  };
+
+  const getRepo = async (dir: string) => {
+    setIsLoading(true);
+    const repo = await GetRepo(dir);
+    setRepoData(repo);
+    setIsLoading(false);
+  };
 
   const handleBranchChnage = async (branch: string) => {
     try {
@@ -96,7 +104,10 @@ const ViewLocalRepo: FC<IViewLocalRepoProps> = ({ repo }) => {
         </Badge>
         <Badge color={"green"}>{repoData?.currentBranch}</Badge>
         <Box pl={60}>
-          <FaSync onClick={() => getRepo(repoData?.parentDir!)} />
+          <HStack>
+            <FaSync onClick={() => getRepo(repoData?.parentDir!)} />
+            <VscRepoPush onClick={pushToOrigin} />
+          </HStack>
         </Box>
       </HStack>
       <Stack ml={5} mt={5} width={500}>
