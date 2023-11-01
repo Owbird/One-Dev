@@ -41,6 +41,10 @@ func (db *Database) GetGitUser() (data.GitUser, error) {
 	}, nil
 }
 
+// EnsureOneDir creates a directory for storing app data.
+//
+// This function does not take any parameters.
+// It does not return any values.
 func (db *Database) EnsureOneDir() {
 	userHome, err := utils.UserHome()
 
@@ -67,6 +71,7 @@ func (db *Database) EnsureOneDir() {
 
 }
 
+// GetOneJson retrieves the OneJson file.
 func (db *Database) GetOneJson() (data.OneJson, error) {
 
 	oneJsonPath := utils.GetOneJsonPath()
