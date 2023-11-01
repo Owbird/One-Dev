@@ -1,8 +1,8 @@
 package settings
 
 import (
-	"github.com/owbird/one-dev/logic/data"
-	"github.com/owbird/one-dev/logic/database"
+	"github.com/owbird/one-dev/backend/data"
+	"github.com/owbird/one-dev/backend/database"
 )
 
 func NewInstance() *SettingsFunctions {

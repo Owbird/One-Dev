@@ -6,7 +6,7 @@ import (
 	"os/exec"
 
 	"github.com/gen2brain/beeep"
-	"github.com/owbird/one-dev/logic/utils"
+	"github.com/owbird/one-dev/backend/utils"
 )
 
 // NewInstance returns a new instance of HelperFunctions.

@@ -9,8 +9,8 @@ import (
 	"sync"
 
 	c "github.com/ostafen/clover"
-	"github.com/owbird/one-dev/logic/data"
-	"github.com/owbird/one-dev/logic/utils"
+	"github.com/owbird/one-dev/backend/data"
+	"github.com/owbird/one-dev/backend/utils"
 )
 
 type Database struct {

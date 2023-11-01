@@ -3,7 +3,7 @@ package utils
 import (
 	"time"
 
-	"github.com/owbird/one-dev/logic/data"
+	"github.com/owbird/one-dev/backend/data"
 	"github.com/shirou/gopsutil/host"
 )
 

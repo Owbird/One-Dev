@@ -7,8 +7,8 @@ import (
 	"strings"
 
 	"github.com/distatus/battery"
-	"github.com/owbird/one-dev/logic/data"
-	"github.com/owbird/one-dev/logic/utils"
+	"github.com/owbird/one-dev/backend/data"
+	"github.com/owbird/one-dev/backend/utils"
 	"github.com/shirou/gopsutil/cpu"
 	"github.com/shirou/gopsutil/disk"
 	"github.com/shirou/gopsutil/mem"

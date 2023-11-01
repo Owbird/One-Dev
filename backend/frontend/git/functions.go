@@ -16,9 +16,9 @@ import (
 	"github.com/go-git/go-git/v5/plumbing"
 	"github.com/go-git/go-git/v5/plumbing/object"
 	"github.com/go-git/go-git/v5/plumbing/transport/http"
-	"github.com/owbird/one-dev/logic/data"
-	"github.com/owbird/one-dev/logic/database"
-	"github.com/owbird/one-dev/logic/utils"
+	"github.com/owbird/one-dev/backend/data"
+	"github.com/owbird/one-dev/backend/database"
+	"github.com/owbird/one-dev/backend/utils"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 

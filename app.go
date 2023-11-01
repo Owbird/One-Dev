@@ -4,11 +4,11 @@ import (
 	"context"
 	"log"
 
-	"github.com/owbird/one-dev/logic/database"
-	"github.com/owbird/one-dev/logic/frontend/git"
-	"github.com/owbird/one-dev/logic/frontend/helpers"
-	"github.com/owbird/one-dev/logic/frontend/home"
-	"github.com/owbird/one-dev/logic/frontend/settings"
+	"github.com/owbird/one-dev/backend/database"
+	"github.com/owbird/one-dev/backend/frontend/git"
+	"github.com/owbird/one-dev/backend/frontend/helpers"
+	"github.com/owbird/one-dev/backend/frontend/home"
+	"github.com/owbird/one-dev/backend/frontend/settings"
 )
 
 type App struct {
