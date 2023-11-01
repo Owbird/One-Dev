@@ -1,4 +1,4 @@
-import { Box, TabList, Tabs } from "@chakra-ui/react";
+import { Box, Tabs } from "@chakra-ui/react";
 import { Fragment, useEffect } from "react";
 
 import { FaCog, FaGithub, FaHome } from "react-icons/fa";
@@ -106,13 +106,11 @@ function App() {
         transition=".3s ease"
       >
         <Tabs index={tabIndex} onChange={(index) => setTabIndex(index)}>
-          <TabList>
-            <NavTabList
-              tabs={openedTabs}
-              onTabClick={setWindowTitle}
-              closeTab={closeTab}
-            />
-          </TabList>
+          <NavTabList
+            tabs={openedTabs}
+            onTabClick={setWindowTitle}
+            closeTab={closeTab}
+          />
 
           <NavTabPanels panels={openedTabs} />
         </Tabs>
