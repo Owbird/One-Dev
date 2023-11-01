@@ -50,23 +50,45 @@ const ViewLocalRepo: FC<IViewLocalRepoProps> = ({ repo }) => {
   }, [repoData]);
 
   const pushToOrigin = async () => {
-    setIsLoading(true);
-    await PushToOrigin(repoData?.parentDir!);
-    setIsLoading(false);
-    enqueueSnackbar("Changes pushed to origin", { variant: "success" });
+    try {
+      setIsLoading(true);
+
+      await PushToOrigin(repoData?.parentDir!);
+
+      enqueueSnackbar("Changes pushed to origin", { variant: "success" });
+    } catch (error) {
+      const errorText: SnackbarMessage = error as string;
+      enqueueSnackbar(errorText, { variant: "error" });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const pullFromOrigin = async () => {
-    setIsLoading(true);
-    await PullFromOrigin(repo);
-    setIsLoading(false);
+    try {
+      setIsLoading(true);
+      await PullFromOrigin(repo);
+    } catch (error) {
+      const errorText: SnackbarMessage = error as string;
+      enqueueSnackbar(errorText, { variant: "error" });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const getRepo = async (dir: string) => {
-    setIsLoading(true);
-    const repo = await GetRepo(dir);
-    setRepoData(repo);
-    setIsLoading(false);
+    try {
+      setIsLoading(true);
+
+      const repo = await GetRepo(dir);
+
+      setRepoData(repo);
+    } catch (error) {
+      const errorText: SnackbarMessage = error as string;
+      enqueueSnackbar(errorText, { variant: "error" });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleBranchChnage = async (branch: string) => {
