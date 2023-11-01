@@ -89,14 +89,9 @@ func (db *Database) GetOneJson() (data.OneJson, error) {
 
 }
 
+// IndexLocalRepos indexes local repositories.
 func (db *Database) IndexLocalRepos(repos []data.File) error {
 	log.Println("[+] Indexing local repos")
-
-	reposFilePath := path.Join(utils.GetOneDirPath(), "repos.json")
-
-	if _, err := os.Stat(reposFilePath); err != nil {
-		os.Create(reposFilePath)
-	}
 
 	reposJson, err := json.MarshalIndent(repos, "", "\t")
 
@@ -104,7 +99,27 @@ func (db *Database) IndexLocalRepos(repos []data.File) error {
 		return err
 	}
 
+	reposFilePath := utils.GetIndexedReposFilePath()
+
 	os.WriteFile(reposFilePath, reposJson, 0644)
 
 	return nil
+}
+
+func (db *Database) GetIndexedRepos() ([]data.File, error) {
+	log.Println("[+] Getting Indexed local repos")
+
+	reposFilePath := utils.GetIndexedReposFilePath()
+
+	repos, err := os.ReadFile(reposFilePath)
+
+	if err != nil {
+		return []data.File{}, err
+	}
+
+	var reposJson []data.File
+
+	json.Unmarshal(repos, &reposJson)
+
+	return reposJson, nil
 }

@@ -7,7 +7,7 @@ import {
   TabPanel,
   Text,
 } from "@chakra-ui/react";
-import { GetGitDirs } from "@go/main/App";
+import { GetIndexedRepos } from "@go/main/App";
 import { data } from "@go/models";
 import Loader from "@src/components/shared/Loader";
 import { localReposAtom } from "@src/states/git/LocalReposAtom";
@@ -26,7 +26,7 @@ const LocalRepos = () => {
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
-    GetGitDirs().then((dirs) => {
+    GetIndexedRepos().then((dirs) => {
       setDirs(dirs);
       setIsLoading(false);
     });

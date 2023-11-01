@@ -1,6 +1,9 @@
 package utils
 
-import "path"
+import (
+	"os"
+	"path"
+)
 
 func GetOneJsonPath() string {
 	oneDir := GetOneDirPath()
@@ -16,4 +19,15 @@ func GetOneDirPath() string {
 	oneDir := path.Join(userHome, ".onedev")
 
 	return oneDir
+}
+
+func GetIndexedReposFilePath() string {
+	reposFilePath := path.Join(GetOneDirPath(), "repos.json")
+
+	if _, err := os.Stat(reposFilePath); err != nil {
+		os.Create(reposFilePath)
+	}
+
+	return reposFilePath
+
 }

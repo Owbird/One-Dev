@@ -30,6 +30,10 @@ export function GetGitUser() {
   return window['go']['main']['App']['GetGitUser']();
 }
 
+export function GetIndexedRepos() {
+  return window['go']['main']['App']['GetIndexedRepos']();
+}
+
 export function GetRemoteRepos() {
   return window['go']['main']['App']['GetRemoteRepos']();
 }

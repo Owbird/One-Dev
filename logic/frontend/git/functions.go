@@ -536,3 +536,19 @@ func (gf *GitFunctions) CreateCommit(commit data.CreateCommit) error {
 
 	return nil
 }
+
+// GetIndexedRepos retrieves the indexed repositories from the GitFunctions struct.
+func (gf *GitFunctions) GetIndexedRepos() ([]data.File, error) {
+	repos, err := gf.db.GetIndexedRepos()
+
+	if err != nil {
+		return []data.File{}, err
+	}
+
+	if len(repos) > 0 {
+		log.Println("[+] Using indexed repos")
+		return repos, nil
+	}
+
+	return gf.GetGitDirs()
+}

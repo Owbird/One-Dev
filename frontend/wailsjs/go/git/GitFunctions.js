@@ -26,6 +26,10 @@ export function GetGitUser() {
   return window['go']['git']['GitFunctions']['GetGitUser']();
 }
 
+export function GetIndexedRepos() {
+  return window['go']['git']['GitFunctions']['GetIndexedRepos']();
+}
+
 export function GetRemoteRepos() {
   return window['go']['git']['GitFunctions']['GetRemoteRepos']();
 }
