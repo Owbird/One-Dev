@@ -3,3 +3,5 @@
 import {data} from '../models';
 
 export function GetDirectories(arg1:string):Promise<Array<data.Directory>>;
+
+export function OpenFile(arg1:string):Promise<void>;

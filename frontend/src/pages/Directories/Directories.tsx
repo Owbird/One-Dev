@@ -1,5 +1,5 @@
 import { Badge, Box, Flex, Grid, GridItem, Text } from "@chakra-ui/react";
-import { GetDirectories } from "@go/main/App";
+import { GetDirectories, OpenFile } from "@go/main/App";
 import { data } from "@go/models";
 import { useEffect, useMemo, useState } from "react";
 import { FcFile, FcFolder } from "react-icons/fc";
@@ -21,6 +21,8 @@ function Directories() {
   const handleDirectoryClick = async (directory: data.Directory) => {
     if (directory.isDir) {
       setCurrentPath(directory.path);
+    } else {
+      OpenFile(directory.path);
     }
   };
 

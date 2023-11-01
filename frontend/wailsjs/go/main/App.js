@@ -74,6 +74,10 @@ export function Notify(arg1) {
   return window['go']['main']['App']['Notify'](arg1);
 }
 
+export function OpenFile(arg1) {
+  return window['go']['main']['App']['OpenFile'](arg1);
+}
+
 export function PullFromOrigin(arg1) {
   return window['go']['main']['App']['PullFromOrigin'](arg1);
 }

@@ -3,7 +3,9 @@ package directories
 import (
 	"log"
 	"os"
+	"os/exec"
 	"path/filepath"
+	"runtime"
 
 	"github.com/owbird/one-dev/backend/data"
 )
@@ -15,12 +17,11 @@ func NewInstance() *DirectoriesFunctions {
 
 type DirectoriesFunctions struct{}
 
+// GetDirectories retrieves a list of directories from the specified path.
 func (df *DirectoriesFunctions) GetDirectories(path string) ([]data.Directory, error) {
 	log.Println("[+] Getting directories")
 
 	directories := []data.Directory{}
-
-	// Directory path to list its content
 
 	dir, err := os.Open(path)
 
@@ -44,4 +45,31 @@ func (df *DirectoriesFunctions) GetDirectories(path string) ([]data.Directory, e
 	}
 
 	return directories, nil
+}
+
+// OpenFile opens a file using the appropriate command based on the operating system.
+func (df *DirectoriesFunctions) OpenFile(path string) {
+	var cmd string
+	var args []string
+
+	if runtime.GOOS == "linux" {
+		cmd = "xdg-open"
+		args = []string{
+			path,
+		}
+	} else if runtime.GOOS == "darwin" {
+		cmd = "open"
+		args = []string{
+			path,
+		}
+	} else {
+		cmd = "cmd"
+		args = []string{
+			"/c",
+			"start",
+			path,
+		}
+	}
+
+	exec.Command(cmd, args...).Run()
 }

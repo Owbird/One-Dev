@@ -5,3 +5,7 @@
 export function GetDirectories(arg1) {
   return window['go']['directories']['DirectoriesFunctions']['GetDirectories'](arg1);
 }
+
+export function OpenFile(arg1) {
+  return window['go']['directories']['DirectoriesFunctions']['OpenFile'](arg1);
+}

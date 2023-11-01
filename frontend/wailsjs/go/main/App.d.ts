@@ -38,6 +38,8 @@ export function KillProcess(arg1:number):Promise<void>;
 
 export function Notify(arg1:string):Promise<void>;
 
+export function OpenFile(arg1:string):Promise<void>;
+
 export function PullFromOrigin(arg1:string):Promise<void>;
 
 export function PushToOrigin(arg1:string):Promise<void>;
