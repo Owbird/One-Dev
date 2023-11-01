@@ -1,12 +1,8 @@
 package settings
 
 import (
-	"encoding/json"
-	"os"
-
 	"github.com/owbird/one-dev/logic/data"
 	"github.com/owbird/one-dev/logic/database"
-	"github.com/owbird/one-dev/logic/utils"
 )
 
 func NewInstance() *SettingsFunctions {
@@ -32,19 +28,5 @@ func (sf *SettingsFunctions) GetSettings() (data.OneJson, error) {
 // It takes a parameter `settings` of type `data.OneJson` which represents the settings to be saved.
 // It returns an error if there was any issue while saving the settings.
 func (sf *SettingsFunctions) SaveSettings(settings data.OneJson) error {
-	oneJson, err := json.MarshalIndent(settings, "", "\t")
-
-	oneJsonPath := utils.GetOneJsonPath()
-
-	if err != nil {
-		return err
-	}
-
-	err = os.WriteFile(oneJsonPath, oneJson, 0644)
-
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return sf.db.SaveSettings(settings)
 }

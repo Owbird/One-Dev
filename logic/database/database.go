@@ -123,3 +123,22 @@ func (db *Database) GetIndexedRepos() ([]data.File, error) {
 
 	return reposJson, nil
 }
+
+// SaveSettings saves the settings to the one.json file.
+func (db *Database) SaveSettings(settings data.OneJson) error {
+	oneJson, err := json.MarshalIndent(settings, "", "\t")
+
+	oneJsonPath := utils.GetOneJsonPath()
+
+	if err != nil {
+		return err
+	}
+
+	err = os.WriteFile(oneJsonPath, oneJson, 0644)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
