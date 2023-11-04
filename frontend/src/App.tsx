@@ -12,7 +12,7 @@ import { useAtom } from "jotai";
 import NavItems from "./components/app/NavItems";
 import NavTabList from "./components/app/NavTabList";
 import NavTabPanels from "./components/app/NavTabPanels";
-import Directories from "./pages/Directories/Directories";
+import Directories from "./pages/directories/Directories";
 import Settings from "./pages/settings/Settings";
 import { openedTabsAtom, tabIndexAtom } from "./states/nav/TabsAtom";
 

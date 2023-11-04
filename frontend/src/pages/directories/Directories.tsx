@@ -1,4 +1,12 @@
-import { Badge, Box, Flex, Grid, GridItem, Text } from "@chakra-ui/react";
+import {
+  Badge,
+  Box,
+  Flex,
+  Grid,
+  GridItem,
+  Text,
+  useColorModeValue,
+} from "@chakra-ui/react";
 import { GetDirectories, OpenFile } from "@go/main/App";
 import { data } from "@go/models";
 import { useEffect, useMemo, useState } from "react";
@@ -7,6 +15,7 @@ import { FcFile, FcFolder } from "react-icons/fc";
 function Directories() {
   const [directories, setDirectories] = useState<data.Directory[]>([]);
   const [currentPath, setCurrentPath] = useState("/");
+  const badgeColor = useColorModeValue("gray.600", "gray.300");
 
   useEffect(() => {
     getDirectories(currentPath);
@@ -38,7 +47,7 @@ function Directories() {
           <Badge
             fontSize="sm"
             fontWeight="bold"
-            color="gray.600"
+            color={badgeColor}
             cursor="pointer"
             _hover={{ textDecoration: "underline" }}
             onClick={() => setCurrentPath("/")}
@@ -52,7 +61,7 @@ function Directories() {
             <Badge
               fontSize="sm"
               fontWeight="bold"
-              color="gray.600"
+              color={badgeColor}
               cursor="pointer"
               _hover={{ textDecoration: "underline" }}
               onClick={() =>
