@@ -1,6 +1,7 @@
 import {
   Badge,
   Box,
+  Button,
   Flex,
   Grid,
   GridItem,
@@ -15,16 +16,15 @@ import { FcFile, FcFolder } from "react-icons/fc";
 function Directories() {
   const [directories, setDirectories] = useState<data.Directory[]>([]);
   const [currentPath, setCurrentPath] = useState("/");
+  const [showHiddenFiles, setShowHiddenFiles] = useState(false);
   const badgeColor = useColorModeValue("gray.600", "gray.300");
 
   useEffect(() => {
     getDirectories(currentPath);
-  }, [currentPath]);
+  }, [currentPath, showHiddenFiles]);
 
   const getDirectories = (path: string) => {
-    GetDirectories(path).then((data) => {
-      setDirectories(data);
-    });
+    GetDirectories(path, showHiddenFiles).then(setDirectories);
   };
 
   const handleDirectoryClick = async (directory: data.Directory) => {
@@ -73,6 +73,10 @@ function Directories() {
           </Box>
         ))}
       </Flex>
+
+      <Button onClick={() => setShowHiddenFiles(!showHiddenFiles)}>
+        {showHiddenFiles ? "Hide hidden files" : "show hidden files"}
+      </Button>
 
       <Grid
         maxH={"100vh"}

@@ -8,7 +8,7 @@ export function CloneRepo(arg1:string,arg2:string):Promise<void>;
 
 export function CreateCommit(arg1:data.CreateCommit):Promise<void>;
 
-export function GetDirectories(arg1:string):Promise<Array<data.Directory>>;
+export function GetDirectories(arg1:string,arg2:boolean):Promise<Array<data.Directory>>;
 
 export function GetFileSystems():Promise<Array<data.DiskStats>>;
 

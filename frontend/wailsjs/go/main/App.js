@@ -14,8 +14,8 @@ export function CreateCommit(arg1) {
   return window['go']['main']['App']['CreateCommit'](arg1);
 }
 
-export function GetDirectories(arg1) {
-  return window['go']['main']['App']['GetDirectories'](arg1);
+export function GetDirectories(arg1, arg2) {
+  return window['go']['main']['App']['GetDirectories'](arg1, arg2);
 }
 
 export function GetFileSystems() {

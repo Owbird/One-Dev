@@ -6,6 +6,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"runtime"
+	"strings"
 
 	"github.com/owbird/one-dev/backend/data"
 )
@@ -18,7 +19,7 @@ func NewInstance() *DirectoriesFunctions {
 type DirectoriesFunctions struct{}
 
 // GetDirectories retrieves a list of directories from the specified path.
-func (df *DirectoriesFunctions) GetDirectories(path string) ([]data.Directory, error) {
+func (df *DirectoriesFunctions) GetDirectories(path string, showHiddenFiles bool) ([]data.Directory, error) {
 	log.Println("[+] Getting directories")
 
 	directories := []data.Directory{}
@@ -36,6 +37,11 @@ func (df *DirectoriesFunctions) GetDirectories(path string) ([]data.Directory, e
 	}
 
 	for _, file := range files {
+		isHidden := strings.HasPrefix(file.Name(), ".")
+
+		if !showHiddenFiles && isHidden {
+			continue // Skip hidden directories if showHiddenFiles is false
+		}
 
 		directories = append(directories, data.Directory{
 			Name:  file.Name(),
