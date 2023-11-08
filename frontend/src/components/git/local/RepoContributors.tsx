@@ -14,13 +14,7 @@ const RepoContributors: FC<IRepoContributorsProps> = ({ contributors }) => {
   return (
     <Fragment>
       {contributors.map((contributor) => (
-        <Box
-          key={contributor.contributor}
-          bg="gray.100"
-          p={4}
-          mb={2}
-          borderRadius="md"
-        >
+        <Box key={contributor.contributor} p={4} mb={2} borderRadius="md">
           <Heading as="h3" size="md">
             {contributor.contributor}
           </Heading>

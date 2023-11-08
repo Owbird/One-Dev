@@ -13,13 +13,7 @@ const RepoTechnologies: FC<IRepoTechnologiesProps> = ({ technologies }) => {
   return (
     <Fragment>
       {technologies.map((technology) => (
-        <Box
-          key={technology.technology}
-          bg="gray.100"
-          p={4}
-          mb={2}
-          borderRadius="md"
-        >
+        <Box key={technology.technology} p={4} mb={2} borderRadius="md">
           <Heading as="h3" size="md">
             {technology.technology}
           </Heading>
