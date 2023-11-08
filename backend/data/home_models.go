@@ -43,8 +43,7 @@ type MemoryStats struct {
 }
 
 type UserMeta struct {
-	Name     string `json:"name"`
-	UserName string `json:"userName"`
+	Name string `json:"name"`
 }
 
 type SystemResources struct {

@@ -65,7 +65,7 @@ const Greeting = () => {
         >
           <Text as={"span"} color={"green.400"}>
             {greeting}
-            {userMeta && `, ${userMeta.name} (${userMeta.userName})`}
+            {userMeta && `, ${userMeta.name}`}
           </Text>
         </Heading>
 

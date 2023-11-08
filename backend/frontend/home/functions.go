@@ -31,7 +31,6 @@ func (hf *HomeFunctions) GetUserMeta() (data.UserMeta, error) {
 		return meta, err
 	}
 
-	meta.UserName = user.Username
 	meta.Name = user.Name
 
 	return meta, nil

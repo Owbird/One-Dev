@@ -607,7 +607,6 @@ export namespace data {
 	
 	export class UserMeta {
 	    name: string;
-	    userName: string;
 	
 	    static createFrom(source: any = {}) {
 	        return new UserMeta(source);
@@ -616,7 +615,6 @@ export namespace data {
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.name = source["name"];
-	        this.userName = source["userName"];
 	    }
 	}
 	export class UpTime {
