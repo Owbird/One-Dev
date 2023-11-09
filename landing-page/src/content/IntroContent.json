@@ -1,13 +1,14 @@
 {
-  "title": "Landing page template for developers & startups",
-  "text": "Beautifully designed templates using React.js, ant design and styled-components! Save weeks of time and build your landing page in minutes.",
+  "title": "One Dev",
+  "text": "One Dev is a desktop application that consolidates essential developer tools into a single, tabbed interface.",
   "button": [
     {
       "title": "Explore"
     },
     {
-      "title": "Learn more",
-      "color": "#fff"
+      "title": "Github",
+      "color": "#fff",
+      "link": "https://github.com/owbird/One-Dev"
     }
   ]
 }

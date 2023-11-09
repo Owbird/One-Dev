@@ -1,17 +1,15 @@
+import { Col, Drawer, Row } from "antd";
 import { useState } from "react";
-import { Row, Col, Drawer } from "antd";
 import { withTranslation } from "react-i18next";
 import Container from "../../common/Container";
-import { SvgIcon } from "../../common/SvgIcon";
-import { Button } from "../../common/Button";
 import {
-  HeaderSection,
-  LogoContainer,
   Burger,
-  NotHidden,
-  Menu,
   CustomNavLinkSmall,
+  HeaderSection,
   Label,
+  LogoContainer,
+  Menu,
+  NotHidden,
   Outline,
   Span,
 } from "./styles";
@@ -46,14 +44,14 @@ const Header = ({ t }: any) => {
         <CustomNavLinkSmall onClick={() => scrollTo("product")}>
           <Span>{t("Product")}</Span>
         </CustomNavLinkSmall>
-        <CustomNavLinkSmall
+        {/* <CustomNavLinkSmall
           style={{ width: "180px" }}
           onClick={() => scrollTo("contact")}
         >
           <Span>
             <Button>{t("Contact")}</Button>
           </Span>
-        </CustomNavLinkSmall>
+        </CustomNavLinkSmall> */}
       </>
     );
   };
@@ -63,7 +61,8 @@ const Header = ({ t }: any) => {
       <Container>
         <Row justify="space-between">
           <LogoContainer to="/" aria-label="homepage">
-            <SvgIcon src="logo.svg" width="101px" height="64px" />
+            {/* <SvgIcon src="logo.svg" width="101px" height="64px" /> */}
+            One Dev
           </LogoContainer>
           <NotHidden>
             <MenuItem />

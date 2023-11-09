@@ -1,14 +1,14 @@
-import { Row, Col } from "antd";
-import { withTranslation } from "react-i18next";
-import { SvgIcon } from "../../../common/SvgIcon";
-import { Button } from "../../../common/Button";
-import { ContentBlockProps } from "../types";
+import { Col, Row } from "antd";
 import { Fade } from "react-awesome-reveal";
+import { withTranslation } from "react-i18next";
+import { Button } from "../../../common/Button";
+import { SvgIcon } from "../../../common/SvgIcon";
+import { ContentBlockProps } from "../types";
 import {
-  RightBlockContainer,
+  ButtonWrapper,
   Content,
   ContentWrapper,
-  ButtonWrapper,
+  RightBlockContainer,
 } from "./styles";
 
 const RightBlock = ({
@@ -25,6 +25,11 @@ const RightBlock = ({
       behavior: "smooth",
     });
   };
+
+  const handleButtonClick = (link: string) => {
+    window.location.href = link;
+  };
+
   return (
     <RightBlockContainer>
       <Fade direction="right">
@@ -41,7 +46,11 @@ const RightBlock = ({
                         key={id}
                         color={item.color}
                         fixedWidth={true}
-                        onClick={() => scrollTo("about")}
+                        onClick={() =>
+                          item.link
+                            ? handleButtonClick(item.link)
+                            : scrollTo("about")
+                        }
                       >
                         {t(item.title)}
                       </Button>

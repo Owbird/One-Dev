@@ -1,24 +1,15 @@
-import { Row, Col } from "antd";
+import { Row } from "antd";
 import { withTranslation } from "react-i18next";
-import { SvgIcon } from "../../common/SvgIcon";
 import Container from "../../common/Container";
+import { SvgIcon } from "../../common/SvgIcon";
 
 import i18n from "i18next";
 import {
-  FooterSection,
-  Title,
-  NavLink,
   Extra,
-  LogoContainer,
-  Para,
-  Large,
-  Chat,
-  Empty,
   FooterContainer,
-  Language,
-  Label,
-  LanguageSwitch,
-  LanguageSwitchContainer,
+  FooterSection,
+  LogoContainer,
+  NavLink,
 } from "./styles";
 
 interface SocialLinkProps {
@@ -48,10 +39,10 @@ const Footer = ({ t }: any) => {
   return (
     <>
       <FooterSection>
-        <Container>
+        {/* <Container>
           <Row justify="space-between">
             <Col lg={10} md={10} sm={12} xs={12}>
-              <Language>{t("Contact")}</Language>
+              <Language>{t("Issues?")}</Language>
               <Large to="/">{t("Tell us everything")}</Large>
               <Para>
                 {t(`Do you have any question? Feel free to reach out.`)}
@@ -124,7 +115,7 @@ const Footer = ({ t }: any) => {
               </LanguageSwitchContainer>
             </Col>
           </Row>
-        </Container>
+        </Container> */}
       </FooterSection>
       <Extra>
         <Container border={true}>
