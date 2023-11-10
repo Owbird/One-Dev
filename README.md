@@ -4,7 +4,7 @@
 
 Everything you need as a developer is a tab away.
 
-![ss](assets/ss.png)
+![Webiste](https://one-dev.vercel.app/img/home.png)
 
 # Tools
 
@@ -35,6 +35,6 @@ Everything you need as a developer is a tab away.
   - Remote repos
     - [x] Clone
 
-- :file_folder:
+- :file_folder: Directories
 
   - [x] Browse directories
