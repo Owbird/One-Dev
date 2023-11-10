@@ -1,0 +1,17 @@
+{
+  "title": "Git & GitHub",
+  "text": "Elevate your version control and collaboration with One Dev's integrated Git and GitHub features. Power up your development workflow, manage code efficiently, and enhance collaboration seamlessly.",
+  "image": "/img/git-n-github.png",
+  "section": [
+    {
+      "title": "Version Control",
+      "content": "Take control of your codebase with Git integration. One Dev provides a user-friendly interface for essential Git commands, enabling you to track changes, and more with ease",
+      "icon": "/img/svg/notes.svg"
+    },
+    {
+      "title": "GitHub Integration",
+      "content": "Connect to your GitHub repositories directly from One Dev. Clone, push, and pull changes effortlessly. Stay connected to your repositories, all within a unified developer toolkit.",
+      "icon": "/img/svg/notes.svg"
+    }
+  ]
+}

@@ -1,10 +1,8 @@
 {
   "title": "One Dev",
   "text": "One Dev is a desktop application that consolidates essential developer tools into a single, tabbed interface.",
+  "image": "/img/svg/developer.svg",
   "button": [
-    {
-      "title": "Explore"
-    },
     {
       "title": "Github",
       "color": "#fff",

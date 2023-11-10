@@ -1,8 +1,10 @@
 import { lazy } from "react";
-import AboutContent from "../../content/AboutContent.json";
+import AfterFeaturesContent from "../../content/AfterFeaturesContent.json";
+import DirectoriesContent from "../../content/DirectoriesContent.json";
+import GitNGithubContent from "../../content/GitNGithubContent.json";
 import IntroContent from "../../content/IntroContent.json";
-import MissionContent from "../../content/MissionContent.json";
-import ProductContent from "../../content/ProductContent.json";
+import MiddleBlockContent from "../../content/MiddleBlockContent.json";
+import SystemMonitorContent from "../../content/SystemMonitorContent.json";
 
 const Contact = lazy(() => import("../../components/ContactForm"));
 const MiddleBlock = lazy(() => import("../../components/MiddleBlock"));
@@ -19,41 +21,43 @@ const Home = () => {
         title={IntroContent.title}
         content={IntroContent.text}
         button={IntroContent.button}
-        icon="developer.svg"
+        icon={IntroContent.image}
         id="intro"
       />
-      {/* <MiddleBlock
+      <MiddleBlock
         title={MiddleBlockContent.title}
         content={MiddleBlockContent.text}
-        button={MiddleBlockContent.button}
-      /> */}
-      <ContentBlock
-        type="left"
-        title={AboutContent.title}
-        content={AboutContent.text}
-        section={AboutContent.section}
-        icon="graphs.svg"
-        id="about"
+        button={""}
       />
       <ContentBlock
         type="right"
-        title={MissionContent.title}
-        content={MissionContent.text}
-        icon="product-launch.svg"
-        id="mission"
+        title={SystemMonitorContent.title}
+        content={SystemMonitorContent.text}
+        section={SystemMonitorContent.section}
+        icon={SystemMonitorContent.image}
+        id="systemMonitor"
       />
       <ContentBlock
         type="left"
-        title={ProductContent.title}
-        content={ProductContent.text}
-        icon="waving.svg"
-        id="product"
+        title={GitNGithubContent.title}
+        content={GitNGithubContent.text}
+        section={GitNGithubContent.section}
+        icon={GitNGithubContent.image}
+        id="gitNgithub"
       />
-      {/* <Contact
-        title={ContactContent.title}
-        content={ContactContent.text}
-        id="contact"
-      /> */}
+      <ContentBlock
+        type="right"
+        title={DirectoriesContent.title}
+        content={DirectoriesContent.text}
+        section={DirectoriesContent.section}
+        icon={DirectoriesContent.image}
+        id="directories"
+      />
+      <MiddleBlock
+        title={AfterFeaturesContent.title}
+        content={AfterFeaturesContent.text}
+        button={""}
+      />
     </Container>
   );
 };

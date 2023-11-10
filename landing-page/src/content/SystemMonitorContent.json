@@ -1,0 +1,22 @@
+{
+  "title": "System Monitor",
+  "text": "Stay in control of your development environment with One Dev's System Monitor feature. Effortlessly track CPU usage, memory consumption, and disk activity in real-time.",
+  "image": "/img/home.png",
+  "section": [
+    {
+      "title": "Resources",
+      "content": "Access system resource information at a glance. Monitor CPU usage, memory usage, and more. Stay informed about your system's performance to optimize your development environment.",
+      "icon": "/img/svg/notes.svg"
+    },
+    {
+      "title": "Processes",
+      "content": "Effortlessly manage and monitor running processes on your system.",
+      "icon": "/img/svg/notes.svg"
+    },
+    {
+      "title": "File Systems",
+      "content": "Explore and manage your file systems.",
+      "icon": "/img/svg/notes.svg"
+    }
+  ]
+}

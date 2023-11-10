@@ -3,6 +3,7 @@ import { Fade } from "react-awesome-reveal";
 import { withTranslation } from "react-i18next";
 import { Button } from "../../../common/Button";
 import { SvgIcon } from "../../../common/SvgIcon";
+import { MinPara, MinTitle, ServiceWrapper } from "../LeftContentBlock/styles";
 import { ContentBlockProps } from "../types";
 import {
   ButtonWrapper,
@@ -18,6 +19,7 @@ const RightBlock = ({
   icon,
   t,
   id,
+  section,
 }: ContentBlockProps) => {
   const scrollTo = (id: string) => {
     const element = document.getElementById(id) as HTMLDivElement;
@@ -38,6 +40,20 @@ const RightBlock = ({
             <ContentWrapper>
               <h6>{t(title)}</h6>
               <Content>{t(content)}</Content>
+              <ServiceWrapper>
+                <Row justify="space-between">
+                  {typeof section === "object" &&
+                    section.map((item: any, id: number) => {
+                      return (
+                        <Col key={id} span={11}>
+                          <SvgIcon src={item.icon} width="60px" height="60px" />
+                          <MinTitle>{t(item.title)}</MinTitle>
+                          <MinPara>{t(item.content)}</MinPara>
+                        </Col>
+                      );
+                    })}
+                </Row>
+              </ServiceWrapper>
               <ButtonWrapper>
                 {typeof button === "object" &&
                   button.map((item: any, id: number) => {
