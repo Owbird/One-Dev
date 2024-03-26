@@ -1,8 +1,10 @@
 package utils
 
 import (
+	"fmt"
 	"os"
-	"path"
+	"path/filepath"
+	"runtime"
 )
 
 func UserHome() (string, error) {
@@ -22,6 +24,13 @@ func WakaTimeCli() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return path.Join(dir, ".wakatime", "wakatime-cli"), nil
+
+	cliName := fmt.Sprintf("wakatime-cli-%s-%s", runtime.GOOS, runtime.GOARCH)
+
+	if runtime.GOOS == "windows" {
+		cliName = fmt.Sprintf("%s.exe", cliName)
+	}
+
+	return filepath.Join(dir, ".wakatime", cliName), nil
 
 }
