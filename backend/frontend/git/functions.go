@@ -106,7 +106,6 @@ func (gf *GitFunctions) GetRepo(path string) (data.Repo, error) {
 	}()
 
 	localBranchesErrCh := make(chan error, 1)
-	remoteBranchesErrCh := make(chan error, 1)
 	tagsErrCh := make(chan error, 1)
 
 	// Handle Local Branches
@@ -138,12 +137,19 @@ func (gf *GitFunctions) GetRepo(path string) (data.Repo, error) {
 	// Handle remote branchess
 	wg.Add(1)
 	go func() {
+		defer wg.Done()
+
 		log.Println("[+] Gettting repo remote branches")
 		remote, _ := repo.Remote("origin")
 
 		remotes, err := remote.List(&git.ListOptions{})
 
-		remoteBranchesErrCh <- err
+		if err != nil {
+			gitRepo.RemoteBranches = []string{}
+
+			return
+		}
+
 
 		for _, remote := range remotes {
 			remoteBranch := remote.Name()
@@ -154,16 +160,8 @@ func (gf *GitFunctions) GetRepo(path string) (data.Repo, error) {
 
 		}
 
-		close(remoteBranchesErrCh)
-
-		wg.Done()
 	}()
 
-	remoteBranchesErrVal := <-remoteBranchesErrCh
-
-	if remoteBranchesErrVal != nil {
-		return gitRepo, remoteBranchesErrVal
-	}
 
 	// Handle tags
 	wg.Add(1)
@@ -185,7 +183,7 @@ func (gf *GitFunctions) GetRepo(path string) (data.Repo, error) {
 		wg.Done()
 	}()
 
-	tagsErrVal := <-remoteBranchesErrCh
+	tagsErrVal := <- tagsErrCh
 
 	if tagsErrVal != nil {
 		return gitRepo, tagsErrVal
