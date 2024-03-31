@@ -282,6 +282,10 @@ func (gf *GitFunctions) GetRemoteRepos() ([]data.RemoteRepo, error) {
 
 	user, err := gf.db.GetGitUser()
 
+	if user.Token == "" {
+		return []data.RemoteRepo{}, fmt.Errorf("missing remote config")
+	}
+
 	if err != nil {
 		return []data.RemoteRepo{}, err
 
