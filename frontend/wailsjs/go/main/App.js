@@ -14,6 +14,10 @@ export function CreateCommit(arg1) {
   return window['go']['main']['App']['CreateCommit'](arg1);
 }
 
+export function GetCommitDiff(arg1, arg2, arg3) {
+  return window['go']['main']['App']['GetCommitDiff'](arg1, arg2, arg3);
+}
+
 export function GetDirectories(arg1, arg2) {
   return window['go']['main']['App']['GetDirectories'](arg1, arg2);
 }

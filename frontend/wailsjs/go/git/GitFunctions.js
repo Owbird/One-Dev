@@ -14,6 +14,10 @@ export function CreateCommit(arg1) {
   return window['go']['git']['GitFunctions']['CreateCommit'](arg1);
 }
 
+export function GetCommitDiff(arg1, arg2, arg3) {
+  return window['go']['git']['GitFunctions']['GetCommitDiff'](arg1, arg2, arg3);
+}
+
 export function GetGitDirs() {
   return window['go']['git']['GitFunctions']['GetGitDirs']();
 }

@@ -82,6 +82,12 @@ type RemoteRepoPermissions struct {
 	Pull     bool `json:"pull"`
 }
 
+type CommitDiff struct {
+	File           string `json:"file"`
+	PrevContent    string `json:"prevContent"`
+	CurrentContent string `json:"currentContent"`
+}
+
 type RemoteRepo struct {
 	ID                       int                   `json:"id"`
 	NodeID                   string                `json:"nodeID"`

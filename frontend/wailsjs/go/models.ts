@@ -30,6 +30,22 @@ export namespace data {
 	        this.usages = source["usages"];
 	    }
 	}
+	export class CommitDiff {
+	    file: string;
+	    prevContent: string;
+	    currentContent: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new CommitDiff(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.file = source["file"];
+	        this.prevContent = source["prevContent"];
+	        this.currentContent = source["currentContent"];
+	    }
+	}
 	export class CreateCommit {
 	    message: string;
 	    files: string[];

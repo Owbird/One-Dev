@@ -150,7 +150,6 @@ func (gf *GitFunctions) GetRepo(path string) (data.Repo, error) {
 			return
 		}
 
-
 		for _, remote := range remotes {
 			remoteBranch := remote.Name()
 
@@ -161,7 +160,6 @@ func (gf *GitFunctions) GetRepo(path string) (data.Repo, error) {
 		}
 
 	}()
-
 
 	// Handle tags
 	wg.Add(1)
@@ -183,7 +181,7 @@ func (gf *GitFunctions) GetRepo(path string) (data.Repo, error) {
 		wg.Done()
 	}()
 
-	tagsErrVal := <- tagsErrCh
+	tagsErrVal := <-tagsErrCh
 
 	if tagsErrVal != nil {
 		return gitRepo, tagsErrVal
@@ -588,4 +586,85 @@ func (gf *GitFunctions) PullFromOrigin(repoDir string) error {
 	err = worktree.Pull(&git.PullOptions{})
 
 	return err
+}
+
+func (gf *GitFunctions) GetCommitDiff(repoDir, currentHash, prevHash string) ([]data.CommitDiff, error) {
+
+	repo, err := git.PlainOpen(repoDir)
+
+	if err != nil {
+		return nil, err
+	}
+
+	currentCommit, err := repo.CommitObject(plumbing.NewHash(currentHash))
+
+	if err != nil {
+		return nil, err
+	}
+
+	prevCommit, err := repo.CommitObject(plumbing.NewHash(prevHash))
+
+	if err != nil {
+		return nil, err
+	}
+
+	patch, err := prevCommit.Patch(currentCommit)
+
+	if err != nil {
+		return nil, err
+	}
+
+	files := patch.FilePatches()
+
+	currentTree, err := currentCommit.Tree()
+
+	if err != nil {
+		return nil, err
+	}
+
+	prevTree, err := prevCommit.Tree()
+
+	changes := []data.CommitDiff{}
+
+	for _, file := range files {
+		from, to := file.Files()
+
+		var currentContent string
+		var prevContent string
+
+		currentTree.Files().ForEach(func(file *object.File) error {
+
+			if file.Name == to.Path() {
+				currentContent, err = file.Contents()
+
+				if err != nil {
+					return err
+				}
+
+			}
+
+			return nil
+		})
+
+		prevTree.Files().ForEach(func(file *object.File) error {
+
+			if file.Name == from.Path() {
+				prevContent, err = file.Contents()
+
+				if err != nil {
+					return err
+				}
+			}
+
+			return nil
+		})
+
+		changes = append(changes, data.CommitDiff{
+			File:           to.Path(),
+			CurrentContent: currentContent,
+			PrevContent:    prevContent,
+		})
+	}
+
+	return changes, nil
 }

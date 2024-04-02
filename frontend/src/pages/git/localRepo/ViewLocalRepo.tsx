@@ -159,7 +159,6 @@ const ViewLocalRepo: FC<IViewLocalRepoProps> = ({ repo }) => {
           <AiOutlineTag size={60} />
           <RepoTags tags={repoData?.tags!} />
         </HStack>
-
         <Tabs>
           <TabList>
             <Tab>Changes</Tab>
@@ -177,9 +176,12 @@ const ViewLocalRepo: FC<IViewLocalRepoProps> = ({ repo }) => {
                 />
               </Box>
             </TabPanel>
-            <TabPanel>
+            <TabPanel w="85vw" ml={0} pl={0}>
               <Box overflowY="auto" maxHeight="100vh">
-                <RepoCommits commits={repoData?.commits!} />
+                <RepoCommits
+                  repo={repoData?.parentDir!}
+                  commits={repoData?.commits!}
+                />
               </Box>
             </TabPanel>
             <TabPanel>
