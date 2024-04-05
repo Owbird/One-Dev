@@ -14,6 +14,10 @@ export function CreateCommit(arg1) {
   return window['go']['main']['App']['CreateCommit'](arg1);
 }
 
+export function GetAppState() {
+  return window['go']['main']['App']['GetAppState']();
+}
+
 export function GetCommitDiff(arg1, arg2, arg3) {
   return window['go']['main']['App']['GetCommitDiff'](arg1, arg2, arg3);
 }
@@ -88,6 +92,10 @@ export function PullFromOrigin(arg1) {
 
 export function PushToOrigin(arg1) {
   return window['go']['main']['App']['PushToOrigin'](arg1);
+}
+
+export function SaveAppState(arg1) {
+  return window['go']['main']['App']['SaveAppState'](arg1);
 }
 
 export function SaveSettings(arg1) {

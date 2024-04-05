@@ -15,6 +15,8 @@ import NavTabPanels from "./components/app/NavTabPanels";
 import Directories from "./pages/directories/Directories";
 import Settings from "./pages/settings/Settings";
 import { openedTabsAtom, tabIndexAtom } from "./states/nav/TabsAtom";
+import { GetAppState, SaveAppState } from "@go/main/App";
+import { data } from "@go/models";
 
 const NAV_ITEMS: INavItem[] = [
   {
@@ -82,9 +84,30 @@ function App() {
   };
 
   useEffect(() => {
-    setWindowTitle("Home");
-    setOpenedTabs([NAV_ITEMS[0].menuTab]);
+    GetAppState().then((state) => {
+      console.log(state);
+
+      const tabs = state.openedTabLabels.map(
+        (label) =>
+          NAV_ITEMS.find((nav) => nav.menuTab.label === label)?.menuTab!,
+      );
+
+      setOpenedTabs(tabs);
+
+      setTabIndex(state.activeIndex);
+
+      setWindowTitle(tabs[state.activeIndex].label);
+    });
   }, []);
+
+  useEffect(() => {
+    const state = {
+      activeIndex: tabIndex,
+      openedTabLabels: openedTabs.map((tab) => tab.label),
+    } as data.AppState;
+
+    SaveAppState(state);
+  }, [tabIndex, openedTabs]);
 
   if (openedTabs.length === 0) {
     return <Fragment></Fragment>;

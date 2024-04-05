@@ -1,5 +1,19 @@
 export namespace data {
 	
+	export class AppState {
+	    openedTabLabels: string[];
+	    activeIndex: number;
+	
+	    static createFrom(source: any = {}) {
+	        return new AppState(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.openedTabLabels = source["openedTabLabels"];
+	        this.activeIndex = source["activeIndex"];
+	    }
+	}
 	export class BatteryStats {
 	    charginState: string;
 	    currentPower: number;

@@ -6,6 +6,8 @@ import (
 	"os/exec"
 
 	"github.com/gen2brain/beeep"
+	"github.com/owbird/one-dev/backend/data"
+	"github.com/owbird/one-dev/backend/database"
 	"github.com/owbird/one-dev/backend/utils"
 )
 
@@ -13,10 +15,14 @@ import (
 //
 // Returns a pointer to a HelperFunctions struct.
 func NewInstance() *HelperFunctions {
-	return &HelperFunctions{}
+	return &HelperFunctions{
+		db: *database.NewInstance(),
+	}
 }
 
-type HelperFunctions struct{}
+type HelperFunctions struct {
+	db database.Database
+}
 
 // Notify is a method of the HelperFunctions struct that displays a notification message using the beeep package.
 //
@@ -64,4 +70,16 @@ func (sf *HelperFunctions) KillProcess(pid int) error {
 	}
 
 	return nil
+}
+
+// Save the state to the database
+func (sf *HelperFunctions) SaveAppState(state data.AppState) error {
+
+	return sf.db.SaveAppState(state)
+}
+
+// Get the app state from the database
+func (sf *HelperFunctions) GetAppState() data.AppState {
+
+	return sf.db.GetAppState()
 }

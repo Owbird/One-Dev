@@ -31,3 +31,9 @@ func GetIndexedReposFilePath() string {
 	return reposFilePath
 
 }
+
+func GetAppStateFilePath() string {
+	oneDirPath := GetOneDirPath()
+
+	return path.Join(oneDirPath, "state.json")
+}

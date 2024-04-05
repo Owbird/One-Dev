@@ -142,3 +142,54 @@ func (db *Database) SaveSettings(settings data.OneJson) error {
 
 	return nil
 }
+
+// Save app state to the state.json file
+func (db *Database) SaveAppState(state data.AppState) error {
+
+	log.Println("[+] Saving app state")
+
+	stateJson, err := json.MarshalIndent(state, "", "\t")
+
+	if err != nil {
+		return err
+	}
+
+	db.OpenState.Lock()
+
+	stateFilePath := utils.GetAppStateFilePath()
+
+	err = os.WriteFile(stateFilePath, stateJson, 0644)
+
+	db.OpenState.Unlock()
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+
+}
+
+// Load the state from the state.json file
+func (db *Database) GetAppState() data.AppState {
+
+	log.Println("[+] Fetching app state")
+
+	stateFilePath := utils.GetAppStateFilePath()
+
+	state, err := os.ReadFile(stateFilePath)
+
+	if err != nil {
+		return data.AppState{
+			OpenedTabLabels: []string{"Home"},
+			ActiveIndex:     0,
+		}
+	}
+
+	var stateJson data.AppState
+
+	json.Unmarshal(state, &stateJson)
+
+	return stateJson
+
+}

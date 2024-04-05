@@ -8,6 +8,8 @@ export function CloneRepo(arg1:string,arg2:string):Promise<void>;
 
 export function CreateCommit(arg1:data.CreateCommit):Promise<void>;
 
+export function GetAppState():Promise<data.AppState>;
+
 export function GetCommitDiff(arg1:string,arg2:string,arg3:string):Promise<Array<data.CommitDiff>>;
 
 export function GetDirectories(arg1:string,arg2:boolean):Promise<Array<data.Directory>>;
@@ -45,5 +47,7 @@ export function OpenFile(arg1:string):Promise<void>;
 export function PullFromOrigin(arg1:string):Promise<void>;
 
 export function PushToOrigin(arg1:string):Promise<void>;
+
+export function SaveAppState(arg1:data.AppState):Promise<void>;
 
 export function SaveSettings(arg1:data.OneJson):Promise<void>;
