@@ -105,6 +105,8 @@ export namespace data {
 	export class File {
 	    parentDir: string;
 	    dir: string;
+	    // Go type: time
+	    modTime: any;
 	
 	    static createFrom(source: any = {}) {
 	        return new File(source);
@@ -114,7 +116,26 @@ export namespace data {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.parentDir = source["parentDir"];
 	        this.dir = source["dir"];
+	        this.modTime = this.convertValues(source["modTime"], null);
 	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
 	}
 	export class GitUser {
 	    username: string;
@@ -580,6 +601,8 @@ export namespace data {
 	    analytics: RepoAnalytics;
 	    parentDir: string;
 	    dir: string;
+	    // Go type: time
+	    modTime: any;
 	
 	    static createFrom(source: any = {}) {
 	        return new Repo(source);
@@ -596,6 +619,7 @@ export namespace data {
 	        this.analytics = this.convertValues(source["analytics"], RepoAnalytics);
 	        this.parentDir = source["parentDir"];
 	        this.dir = source["dir"];
+	        this.modTime = this.convertValues(source["modTime"], null);
 	    }
 	
 		convertValues(a: any, classs: any, asMap: boolean = false): any {

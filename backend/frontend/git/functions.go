@@ -9,6 +9,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"sort"
 	"strings"
 	"sync"
 
@@ -419,9 +420,16 @@ func (gf *GitFunctions) GetGitDirs() ([]data.File, error) {
 			}
 
 			if dirName == ".git" {
+				info, err := d.Info()
+
+				if err != nil {
+					return err
+				}
+
 				dir := data.File{
 					ParentDir: filepath.Dir(path),
 					Dir:       filepath.Base(filepath.Dir(path)),
+					ModTime:   info.ModTime(),
 				}
 
 				dirs = append(dirs, dir)
@@ -431,6 +439,10 @@ func (gf *GitFunctions) GetGitDirs() ([]data.File, error) {
 		}
 
 		return nil
+	})
+
+	sort.Slice(dirs, func(i, j int) bool {
+		return dirs[i].ModTime.After(dirs[j].ModTime)
 	})
 
 	gf.db.IndexLocalRepos(dirs)
