@@ -633,32 +633,38 @@ func (gf *GitFunctions) GetCommitDiff(repoDir, currentHash, prevHash string) ([]
 		var currentContent string
 		var prevContent string
 
-		currentTree.Files().ForEach(func(file *object.File) error {
+		if to != nil {
 
-			if file.Name == to.Path() {
-				currentContent, err = file.Contents()
+			currentTree.Files().ForEach(func(file *object.File) error {
 
-				if err != nil {
-					return err
+				if file.Name == to.Path() {
+					currentContent, err = file.Contents()
+
+					if err != nil {
+						return err
+					}
+
 				}
 
-			}
+				return nil
+			})
 
-			return nil
-		})
+		}
 
-		prevTree.Files().ForEach(func(file *object.File) error {
+		if from != nil {
+			prevTree.Files().ForEach(func(file *object.File) error {
 
-			if file.Name == from.Path() {
-				prevContent, err = file.Contents()
+				if file.Name == from.Path() {
+					prevContent, err = file.Contents()
 
-				if err != nil {
-					return err
+					if err != nil {
+						return err
+					}
 				}
-			}
 
-			return nil
-		})
+				return nil
+			})
+		}
 
 		changes = append(changes, data.CommitDiff{
 			File:           to.Path(),
