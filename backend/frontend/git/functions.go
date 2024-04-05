@@ -65,7 +65,8 @@ func (gf *GitFunctions) GetRepo(path string) (data.Repo, error) {
 
 	gitRepo.CurrentBranch = branch.Short()
 
-	gitLog, err := repo.Log(&git.LogOptions{})
+	gitLog, err := repo.Log(&git.LogOptions{
+		Order: git.LogOrderCommitterTime})
 
 	if err != nil {
 		return gitRepo, nil
