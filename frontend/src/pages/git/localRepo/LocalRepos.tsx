@@ -62,6 +62,8 @@ const LocalRepos = () => {
         {
           body: <ViewLocalRepo key={repo.parentDir} repo={repo.parentDir} />,
           label: repo.dir,
+          source: "git",
+          meta: repo
         },
       ]);
       setTabIndex(openedTabs.length);

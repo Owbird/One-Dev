@@ -17,6 +17,7 @@ import Settings from "./pages/settings/Settings";
 import { openedTabsAtom, tabIndexAtom } from "./states/nav/TabsAtom";
 import { GetAppState, SaveAppState } from "@go/main/App";
 import { data } from "@go/models";
+import ViewLocalRepo from "./pages/git/localRepo/ViewLocalRepo";
 
 const NAV_ITEMS: INavItem[] = [
   {
@@ -24,6 +25,7 @@ const NAV_ITEMS: INavItem[] = [
     menuTab: {
       label: "Home",
       body: <Home />,
+      source: "nav",
     },
   },
   {
@@ -31,6 +33,7 @@ const NAV_ITEMS: INavItem[] = [
     menuTab: {
       label: "Git & Github",
       body: <Git />,
+      source: "nav",
     },
   },
   {
@@ -38,6 +41,7 @@ const NAV_ITEMS: INavItem[] = [
     menuTab: {
       label: "Directories",
       body: <Directories />,
+      source: "nav",
     },
   },
   {
@@ -45,6 +49,7 @@ const NAV_ITEMS: INavItem[] = [
     menuTab: {
       label: "Settings",
       body: <Settings />,
+      source: "nav",
     },
   },
 ];
@@ -85,12 +90,40 @@ function App() {
 
   useEffect(() => {
     GetAppState().then((state) => {
-      console.log(state);
+      
+      const tabs: IMenuTab[] = [];
 
-      const tabs = state.openedTabLabels.map(
-        (label) =>
-          NAV_ITEMS.find((nav) => nav.menuTab.label === label)?.menuTab!,
-      );
+      for (let tab of state.openedTabs) {
+        const source = tab.source as IMenuTab["source"];
+
+        switch (source) {
+          case "nav":
+            tabs.push(
+              NAV_ITEMS.find((nav) => nav.menuTab.label === tab.label)
+                ?.menuTab!,
+            );
+
+            break;
+
+          case "git":
+            tabs.push({
+              source,
+              label: tab.label,
+              body: (
+                <ViewLocalRepo
+                  key={tab.meta.parentDir}
+                  repo={tab.meta.parentDir}
+                />
+              ),
+            });
+
+            break;
+
+
+          default: 
+          break
+        }
+      }
 
       setOpenedTabs(tabs);
 
@@ -103,7 +136,11 @@ function App() {
   useEffect(() => {
     const state = {
       activeIndex: tabIndex,
-      openedTabLabels: openedTabs.map((tab) => tab.label),
+      openedTabs: openedTabs.map((tab) => ({
+        label: tab.label,
+        source: tab.source,
+        meta: tab.meta,
+      })),
     } as data.AppState;
 
     SaveAppState(state);

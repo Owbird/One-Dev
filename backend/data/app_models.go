@@ -1,6 +1,12 @@
 package data
 
+type OpenedTabs struct {
+	Label  string                 `json:"label"`
+	Source string                 `json:"source"`
+	Meta   map[string]interface{} `json:"meta"`
+}
+
 type AppState struct {
-	OpenedTabLabels []string `json:"openedTabLabels"`
-	ActiveIndex     int      `json:"activeIndex"`
+	OpenedTabs  []OpenedTabs `json:"openedTabs"`
+	ActiveIndex int          `json:"activeIndex"`
 }

@@ -5,7 +5,6 @@ import (
 	"log"
 	"os"
 	"path"
-
 	"sync"
 
 	c "github.com/ostafen/clover"
@@ -28,9 +27,7 @@ func NewInstance() *Database {
 //
 // It returns a string.
 func (db *Database) GetGitUser() (data.GitUser, error) {
-
 	oneJson, err := db.GetOneJson()
-
 	if err != nil {
 		return data.GitUser{}, err
 	}
@@ -46,7 +43,6 @@ func (db *Database) GetGitUser() (data.GitUser, error) {
 // This function does not take any parameters.
 // It does not return any values.
 func (db *Database) EnsureOneDir() {
-
 	oneDir := utils.GetOneDirPath()
 
 	os.Mkdir(oneDir, 0755)
@@ -54,21 +50,17 @@ func (db *Database) EnsureOneDir() {
 	oneJson := path.Join(oneDir, "one.json")
 
 	_, err := os.Stat(oneJson)
-
 	if err != nil {
 		_, err := os.Create(oneJson)
-
 		if err != nil {
 			log.Fatalln(err)
 		}
 
 	}
-
 }
 
 // GetOneJson retrieves the OneJson file.
 func (db *Database) GetOneJson() (data.OneJson, error) {
-
 	oneJsonPath := utils.GetOneJsonPath()
 
 	database.OpenState.Lock()
@@ -78,7 +70,6 @@ func (db *Database) GetOneJson() (data.OneJson, error) {
 	var oneJson data.OneJson
 
 	file, err := os.ReadFile(oneJsonPath)
-
 	if err != nil {
 		return data.OneJson{}, err
 	}
@@ -86,7 +77,6 @@ func (db *Database) GetOneJson() (data.OneJson, error) {
 	json.Unmarshal(file, &oneJson)
 
 	return oneJson, nil
-
 }
 
 // IndexLocalRepos indexes local repositories.
@@ -94,7 +84,6 @@ func (db *Database) IndexLocalRepos(repos []data.File) error {
 	log.Println("[+] Indexing local repos")
 
 	reposJson, err := json.MarshalIndent(repos, "", "\t")
-
 	if err != nil {
 		return err
 	}
@@ -112,7 +101,6 @@ func (db *Database) GetIndexedRepos() ([]data.File, error) {
 	reposFilePath := utils.GetIndexedReposFilePath()
 
 	repos, err := os.ReadFile(reposFilePath)
-
 	if err != nil {
 		return []data.File{}, err
 	}
@@ -135,7 +123,6 @@ func (db *Database) SaveSettings(settings data.OneJson) error {
 	}
 
 	err = os.WriteFile(oneJsonPath, oneJson, 0644)
-
 	if err != nil {
 		return err
 	}
@@ -145,11 +132,9 @@ func (db *Database) SaveSettings(settings data.OneJson) error {
 
 // Save app state to the state.json file
 func (db *Database) SaveAppState(state data.AppState) error {
-
 	log.Println("[+] Saving app state")
 
 	stateJson, err := json.MarshalIndent(state, "", "\t")
-
 	if err != nil {
 		return err
 	}
@@ -167,22 +152,24 @@ func (db *Database) SaveAppState(state data.AppState) error {
 	}
 
 	return nil
-
 }
 
 // Load the state from the state.json file
 func (db *Database) GetAppState() data.AppState {
-
 	log.Println("[+] Fetching app state")
 
 	stateFilePath := utils.GetAppStateFilePath()
 
 	state, err := os.ReadFile(stateFilePath)
-
 	if err != nil {
 		return data.AppState{
-			OpenedTabLabels: []string{"Home"},
-			ActiveIndex:     0,
+			OpenedTabs: []data.OpenedTabs{
+				{
+					Label:  "Home",
+					Source: "nav",
+				},
+			},
+			ActiveIndex: 0,
 		}
 	}
 
@@ -191,5 +178,4 @@ func (db *Database) GetAppState() data.AppState {
 	json.Unmarshal(state, &stateJson)
 
 	return stateJson
-
 }
