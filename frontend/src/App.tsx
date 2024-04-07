@@ -90,7 +90,6 @@ function App() {
 
   useEffect(() => {
     GetAppState().then((state) => {
-      
       const tabs: IMenuTab[] = [];
 
       for (let tab of state.openedTabs) {
@@ -109,6 +108,7 @@ function App() {
             tabs.push({
               source,
               label: tab.label,
+              meta: tab.meta,
               body: (
                 <ViewLocalRepo
                   key={tab.meta.parentDir}
@@ -119,9 +119,8 @@ function App() {
 
             break;
 
-
-          default: 
-          break
+          default:
+            break;
         }
       }
 
@@ -134,16 +133,18 @@ function App() {
   }, []);
 
   useEffect(() => {
-    const state = {
-      activeIndex: tabIndex,
-      openedTabs: openedTabs.map((tab) => ({
-        label: tab.label,
-        source: tab.source,
-        meta: tab.meta,
-      })),
-    } as data.AppState;
+    if (openedTabs.length !== 0) {
+      const state = {
+        activeIndex: tabIndex,
+        openedTabs: openedTabs.map((tab) => ({
+          label: tab.label,
+          source: tab.source,
+          meta: tab.meta,
+        })),
+      } as data.AppState;
 
-    SaveAppState(state);
+      SaveAppState(state);
+    }
   }, [tabIndex, openedTabs]);
 
   if (openedTabs.length === 0) {
