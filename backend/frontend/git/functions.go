@@ -51,13 +51,11 @@ func (gf *GitFunctions) GetRepo(path string) (data.Repo, error) {
 	}
 
 	repo, err := git.PlainOpen(path)
-
 	if err != nil {
 		return data.Repo{}, err
 	}
 
 	head, err := repo.Head()
-
 	if err != nil {
 		return gitRepo, nil
 	}
@@ -67,8 +65,8 @@ func (gf *GitFunctions) GetRepo(path string) (data.Repo, error) {
 	gitRepo.CurrentBranch = branch.Short()
 
 	gitLog, err := repo.Log(&git.LogOptions{
-		Order: git.LogOrderCommitterTime})
-
+		Order: git.LogOrderCommitterTime,
+	})
 	if err != nil {
 		return gitRepo, nil
 	}
@@ -79,7 +77,6 @@ func (gf *GitFunctions) GetRepo(path string) (data.Repo, error) {
 	wg.Add(1)
 	go func() {
 		gitLog.ForEach((func(commit *object.Commit) error {
-
 			gitRepo.Commits = append(gitRepo.Commits, data.RepoCommit{
 				Message:        commit.Message,
 				CommitterName:  commit.Committer.Name,
@@ -119,7 +116,6 @@ func (gf *GitFunctions) GetRepo(path string) (data.Repo, error) {
 		localBranchesErrCh <- err
 
 		branches.ForEach(func(branch *plumbing.Reference) error {
-
 			gitRepo.LocalBranches = append(gitRepo.LocalBranches, branch.Name().Short())
 
 			return nil
@@ -145,7 +141,6 @@ func (gf *GitFunctions) GetRepo(path string) (data.Repo, error) {
 		remote, _ := repo.Remote("origin")
 
 		remotes, err := remote.List(&git.ListOptions{})
-
 		if err != nil {
 			gitRepo.RemoteBranches = []string{}
 
@@ -160,7 +155,6 @@ func (gf *GitFunctions) GetRepo(path string) (data.Repo, error) {
 			}
 
 		}
-
 	}()
 
 	// Handle tags
@@ -172,7 +166,6 @@ func (gf *GitFunctions) GetRepo(path string) (data.Repo, error) {
 		tagsErrCh <- err
 
 		tags.ForEach(func(tag *plumbing.Reference) error {
-
 			gitRepo.Tags = append(gitRepo.Tags, tag.Name().Short())
 
 			return nil
@@ -192,7 +185,6 @@ func (gf *GitFunctions) GetRepo(path string) (data.Repo, error) {
 	// go-git worktree.Status() has an issue
 	// https://github.com/go-git/go-git/issues/181
 	res, err := exec.Command("git", "-C", path, "status", "-s").Output()
-
 	if err != nil {
 		return gitRepo, nil
 	}
@@ -253,7 +245,7 @@ func (gf *GitFunctions) GetRepo(path string) (data.Repo, error) {
 
 	wg.Wait()
 
-	//Handle frontend null data with empty arrays
+	// Handle frontend null data with empty arrays
 	if len(gitRepo.Tags) == 0 {
 		gitRepo.Tags = []string{}
 	}
@@ -277,7 +269,6 @@ func (gf *GitFunctions) GetRepo(path string) (data.Repo, error) {
 // using the GitHub API. It returns a RemoteRepo struct containing information about
 // each repository.
 func (gf *GitFunctions) GetRemoteRepos() ([]data.RemoteRepo, error) {
-
 	log.Println("[+] Getting remote repos")
 
 	user, err := gf.db.GetGitUser()
@@ -288,7 +279,6 @@ func (gf *GitFunctions) GetRemoteRepos() ([]data.RemoteRepo, error) {
 
 	if err != nil {
 		return []data.RemoteRepo{}, err
-
 	}
 
 	body, err := utils.MakeAuthorizedRequest("GET", "https://api.github.com/user/repos?per_page=500", user.Token)
@@ -299,13 +289,11 @@ func (gf *GitFunctions) GetRemoteRepos() ([]data.RemoteRepo, error) {
 	var repos []data.RemoteRepo
 
 	err = json.Unmarshal(body, &repos)
-
 	if err != nil {
 		return []data.RemoteRepo{}, fmt.Errorf("could not get repos: %s", string(body))
 	}
 
 	return repos, nil
-
 }
 
 // ChangeBranch changes the branch of a Git repository.
@@ -313,7 +301,6 @@ func (gf *GitFunctions) GetRemoteRepos() ([]data.RemoteRepo, error) {
 // It takes in the repository path and the name of the branch as parameters.
 // There is no return value.
 func (gf *GitFunctions) ChangeBranch(repoPath string, branch string) error {
-
 	// Has a hanging issue
 	// err = worktree.Checkout(&git.CheckoutOptions{
 	// 	Branch: plumbing.NewBranchReferenceName(branch),
@@ -323,13 +310,11 @@ func (gf *GitFunctions) ChangeBranch(repoPath string, branch string) error {
 	cmd.Dir = repoPath
 
 	output, err := cmd.CombinedOutput()
-
 	if err != nil {
 		return fmt.Errorf(string(output))
 	}
 
 	return nil
-
 }
 
 // CloneRepo clones a Git repository from the given URL and name.
@@ -339,13 +324,11 @@ func (gf *GitFunctions) ChangeBranch(repoPath string, branch string) error {
 // error: returns an error if there was a problem cloning the repository.
 func (gf *GitFunctions) CloneRepo(url string, name string) error {
 	home, err := utils.UserHome()
-
 	if err != nil {
 		return err
 	}
 
 	user, err := gf.db.GetGitUser()
-
 	if err != nil {
 		return err
 	}
@@ -375,7 +358,6 @@ func (gf *GitFunctions) CloneRepo(url string, name string) error {
 		Progress: os.Stdout,
 		Auth:     auth,
 	})
-
 	if err != nil {
 		log.Println(err)
 	}
@@ -399,18 +381,15 @@ func (gf *GitFunctions) GetGitUser() (data.GitUser, error) {
 //
 // This function returns a slice of data File structs.
 func (gf *GitFunctions) GetGitDirs() ([]data.File, error) {
-
 	dirs := []data.File{}
 
 	log.Println("[+] Reading Git dirs")
 	home, err := utils.UserHome()
-
 	if err != nil {
 		log.Fatalln(err)
 	}
 
 	filepath.WalkDir(home, func(path string, d fs.DirEntry, err error) error {
-
 		if d.IsDir() {
 
 			dirName := d.Name()
@@ -421,7 +400,6 @@ func (gf *GitFunctions) GetGitDirs() ([]data.File, error) {
 
 			if dirName == ".git" {
 				info, err := d.Info()
-
 				if err != nil {
 					return err
 				}
@@ -460,21 +438,30 @@ func (gf *GitFunctions) GetGitDirs() ([]data.File, error) {
 func (gf *GitFunctions) GetGitTokens() ([]string, error) {
 	tokens := []string{}
 
-	gitDirs, err := gf.GetGitDirs()
+	gitDirs := []data.File{}
 
-	if err != nil {
-		return []string{}, err
+	indexedDirs, err := gf.GetIndexedRepos()
+
+	if err == nil {
+		gitDirs = indexedDirs
+	}
+
+	if len(gitDirs) == 0 {
+
+		gitDirs, err = gf.GetGitDirs()
+		if err != nil {
+			return []string{}, err
+		}
+
 	}
 
 	for _, dir := range gitDirs {
 		repo, err := git.PlainOpen(dir.ParentDir)
-
 		if err != nil {
 			return tokens, err
 		}
 
 		remotes, err := repo.Remotes()
-
 		if err != nil {
 			return tokens, err
 		}
@@ -531,7 +518,6 @@ func (gf *GitFunctions) CreateCommit(commit data.CreateCommit) error {
 		cmd.Dir = commit.Repo
 
 		output, err := cmd.CombinedOutput()
-
 		if err != nil {
 			return fmt.Errorf(string(output))
 		}
@@ -542,7 +528,6 @@ func (gf *GitFunctions) CreateCommit(commit data.CreateCommit) error {
 	cmd.Dir = commit.Repo
 
 	output, err := cmd.CombinedOutput()
-
 	if err != nil {
 		return fmt.Errorf(string(output))
 	}
@@ -553,7 +538,6 @@ func (gf *GitFunctions) CreateCommit(commit data.CreateCommit) error {
 // GetIndexedRepos retrieves the indexed repositories from the GitFunctions struct.
 func (gf *GitFunctions) GetIndexedRepos() ([]data.File, error) {
 	repos, err := gf.db.GetIndexedRepos()
-
 	if err != nil {
 		return []data.File{}, err
 	}
@@ -571,7 +555,6 @@ func (gf *GitFunctions) PushToOrigin(repoDir string) error {
 	log.Println("[+] Pushing to origin")
 
 	repo, err := git.PlainOpen(repoDir)
-
 	if err != nil {
 		return err
 	}
@@ -585,13 +568,11 @@ func (gf *GitFunctions) PullFromOrigin(repoDir string) error {
 	log.Println("[+] Pulling from origin")
 
 	repo, err := git.PlainOpen(repoDir)
-
 	if err != nil {
 		return err
 	}
 
 	worktree, err := repo.Worktree()
-
 	if err != nil {
 		return err
 	}
@@ -602,27 +583,22 @@ func (gf *GitFunctions) PullFromOrigin(repoDir string) error {
 }
 
 func (gf *GitFunctions) GetCommitDiff(repoDir, currentHash, prevHash string) ([]data.CommitDiff, error) {
-
 	repo, err := git.PlainOpen(repoDir)
-
 	if err != nil {
 		return nil, err
 	}
 
 	currentCommit, err := repo.CommitObject(plumbing.NewHash(currentHash))
-
 	if err != nil {
 		return nil, err
 	}
 
 	prevCommit, err := repo.CommitObject(plumbing.NewHash(prevHash))
-
 	if err != nil {
 		return nil, err
 	}
 
 	patch, err := prevCommit.Patch(currentCommit)
-
 	if err != nil {
 		return nil, err
 	}
@@ -630,7 +606,6 @@ func (gf *GitFunctions) GetCommitDiff(repoDir, currentHash, prevHash string) ([]
 	files := patch.FilePatches()
 
 	currentTree, err := currentCommit.Tree()
-
 	if err != nil {
 		return nil, err
 	}
@@ -646,12 +621,9 @@ func (gf *GitFunctions) GetCommitDiff(repoDir, currentHash, prevHash string) ([]
 		var prevContent string
 
 		if to != nil {
-
 			currentTree.Files().ForEach(func(file *object.File) error {
-
 				if file.Name == to.Path() {
 					currentContent, err = file.Contents()
-
 					if err != nil {
 						return err
 					}
@@ -660,15 +632,12 @@ func (gf *GitFunctions) GetCommitDiff(repoDir, currentHash, prevHash string) ([]
 
 				return nil
 			})
-
 		}
 
 		if from != nil {
 			prevTree.Files().ForEach(func(file *object.File) error {
-
 				if file.Name == from.Path() {
 					prevContent, err = file.Contents()
-
 					if err != nil {
 						return err
 					}
