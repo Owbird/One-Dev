@@ -1,6 +1,8 @@
 import {
   Box,
   Button,
+  Checkbox,
+  CheckboxGroup,
   Divider,
   Flex,
   Heading,
@@ -14,6 +16,8 @@ import {
 import { GetGitTokens, GetSettings, SaveSettings } from "@go/main/App";
 import { data } from "@go/models";
 import Loader from "@src/components/shared/Loader";
+import { selectedAppModules } from "@src/states/nav/AppModulesAtom";
+import { useAtom } from "jotai";
 import { enqueueSnackbar } from "notistack";
 import { useEffect, useState } from "react";
 
@@ -24,6 +28,10 @@ function Settings() {
   });
   const [availableGitTokens, setAvailableGitTokens] = useState<string[]>();
   const [isLoading, setIsLoading] = useState(false);
+
+  const availableAppModules = ["Git & Github", "Directories"];
+
+  const [selectedModules, setSelectedModules] = useAtom(selectedAppModules);
 
   const updateGitSettings = (key: string, value: string) => {
     setGitSettings({
@@ -68,6 +76,16 @@ function Settings() {
     </Radio>
   ));
 
+  const appModulesCheckBox = availableAppModules.map((module) => (
+    <Checkbox
+      key={module}
+      value={module}
+      isChecked={selectedModules.includes(module)}
+    >
+      {module}
+    </Checkbox>
+  ));
+
   if (isLoading) {
     return <Loader />;
   }
@@ -80,7 +98,24 @@ function Settings() {
         </Heading>
 
         <VStack spacing={4} align="start" width="100%">
-          {/* Git Settings */}
+          <Box width="100%">
+            <Text fontSize="lg" fontWeight="bold" mb={2}>
+              App modules
+            </Text>
+            <VStack spacing={2} align="start">
+              <CheckboxGroup
+                onChange={(value) => {
+                  setSelectedModules((prev) => [
+                    prev[0],
+                    ...(value as string[]),
+                    prev[prev.length - 1],
+                  ]);
+                }}
+              >
+                <Stack direction="column">{appModulesCheckBox}</Stack>
+              </CheckboxGroup>
+            </VStack>
+          </Box>
           <Box width="100%">
             <Text fontSize="lg" fontWeight="bold" mb={2}>
               Git Settings
@@ -125,7 +160,6 @@ function Settings() {
               </Button>
             </VStack>
           </Box>
-          <Divider />
         </VStack>
 
         <Button onClick={saveSettings} colorScheme="teal" size="lg" mt={8}>

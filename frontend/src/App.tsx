@@ -8,7 +8,7 @@ import { IMenuTab, INavItem } from "@data/interfaces";
 import { WindowSetTitle } from "@go-runtime/runtime";
 import Git from "@pages/git/Git";
 import Home from "@src/pages/home/Home";
-import { useAtom } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 import NavItems from "./components/app/NavItems";
 import NavTabList from "./components/app/NavTabList";
 import NavTabPanels from "./components/app/NavTabPanels";
@@ -18,6 +18,7 @@ import { openedTabsAtom, tabIndexAtom } from "./states/nav/TabsAtom";
 import { GetAppState, SaveAppState } from "@go/main/App";
 import { data } from "@go/models";
 import ViewLocalRepo from "./pages/git/localRepo/ViewLocalRepo";
+import { selectedAppModules } from "./states/nav/AppModulesAtom";
 
 const NAV_ITEMS: INavItem[] = [
   {
@@ -57,6 +58,10 @@ const NAV_ITEMS: INavItem[] = [
 function App() {
   const [tabIndex, setTabIndex] = useAtom(tabIndexAtom);
   const [openedTabs, setOpenedTabs] = useAtom(openedTabsAtom);
+  const appModules = useAtomValue(selectedAppModules);
+  const currentNav = appModules.map(
+    (module) => NAV_ITEMS.find((item) => item.menuTab.label === module)!,
+  );
 
   const setWindowTitle = (window: string) => {
     WindowSetTitle(`One Dev | ${window}`);
@@ -164,7 +169,7 @@ function App() {
         <NavItems
           handleMenuClick={handleMenuClick}
           currentLabel={openedTabs[tabIndex].label}
-          navItems={NAV_ITEMS}
+          navItems={currentNav}
         />
       </SidebarContent>
       <Box
