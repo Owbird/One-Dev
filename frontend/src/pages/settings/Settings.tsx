@@ -116,50 +116,52 @@ function Settings() {
               </CheckboxGroup>
             </VStack>
           </Box>
-          <Box width="100%">
-            <Text fontSize="lg" fontWeight="bold" mb={2}>
-              Git Settings
-            </Text>
-            <Divider />
-            <VStack spacing={2} align="start">
-              <Input
-                type="text"
-                onChange={(event) =>
-                  updateGitSettings("username", event.target.value)
-                }
-                value={gitSettings.username}
-                placeholder="Username"
-                size="lg"
-                variant="filled"
-              />
-              <Input
-                value={gitSettings.token}
-                type="text"
-                onChange={(event) =>
-                  updateGitSettings("token", event.target.value)
-                }
-                placeholder="Git token"
-                size="lg"
-                variant="filled"
-              />
-              {availableGitTokens && (
-                <RadioGroup
-                  onChange={(value) => updateGitSettings("token", value)}
+          {selectedModules.includes("Git & Github") && (
+            <Box width="100%">
+              <Text fontSize="lg" fontWeight="bold" mb={2}>
+                Git Settings
+              </Text>
+              <Divider />
+              <VStack spacing={2} align="start">
+                <Input
+                  type="text"
+                  onChange={(event) =>
+                    updateGitSettings("username", event.target.value)
+                  }
+                  value={gitSettings.username}
+                  placeholder="Username"
+                  size="lg"
+                  variant="filled"
+                />
+                <Input
                   value={gitSettings.token}
+                  type="text"
+                  onChange={(event) =>
+                    updateGitSettings("token", event.target.value)
+                  }
+                  placeholder="Git token"
+                  size="lg"
+                  variant="filled"
+                />
+                {availableGitTokens && (
+                  <RadioGroup
+                    onChange={(value) => updateGitSettings("token", value)}
+                    value={gitSettings.token}
+                  >
+                    <Stack direction="column">{gitTokensRadio}</Stack>
+                  </RadioGroup>
+                )}
+                <Button
+                  onClick={findAvailableGitTokens}
+                  colorScheme="teal"
+                  size="xs"
+                  mt={8}
                 >
-                  <Stack direction="column">{gitTokensRadio}</Stack>
-                </RadioGroup>
-              )}
-              <Button
-                onClick={findAvailableGitTokens}
-                colorScheme="teal"
-                size="xs"
-                mt={8}
-              >
-                Find available Tokens
-              </Button>
-            </VStack>
-          </Box>
+                  Find available Tokens
+                </Button>
+              </VStack>
+            </Box>
+          )}
         </VStack>
 
         <Button onClick={saveSettings} colorScheme="teal" size="lg" mt={8}>
