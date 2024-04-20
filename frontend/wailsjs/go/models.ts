@@ -233,6 +233,7 @@ export namespace data {
 	}
 	export class OneJson {
 	    git: OneJsonGit;
+	    modules: string[];
 	
 	    static createFrom(source: any = {}) {
 	        return new OneJson(source);
@@ -241,6 +242,7 @@ export namespace data {
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.git = this.convertValues(source["git"], OneJsonGit);
+	        this.modules = source["modules"];
 	    }
 	
 		convertValues(a: any, classs: any, asMap: boolean = false): any {

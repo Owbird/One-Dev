@@ -31,7 +31,7 @@ function Settings() {
 
   const availableAppModules = ["Git & Github", "Directories"];
 
-  const [selectedModules, setSelectedModules] = useAtom(selectedAppModules);
+  const [selectedModules, setSelectedModules] = useState<string[]>([]);
 
   const updateGitSettings = (key: string, value: string) => {
     setGitSettings({
@@ -44,11 +44,16 @@ function Settings() {
     const settings = await GetSettings();
 
     setGitSettings(settings.git);
+
+    if (settings.modules) {
+      setSelectedModules(settings.modules);
+    }
   };
 
   const saveSettings = async () => {
     const newSettings = {
       git: gitSettings,
+      modules: selectedModules,
     } as data.OneJson;
 
     await SaveSettings(newSettings);
@@ -81,6 +86,14 @@ function Settings() {
       key={module}
       value={module}
       isChecked={selectedModules.includes(module)}
+      onChange={() => {
+        if (selectedModules.includes(module)) {
+          setSelectedModules((prev) => prev.filter((m) => m !== module));
+          return;
+        }
+
+        setSelectedModules((prev) => [...prev, module]);
+      }}
     >
       {module}
     </Checkbox>
@@ -103,17 +116,7 @@ function Settings() {
               App modules
             </Text>
             <VStack spacing={2} align="start">
-              <CheckboxGroup
-                onChange={(value) => {
-                  setSelectedModules((prev) => [
-                    prev[0],
-                    ...(value as string[]),
-                    prev[prev.length - 1],
-                  ]);
-                }}
-              >
-                <Stack direction="column">{appModulesCheckBox}</Stack>
-              </CheckboxGroup>
+              <Stack direction="column">{appModulesCheckBox}</Stack>
             </VStack>
           </Box>
           {selectedModules.includes("Git & Github") && (

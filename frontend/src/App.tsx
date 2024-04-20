@@ -15,7 +15,7 @@ import NavTabPanels from "./components/app/NavTabPanels";
 import Directories from "./pages/directories/Directories";
 import Settings from "./pages/settings/Settings";
 import { openedTabsAtom, tabIndexAtom } from "./states/nav/TabsAtom";
-import { GetAppState, SaveAppState } from "@go/main/App";
+import { GetAppState, GetSettings, SaveAppState } from "@go/main/App";
 import { data } from "@go/models";
 import ViewLocalRepo from "./pages/git/localRepo/ViewLocalRepo";
 import { selectedAppModules } from "./states/nav/AppModulesAtom";
@@ -58,7 +58,7 @@ const NAV_ITEMS: INavItem[] = [
 function App() {
   const [tabIndex, setTabIndex] = useAtom(tabIndexAtom);
   const [openedTabs, setOpenedTabs] = useAtom(openedTabsAtom);
-  const appModules = useAtomValue(selectedAppModules);
+  const [appModules, setAppModules] = useAtom(selectedAppModules);
   const currentNav = appModules.map(
     (module) => NAV_ITEMS.find((item) => item.menuTab.label === module)!,
   );
@@ -94,6 +94,14 @@ function App() {
   };
 
   useEffect(() => {
+    GetSettings().then((settings) => {
+      setAppModules((prev) => [
+        prev[0],
+        ...settings.modules,
+        prev[prev.length - 1],
+      ]);
+    });
+
     GetAppState().then((state) => {
       const tabs: IMenuTab[] = [];
 

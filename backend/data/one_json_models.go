@@ -1,7 +1,8 @@
 package data
 
 type OneJson struct {
-	Git OneJsonGit `json:"git"`
+	Git     OneJsonGit `json:"git"`
+	Modules []string   `json:"modules"`
 }
 
 type OneJsonGit struct {
