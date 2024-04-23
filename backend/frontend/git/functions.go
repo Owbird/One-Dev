@@ -23,6 +23,22 @@ import (
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
+const (
+	ErrPrefix = "GF"
+
+	GetRepoErr = iota
+	GetRemoteReposErr
+	ChangeBranchErr
+	CloneRepoErr
+	GetGitDirsErr
+	GetGitTokensErr
+	CreateCommitErr
+	GetIndexedReposErr
+	PushToOriginErr
+	PullFromOriginErr
+	GetCommitDiffErr
+)
+
 func NewInstance() *GitFunctions {
 	return &GitFunctions{
 		db: *database.NewInstance(),
@@ -39,6 +55,8 @@ type GitFunctions struct {
 // representing the path to the git repository.
 // It returns a data.Repo struct.
 func (gf *GitFunctions) GetRepo(path string) (data.Repo, error) {
+	defer utils.HandlePanic(gf.Ctx, ErrPrefix, GetRepoErr)
+
 	log.Println("[+] Getting git dir")
 
 	wg := sync.WaitGroup{}
@@ -269,6 +287,8 @@ func (gf *GitFunctions) GetRepo(path string) (data.Repo, error) {
 // using the GitHub API. It returns a RemoteRepo struct containing information about
 // each repository.
 func (gf *GitFunctions) GetRemoteRepos() ([]data.RemoteRepo, error) {
+	defer utils.HandlePanic(gf.Ctx, ErrPrefix, GetRemoteReposErr)
+
 	log.Println("[+] Getting remote repos")
 
 	user, err := gf.db.GetGitUser()
@@ -306,6 +326,8 @@ func (gf *GitFunctions) ChangeBranch(repoPath string, branch string) error {
 	// 	Branch: plumbing.NewBranchReferenceName(branch),
 	// })
 
+	defer utils.HandlePanic(gf.Ctx, ErrPrefix, ChangeBranchErr)
+
 	cmd := exec.Command("git", "checkout", branch)
 	cmd.Dir = repoPath
 
@@ -323,6 +345,8 @@ func (gf *GitFunctions) ChangeBranch(repoPath string, branch string) error {
 // name: the name of the repository.
 // error: returns an error if there was a problem cloning the repository.
 func (gf *GitFunctions) CloneRepo(url string, name string) error {
+	defer utils.HandlePanic(gf.Ctx, ErrPrefix, GetCommitDiffErr)
+
 	home, err := utils.UserHome()
 	if err != nil {
 		return err
@@ -381,6 +405,8 @@ func (gf *GitFunctions) GetGitUser() (data.GitUser, error) {
 //
 // This function returns a slice of data File structs.
 func (gf *GitFunctions) GetGitDirs() ([]data.File, error) {
+	defer utils.HandlePanic(gf.Ctx, ErrPrefix, GetGitDirsErr)
+
 	dirs := []data.File{}
 
 	log.Println("[+] Reading Git dirs")
@@ -436,6 +462,8 @@ func (gf *GitFunctions) GetGitDirs() ([]data.File, error) {
 // the token from the URL and adds it to the tokens slice. Finally, it returns
 // the tokens slice and any error that occurred during the process.
 func (gf *GitFunctions) GetGitTokens() ([]string, error) {
+	defer utils.HandlePanic(gf.Ctx, ErrPrefix, GetGitTokensErr)
+
 	tokens := []string{}
 
 	gitDirs := []data.File{}
@@ -510,6 +538,8 @@ func (gf *GitFunctions) GetGitTokens() ([]string, error) {
 // The function returns an error if there is any issue with adding files or
 // committing the changes.
 func (gf *GitFunctions) CreateCommit(commit data.CreateCommit) error {
+	defer utils.HandlePanic(gf.Ctx, ErrPrefix, CreateCommitErr)
+
 	// worktree.Add has an issue
 	log.Println("[+] Commiting changes")
 
@@ -537,6 +567,8 @@ func (gf *GitFunctions) CreateCommit(commit data.CreateCommit) error {
 
 // GetIndexedRepos retrieves the indexed repositories from the GitFunctions struct.
 func (gf *GitFunctions) GetIndexedRepos() ([]data.File, error) {
+	defer utils.HandlePanic(gf.Ctx, ErrPrefix, GetIndexedReposErr)
+
 	repos, err := gf.db.GetIndexedRepos()
 	if err != nil {
 		return []data.File{}, err
@@ -552,6 +584,8 @@ func (gf *GitFunctions) GetIndexedRepos() ([]data.File, error) {
 
 // PushToOrigin pushes the changes in the Git repository to the origin.
 func (gf *GitFunctions) PushToOrigin(repoDir string) error {
+	defer utils.HandlePanic(gf.Ctx, ErrPrefix, PushToOriginErr)
+
 	log.Println("[+] Pushing to origin")
 
 	repo, err := git.PlainOpen(repoDir)
@@ -565,6 +599,8 @@ func (gf *GitFunctions) PushToOrigin(repoDir string) error {
 }
 
 func (gf *GitFunctions) PullFromOrigin(repoDir string) error {
+	defer utils.HandlePanic(gf.Ctx, ErrPrefix, PullFromOriginErr)
+
 	log.Println("[+] Pulling from origin")
 
 	repo, err := git.PlainOpen(repoDir)
@@ -583,6 +619,8 @@ func (gf *GitFunctions) PullFromOrigin(repoDir string) error {
 }
 
 func (gf *GitFunctions) GetCommitDiff(repoDir, currentHash, prevHash string) ([]data.CommitDiff, error) {
+	defer utils.HandlePanic(gf.Ctx, ErrPrefix, GetCommitDiffErr)
+
 	repo, err := git.PlainOpen(repoDir)
 	if err != nil {
 		return nil, err

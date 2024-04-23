@@ -1,6 +1,7 @@
 package home
 
 import (
+	"context"
 	"math"
 	"os"
 	"os/user"
@@ -15,18 +16,29 @@ import (
 	"github.com/shirou/gopsutil/process"
 )
 
+const (
+	ErrPrefix = "HF"
+
+	GetUserMetaErr = iota
+	GetSystemResourcesErr
+	GetSystemProcessesErr
+	GetFileSystemsErrs
+)
+
 func NewInstance() *HomeFunctions {
 	return &HomeFunctions{}
 }
 
 type HomeFunctions struct {
+	Ctx context.Context
 }
 
 func (hf *HomeFunctions) GetUserMeta() (data.UserMeta, error) {
+	defer utils.HandlePanic(hf.Ctx, ErrPrefix, GetUserMetaErr)
+
 	meta := data.UserMeta{}
 
 	user, err := user.Current()
-
 	if err != nil {
 		return meta, err
 	}
@@ -41,28 +53,26 @@ func (hf *HomeFunctions) GetUserMeta() (data.UserMeta, error) {
 }
 
 func (hf *HomeFunctions) GetSystemResources() (data.SystemResources, error) {
+	defer utils.HandlePanic(hf.Ctx, ErrPrefix, GetSystemResourcesErr)
+
 	stats := data.SystemResources{}
 
 	memoryStats, err := mem.VirtualMemory()
-
 	if err != nil {
 		return stats, err
 	}
 
 	batteryStats, err := battery.GetAll()
-
 	if err != nil {
 		return stats, err
 	}
 
 	cpuInfo, err := cpu.Info()
-
 	if err != nil {
 		return stats, err
 	}
 
 	cpuUsages, err := cpu.Percent(0, true)
-
 	if err != nil {
 		return stats, err
 	}
@@ -104,7 +114,6 @@ func (hf *HomeFunctions) GetSystemResources() (data.SystemResources, error) {
 	}
 
 	wkCliPath, err := utils.WakaTimeCli()
-
 	if err != nil {
 		return stats, err
 	}
@@ -114,7 +123,6 @@ func (hf *HomeFunctions) GetSystemResources() (data.SystemResources, error) {
 	stats.HasWaka = err == nil
 
 	ip, err := utils.GetLocalIp()
-
 	if err != nil {
 		return stats, err
 	}
@@ -125,11 +133,11 @@ func (hf *HomeFunctions) GetSystemResources() (data.SystemResources, error) {
 }
 
 func (hf *HomeFunctions) GetSystemProcesses() ([]data.Process, error) {
+	defer utils.HandlePanic(hf.Ctx, ErrPrefix, GetSystemProcessesErr)
 
 	stats := []data.Process{}
 
 	allProcesses, err := process.Processes()
-
 	if err != nil {
 		return stats, err
 	}
@@ -156,16 +164,16 @@ func (hf *HomeFunctions) GetSystemProcesses() ([]data.Process, error) {
 }
 
 func (hf *HomeFunctions) GetFileSystems() ([]data.DiskStats, error) {
+	defer utils.HandlePanic(hf.Ctx, ErrPrefix, GetFileSystemsErrs)
+
 	stats := []data.DiskStats{}
 
 	diskPartitions, err := disk.Partitions(false)
-
 	if err != nil {
 		return []data.DiskStats{}, err
 	}
 
 	for _, diskPartition := range diskPartitions {
-
 		if !strings.Contains(diskPartition.Device, "loop") {
 			diskStats, _ := disk.Usage(diskPartition.Mountpoint)
 
@@ -179,7 +187,6 @@ func (hf *HomeFunctions) GetFileSystems() ([]data.DiskStats, error) {
 				UsedPercentage: diskStats.UsedPercent,
 			})
 		}
-
 	}
 	return stats, nil
 }

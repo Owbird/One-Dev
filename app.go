@@ -35,6 +35,9 @@ func (a *App) startup(ctx context.Context) {
 	log.Println("[+] App startup")
 	a.ctx = ctx
 	a.GitFunctions.Ctx = ctx
+	a.DirectoriesFunctions.Ctx = ctx
+	a.HomeFunctions.Ctx = ctx
+	a.HelperFunctions.Ctx = ctx
 
 	db := database.NewInstance()
 

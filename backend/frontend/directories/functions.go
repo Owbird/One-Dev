@@ -1,6 +1,7 @@
 package directories
 
 import (
+	"context"
 	"log"
 	"os"
 	"os/exec"
@@ -9,6 +10,14 @@ import (
 	"strings"
 
 	"github.com/owbird/one-dev/backend/data"
+	"github.com/owbird/one-dev/backend/utils"
+)
+
+const (
+	ErrPrefix = "DF"
+
+	GetDirectoriesErr = iota
+	OpenFileErr
 )
 
 // Returns a new instance of Directory Functions
@@ -16,22 +25,24 @@ func NewInstance() *DirectoriesFunctions {
 	return &DirectoriesFunctions{}
 }
 
-type DirectoriesFunctions struct{}
+type DirectoriesFunctions struct {
+	Ctx context.Context
+}
 
 // GetDirectories retrieves a list of directories from the specified path.
 func (df *DirectoriesFunctions) GetDirectories(path string, showHiddenFiles bool) ([]data.Directory, error) {
+	defer utils.HandlePanic(df.Ctx, ErrPrefix, GetDirectoriesErr)
+
 	log.Println("[+] Getting directories")
 
 	directories := []data.Directory{}
 
 	dir, err := os.Open(path)
-
 	if err != nil {
 		log.Println(err)
 	}
 
 	files, err := dir.ReadDir(0)
-
 	if err != nil {
 		log.Println(err)
 	}
@@ -55,6 +66,8 @@ func (df *DirectoriesFunctions) GetDirectories(path string, showHiddenFiles bool
 
 // OpenFile opens a file using the appropriate command based on the operating system.
 func (df *DirectoriesFunctions) OpenFile(path string) {
+	defer utils.HandlePanic(df.Ctx, ErrPrefix, OpenFileErr)
+
 	var cmd string
 	var args []string
 
