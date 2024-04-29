@@ -2,6 +2,7 @@ package home
 
 import (
 	"context"
+	"errors"
 	"math"
 	"os"
 	"os/user"
@@ -62,9 +63,11 @@ func (hf *HomeFunctions) GetSystemResources() (data.SystemResources, error) {
 		return stats, err
 	}
 
-	batteryStats, err := battery.GetAll()
+	batteryStats, err := battery.Get(0)
 	if err != nil {
-		return stats, err
+		if !errors.As(err, &battery.ErrPartial{}) {
+			return stats, err
+		}
 	}
 
 	cpuInfo, err := cpu.Info()
@@ -96,15 +99,13 @@ func (hf *HomeFunctions) GetSystemResources() (data.SystemResources, error) {
 		Usages: cpuUsages,
 	}
 
-	if len(batteryStats) > 0 {
+	if batteryStats != nil {
 
 		stats.IsLaptop = true
 
-		mainBattery := batteryStats[0]
+		stats.BatteryStats.CurrentPower = int(math.Round(batteryStats.Current / batteryStats.Full * 100))
 
-		stats.BatteryStats.CurrentPower = int(math.Round(mainBattery.Current / mainBattery.Full * 100))
-
-		stats.BatteryStats.ChargingState = mainBattery.State.String()
+		stats.BatteryStats.ChargingState = batteryStats.State.String()
 	} else {
 
 		stats.IsLaptop = false
