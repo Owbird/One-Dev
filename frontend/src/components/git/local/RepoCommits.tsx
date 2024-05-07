@@ -14,8 +14,11 @@ const RepoCommits: FC<IRepoCommitsProps> = ({ repo, commits }) => {
   const [contents, setContents] = useState<(typeof diffs)[number]>();
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredCommits, setFilteredCommits] = useState(commits);
+  const [activeHash, setActiveHash] = useState("");
 
   const handleViewCommit = async (hash: string) => {
+    setActiveHash(hash);
+
     const currentHashIndex = commits.findIndex((x) => x.hash === hash);
 
     const prevHash = commits[currentHashIndex + 1].hash;
@@ -45,7 +48,10 @@ const RepoCommits: FC<IRepoCommitsProps> = ({ repo, commits }) => {
   }
 
   useEffect(() => {
-    handleViewCommit(commits[0].hash);
+    if (commits.length > 0) {
+      setActiveHash(commits[0].hash);
+      handleViewCommit(commits[0].hash);
+    }
   }, []);
 
   useEffect(() => {
@@ -67,9 +73,16 @@ const RepoCommits: FC<IRepoCommitsProps> = ({ repo, commits }) => {
               <Box
                 key={commit.hash}
                 onClick={() => handleViewCommit(commit.hash)}
+                style={{
+                  backgroundColor:
+                    activeHash === commit.hash ? "peru" : undefined,
+                }}
               >
                 <Text fontSize="lg">{commit.message}</Text>
-                <Text fontSize="sm" color="gray.500">
+                <Text
+                  fontSize="sm"
+                  color={activeHash === commit.hash ? "white" : "gray.500"}
+                >
                   {`${commit.committerName} <${commit.committerEmail}> | ${commit.date}`}
                 </Text>
                 <Divider my={2} />
@@ -83,6 +96,10 @@ const RepoCommits: FC<IRepoCommitsProps> = ({ repo, commits }) => {
               {diffs.map((diff) => (
                 <Box
                   key={diff.file}
+                  style={{
+                    backgroundColor:
+                     contents?.file === diff.file ? "peru" : undefined,
+                  }}
                   onClick={() => {
                     setContents(() => diff);
                   }}
