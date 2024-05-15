@@ -63,10 +63,11 @@ func (hf *HomeFunctions) GetSystemResources() (data.SystemResources, error) {
 		return stats, err
 	}
 
-	batteryStats, err := battery.Get(0)
+	batteries, err := battery.GetAll()
+
 	if err != nil {
 		if !errors.As(err, &battery.ErrPartial{}) {
-			return stats, err
+			return stats, nil
 		}
 	}
 
@@ -99,7 +100,9 @@ func (hf *HomeFunctions) GetSystemResources() (data.SystemResources, error) {
 		Usages: cpuUsages,
 	}
 
-	if batteryStats != nil {
+	if len(batteries) > 0 {
+
+		batteryStats := batteries[0]
 
 		stats.IsLaptop = true
 
