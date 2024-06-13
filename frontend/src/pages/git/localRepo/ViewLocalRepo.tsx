@@ -168,7 +168,7 @@ const ViewLocalRepo: FC<IViewLocalRepoProps> = ({ repo }) => {
 
           <TabPanels>
             <TabPanel>
-              <Box overflowY="auto" maxHeight="100vh">
+              <Box>
                 <RepoChanges
                   changes={repoData?.changes}
                   parentDir={repoData?.parentDir!}
@@ -177,7 +177,7 @@ const ViewLocalRepo: FC<IViewLocalRepoProps> = ({ repo }) => {
               </Box>
             </TabPanel>
             <TabPanel w="85vw" ml={0} pl={0}>
-              <Box overflowY="auto" maxHeight="100vh">
+              <Box>
                 <RepoCommits
                   repo={repoData?.parentDir!}
                   commits={repoData?.commits!}

@@ -68,7 +68,14 @@ const RepoCommits: FC<IRepoCommitsProps> = ({ repo, commits }) => {
             mb={4}
             placeholder={"Search commit message"}
           />
-          <Box w="30vw" p={4} borderWidth="1px" borderRadius="md">
+          <Box
+            overflowY={"scroll"}
+            h={"53vh"}
+            w="30vw"
+            p={4}
+            borderWidth="1px"
+            borderRadius="md"
+          >
             {filteredCommits.map((commit) => (
               <Box
                 key={commit.hash}
@@ -92,13 +99,13 @@ const RepoCommits: FC<IRepoCommitsProps> = ({ repo, commits }) => {
         </GridItem>
         <GridItem w={200}>
           {diffs.length > 0 && (
-            <Box>
+            <Box overflowY={"scroll"} h={"60vh"}>
               {diffs.map((diff) => (
                 <Box
                   key={diff.file}
                   style={{
                     backgroundColor:
-                     contents?.file === diff.file ? "peru" : undefined,
+                      contents?.file === diff.file ? "peru" : undefined,
                   }}
                   onClick={() => {
                     setContents(() => diff);
@@ -113,11 +120,11 @@ const RepoCommits: FC<IRepoCommitsProps> = ({ repo, commits }) => {
         </GridItem>
         <GridItem>
           {contents && (
-            <Box>
+            <Box overflowY={"scroll"} h={"62vh"}>
               <ReactDiffViewer
                 oldValue={contents.prevContent}
                 newValue={contents.currentContent}
-                splitView={true}
+                splitView={false}
               />
             </Box>
           )}
