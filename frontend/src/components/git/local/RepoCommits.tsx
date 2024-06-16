@@ -80,10 +80,11 @@ const RepoCommits: FC<IRepoCommitsProps> = ({ repo, commits }) => {
               <Box
                 key={commit.hash}
                 onClick={() => handleViewCommit(commit.hash)}
-                style={{
-                  backgroundColor:
-                    activeHash === commit.hash ? "peru" : undefined,
-                }}
+                borderRadius={10}
+                padding={2}
+                backgroundColor={
+                  activeHash === commit.hash ? "peru" : undefined
+                }
               >
                 <Text fontSize="lg">{commit.message}</Text>
                 <Text
@@ -103,10 +104,11 @@ const RepoCommits: FC<IRepoCommitsProps> = ({ repo, commits }) => {
               {diffs.map((diff) => (
                 <Box
                   key={diff.file}
-                  style={{
-                    backgroundColor:
-                      contents?.file === diff.file ? "peru" : undefined,
-                  }}
+                  borderRadius={10}
+                  padding={2}
+                  backgroundColor={
+                    contents?.file === diff.file ? "peru" : undefined
+                  }
                   onClick={() => {
                     setContents(() => diff);
                   }}
