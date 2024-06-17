@@ -46,6 +46,10 @@ export function GetIndexedRepos() {
   return window['go']['main']['App']['GetIndexedRepos']();
 }
 
+export function GetRemoteRepoBranches(arg1) {
+  return window['go']['main']['App']['GetRemoteRepoBranches'](arg1);
+}
+
 export function GetRemoteRepos() {
   return window['go']['main']['App']['GetRemoteRepos']();
 }

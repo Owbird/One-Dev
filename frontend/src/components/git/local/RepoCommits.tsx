@@ -48,7 +48,7 @@ const RepoCommits: FC<IRepoCommitsProps> = ({ repo, commits }) => {
   }
 
   useEffect(() => {
-    if (commits.length > 0) {
+    if (commits && commits.length > 0) {
       setActiveHash(commits[0].hash);
       handleViewCommit(commits[0].hash);
     }

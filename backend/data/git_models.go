@@ -30,13 +30,12 @@ type RepoAnalytics struct {
 }
 
 type Repo struct {
-	CurrentBranch  string        `json:"currentBranch"`
-	LocalBranches  []string      `json:"localBranches"`
-	RemoteBranches []string      `json:"remoteBranches"`
-	Tags           []string      `json:"tags"`
-	Changes        []RepoChange  `json:"changes"`
-	Commits        []RepoCommit  `json:"commits"`
-	Analytics      RepoAnalytics `json:"analytics"`
+	CurrentBranch string        `json:"currentBranch"`
+	LocalBranches []string      `json:"localBranches"`
+	Tags          []string      `json:"tags"`
+	Changes       []RepoChange  `json:"changes"`
+	Commits       []RepoCommit  `json:"commits"`
+	Analytics     RepoAnalytics `json:"analytics"`
 	File
 }
 

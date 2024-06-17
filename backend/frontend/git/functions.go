@@ -37,6 +37,7 @@ const (
 	PushToOriginErr
 	PullFromOriginErr
 	GetCommitDiffErr
+	GetRemoteRepoBranchesErr
 )
 
 func NewInstance() *GitFunctions {
@@ -48,6 +49,38 @@ func NewInstance() *GitFunctions {
 type GitFunctions struct {
 	Ctx context.Context
 	db  database.Database
+}
+
+// GetRemoteRepoBranches returns an array of remote branches for the repo
+func (gf *GitFunctions) GetRemoteRepoBranches(path string) ([]string, error) {
+	defer utils.HandlePanic(gf.Ctx, ErrPrefix, GetRemoteRepoBranchesErr)
+
+	log.Println("[+] Getting remote branches")
+
+	branches := []string{}
+
+	repo, err := git.PlainOpen(path)
+	if err != nil {
+		return branches, err
+	}
+
+	remote, _ := repo.Remote("origin")
+
+	remotes, err := remote.List(&git.ListOptions{})
+	if err != nil {
+		return branches, err
+	}
+
+	for _, remote := range remotes {
+		remoteBranch := remote.Name()
+
+		if strings.Contains(remoteBranch.String(), "heads") {
+			branches = append(branches, fmt.Sprintf("remotes/origin/%s", remoteBranch.Short()))
+		}
+
+	}
+
+	return branches, nil
 }
 
 // GetRepo returns a data.Repo struct containing information about the git repository
@@ -150,31 +183,6 @@ func (gf *GitFunctions) GetRepo(path string) (data.Repo, error) {
 		return gitRepo, localBranchesErrVal
 	}
 
-	// Handle remote branchess
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
-
-		log.Println("[+] Gettting repo remote branches")
-		remote, _ := repo.Remote("origin")
-
-		remotes, err := remote.List(&git.ListOptions{})
-		if err != nil {
-			gitRepo.RemoteBranches = []string{}
-
-			return
-		}
-
-		for _, remote := range remotes {
-			remoteBranch := remote.Name()
-
-			if strings.Contains(remoteBranch.String(), "heads") {
-				gitRepo.RemoteBranches = append(gitRepo.RemoteBranches, fmt.Sprintf("remotes/origin/%s", remoteBranch.Short()))
-			}
-
-		}
-	}()
-
 	// Handle tags
 	wg.Add(1)
 	go func() {
@@ -266,10 +274,6 @@ func (gf *GitFunctions) GetRepo(path string) (data.Repo, error) {
 	// Handle frontend null data with empty arrays
 	if len(gitRepo.Tags) == 0 {
 		gitRepo.Tags = []string{}
-	}
-
-	if len(gitRepo.LocalBranches) == 0 {
-		gitRepo.RemoteBranches = []string{}
 	}
 
 	if len(gitRepo.Commits) == 0 {

@@ -34,6 +34,10 @@ export function GetIndexedRepos() {
   return window['go']['git']['GitFunctions']['GetIndexedRepos']();
 }
 
+export function GetRemoteRepoBranches(arg1) {
+  return window['go']['git']['GitFunctions']['GetRemoteRepoBranches'](arg1);
+}
+
 export function GetRemoteRepos() {
   return window['go']['git']['GitFunctions']['GetRemoteRepos']();
 }

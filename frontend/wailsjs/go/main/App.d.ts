@@ -24,6 +24,8 @@ export function GetGitUser():Promise<data.GitUser>;
 
 export function GetIndexedRepos():Promise<Array<data.File>>;
 
+export function GetRemoteRepoBranches(arg1:string):Promise<Array<string>>;
+
 export function GetRemoteRepos():Promise<Array<data.RemoteRepo>>;
 
 export function GetRepo(arg1:string):Promise<data.Repo>;

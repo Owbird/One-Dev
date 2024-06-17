@@ -14,6 +14,7 @@ import {
 import { WindowSetTitle } from "@go-runtime/runtime";
 import {
   ChangeBranch,
+  GetRemoteRepoBranches,
   GetRepo,
   PullFromOrigin,
   PushToOrigin,
@@ -38,16 +39,11 @@ interface IViewLocalRepoProps {
 const ViewLocalRepo: FC<IViewLocalRepoProps> = ({ repo }) => {
   const [repoData, setRepoData] = useState<data.Repo>();
   const [isLoading, setIsLoading] = useState(false);
+  const [remoteBranches, setRemoteBranches] = useState<string[]>([]);
 
   useEffect(() => {
-    getRepo(repo!);
+    getRepo(repo);
   }, []);
-
-  useEffect(() => {
-    if (repoData) {
-      WindowSetTitle(`One Dev | Git & Github | ${repoData?.dir}`);
-    }
-  }, [repoData]);
 
   const pushToOrigin = async () => {
     try {
@@ -80,14 +76,20 @@ const ViewLocalRepo: FC<IViewLocalRepoProps> = ({ repo }) => {
     try {
       setIsLoading(true);
 
-      const repo = await GetRepo(dir);
+      const currentRepo= await GetRepo(dir);
 
-      setRepoData(repo);
+      setRepoData(currentRepo);
+
+      setIsLoading(false);
+
+      const remoteBranches = await GetRemoteRepoBranches(dir);
+
+      setRemoteBranches(remoteBranches);
     } catch (error) {
+      setIsLoading(false);
+
       const errorText: SnackbarMessage = error as string;
       enqueueSnackbar(errorText, { variant: "error" });
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -133,7 +135,7 @@ const ViewLocalRepo: FC<IViewLocalRepoProps> = ({ repo }) => {
         <Heading>{repoData?.dir}</Heading>
         <AiOutlineBranches />{" "}
         <Badge>
-          {repoData?.localBranches.length! + repoData?.remoteBranches.length!}
+          {repoData?.localBranches.length! + remoteBranches.length!}
         </Badge>
         <Badge color={"green"}>{repoData?.currentBranch}</Badge>
         <Box pl={60}>
@@ -152,7 +154,7 @@ const ViewLocalRepo: FC<IViewLocalRepoProps> = ({ repo }) => {
           <AiOutlineBranches size={60} />
           <RepoBranches
             localBranches={repoData?.localBranches}
-            remoteBranches={repoData?.remoteBranches}
+            remoteBranches={remoteBranches}
             currentBranch={repoData?.currentBranch}
             onBranchChange={handleBranchChnage}
           />
@@ -178,11 +180,7 @@ const ViewLocalRepo: FC<IViewLocalRepoProps> = ({ repo }) => {
             </TabPanel>
             <TabPanel w="85vw" ml={0} pl={0}>
               <Box>
-                <RepoCommits
-                  repo={repoData?.parentDir!}
-                  commits={repoData?.commits!}
-                />
-              </Box>
+                            </Box>
             </TabPanel>
             <TabPanel>
               <RepoAnalytics

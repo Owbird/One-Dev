@@ -34,7 +34,7 @@ export namespace data {
 		    if (!a) {
 		        return a;
 		    }
-		    if (a.slice) {
+		    if (a.slice && a.map) {
 		        return (a as any[]).map(elem => this.convertValues(elem, classs));
 		    } else if ("object" === typeof a) {
 		        if (asMap) {
@@ -171,7 +171,7 @@ export namespace data {
 		    if (!a) {
 		        return a;
 		    }
-		    if (a.slice) {
+		    if (a.slice && a.map) {
 		        return (a as any[]).map(elem => this.convertValues(elem, classs));
 		    } else if ("object" === typeof a) {
 		        if (asMap) {
@@ -249,7 +249,7 @@ export namespace data {
 		    if (!a) {
 		        return a;
 		    }
-		    if (a.slice) {
+		    if (a.slice && a.map) {
 		        return (a as any[]).map(elem => this.convertValues(elem, classs));
 		    } else if ("object" === typeof a) {
 		        if (asMap) {
@@ -530,7 +530,7 @@ export namespace data {
 		    if (!a) {
 		        return a;
 		    }
-		    if (a.slice) {
+		    if (a.slice && a.map) {
 		        return (a as any[]).map(elem => this.convertValues(elem, classs));
 		    } else if ("object" === typeof a) {
 		        if (asMap) {
@@ -594,7 +594,7 @@ export namespace data {
 		    if (!a) {
 		        return a;
 		    }
-		    if (a.slice) {
+		    if (a.slice && a.map) {
 		        return (a as any[]).map(elem => this.convertValues(elem, classs));
 		    } else if ("object" === typeof a) {
 		        if (asMap) {
@@ -645,7 +645,6 @@ export namespace data {
 	export class Repo {
 	    currentBranch: string;
 	    localBranches: string[];
-	    remoteBranches: string[];
 	    tags: string[];
 	    changes: RepoChange[];
 	    commits: RepoCommit[];
@@ -663,7 +662,6 @@ export namespace data {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.currentBranch = source["currentBranch"];
 	        this.localBranches = source["localBranches"];
-	        this.remoteBranches = source["remoteBranches"];
 	        this.tags = source["tags"];
 	        this.changes = this.convertValues(source["changes"], RepoChange);
 	        this.commits = this.convertValues(source["commits"], RepoCommit);
@@ -677,7 +675,7 @@ export namespace data {
 		    if (!a) {
 		        return a;
 		    }
-		    if (a.slice) {
+		    if (a.slice && a.map) {
 		        return (a as any[]).map(elem => this.convertValues(elem, classs));
 		    } else if ("object" === typeof a) {
 		        if (asMap) {
@@ -754,7 +752,7 @@ export namespace data {
 		    if (!a) {
 		        return a;
 		    }
-		    if (a.slice) {
+		    if (a.slice && a.map) {
 		        return (a as any[]).map(elem => this.convertValues(elem, classs));
 		    } else if ("object" === typeof a) {
 		        if (asMap) {
