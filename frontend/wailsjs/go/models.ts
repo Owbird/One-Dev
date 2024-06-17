@@ -49,7 +49,7 @@ export namespace data {
 		}
 	}
 	export class BatteryStats {
-	    charginState: string;
+	    chargingState: string;
 	    currentPower: number;
 	
 	    static createFrom(source: any = {}) {
@@ -58,7 +58,7 @@ export namespace data {
 	
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.charginState = source["charginState"];
+	        this.chargingState = source["chargingState"];
 	        this.currentPower = source["currentPower"];
 	    }
 	}

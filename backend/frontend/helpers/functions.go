@@ -6,7 +6,6 @@ import (
 	"os"
 	"os/exec"
 
-	"github.com/gen2brain/beeep"
 	"github.com/owbird/one-dev/backend/data"
 	"github.com/owbird/one-dev/backend/database"
 	"github.com/owbird/one-dev/backend/utils"
@@ -40,7 +39,7 @@ type HelperFunctions struct {
 func (sf *HelperFunctions) Notify(message string) {
 	defer utils.HandlePanic(sf.Ctx, ErrPrefix, NotifyErr)
 
-	beeep.Alert("One Dev", message, "")
+	utils.Notify(message)
 }
 
 // GetWakaToday returns the time spent coding today from WakaTime.

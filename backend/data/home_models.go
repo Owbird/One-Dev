@@ -15,7 +15,7 @@ type Process struct {
 }
 
 type BatteryStats struct {
-	ChargingState string `json:"charginState"`
+	ChargingState string `json:"chargingState"`
 	CurrentPower  int    `json:"currentPower"`
 }
 

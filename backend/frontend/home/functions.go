@@ -2,10 +2,11 @@ package home
 
 import (
 	"context"
-	"errors"
+	"fmt"
 	"math"
 	"os"
 	"os/user"
+	"slices"
 	"strings"
 
 	"github.com/distatus/battery"
@@ -31,7 +32,11 @@ func NewInstance() *HomeFunctions {
 }
 
 type HomeFunctions struct {
-	Ctx context.Context
+	Ctx   context.Context
+	State struct {
+		ChargingState  string
+		BattPowerNotif []int
+	}
 }
 
 func (hf *HomeFunctions) GetUserMeta() (data.UserMeta, error) {
@@ -63,14 +68,6 @@ func (hf *HomeFunctions) GetSystemResources() (data.SystemResources, error) {
 		return stats, err
 	}
 
-	batteries, err := battery.GetAll()
-
-	if err != nil {
-		if !errors.As(err, &battery.ErrPartial{}) {
-			return stats, nil
-		}
-	}
-
 	cpuInfo, err := cpu.Info()
 	if err != nil {
 		return stats, err
@@ -100,14 +97,18 @@ func (hf *HomeFunctions) GetSystemResources() (data.SystemResources, error) {
 		Usages: cpuUsages,
 	}
 
-	if len(batteries) > 0 {
+	batteries, err := battery.GetAll()
+	if err != nil {
+		stats.IsLaptop = false
+		stats.BatteryStats.CurrentPower = 0
+		stats.BatteryStats.ChargingState = "Unknown"
+	} else if len(batteries) > 0 {
 
 		batteryStats := batteries[0]
 
 		stats.IsLaptop = true
 
 		stats.BatteryStats.CurrentPower = int(math.Round(batteryStats.Current / batteryStats.Full * 100))
-
 		stats.BatteryStats.ChargingState = batteryStats.State.String()
 	} else {
 
@@ -115,6 +116,32 @@ func (hf *HomeFunctions) GetSystemResources() (data.SystemResources, error) {
 		stats.BatteryStats.CurrentPower = 100
 		stats.BatteryStats.ChargingState = "Full"
 
+	}
+	chargingState := stats.BatteryStats.ChargingState
+
+	// Set new charging state
+	if hf.State.ChargingState == "" {
+		hf.State.ChargingState = chargingState
+		hf.State.BattPowerNotif = []int{30, 20, 10, 5}
+	}
+
+	if (hf.State.ChargingState != chargingState) && (chargingState != "Unknown" && chargingState != "Idle") {
+		utils.Notify(chargingState)
+		hf.State.ChargingState = chargingState
+
+		// Reset charging notification states
+		if chargingState == "Charging" {
+			hf.State.BattPowerNotif = []int{30, 20, 10, 5}
+		}
+	}
+
+	if chargingState != "Charging" {
+		for index, threshold := range hf.State.BattPowerNotif {
+			if stats.BatteryStats.CurrentPower == threshold {
+				utils.Notify(fmt.Sprintf("Battery power at %v%%", stats.BatteryStats.CurrentPower))
+				hf.State.BattPowerNotif = slices.Delete(hf.State.BattPowerNotif, 0, index+1)
+			}
+		}
 	}
 
 	wkCliPath, err := utils.WakaTimeCli()
