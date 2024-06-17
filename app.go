@@ -38,6 +38,7 @@ func (a *App) startup(ctx context.Context) {
 	a.DirectoriesFunctions.Ctx = ctx
 	a.HomeFunctions.Ctx = ctx
 	a.HelperFunctions.Ctx = ctx
+	a.SettingsFunctions.Ctx = ctx
 
 	db := database.NewInstance()
 
