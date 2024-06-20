@@ -6,9 +6,11 @@ import (
 	"math"
 	"os"
 	"os/user"
+	"runtime"
 	"slices"
 	"strings"
 
+	"fyne.io/systray"
 	"github.com/distatus/battery"
 	"github.com/owbird/one-dev/backend/data"
 	"github.com/owbird/one-dev/backend/utils"
@@ -159,6 +161,24 @@ func (hf *HomeFunctions) GetSystemResources() (data.SystemResources, error) {
 	}
 
 	stats.LocalIP = ip
+
+	toolTipBuilder := strings.Builder{}
+
+	toolTipBuilder.WriteString(fmt.Sprintf("Uptime: %v Days %v Hours %v Minutes\n\n", stats.UpTime.Days, stats.UpTime.Hours, stats.UpTime.Minutes))
+
+	toolTipBuilder.WriteString(fmt.Sprintf("Memory usage: %.2f%%\n\n", stats.MemoryStats.UsedPercentage))
+
+	for index, cpu := range stats.CPUStats.Usages {
+		toolTipBuilder.WriteString(fmt.Sprintf("CPU #%v: %.2f%%\n", index, cpu))
+	}
+
+	newTooltip := toolTipBuilder.String()
+
+	if runtime.GOOS != "windows" {
+		systray.SetTitle(newTooltip)
+	} else {
+		systray.SetTooltip(newTooltip)
+	}
 
 	return stats, nil
 }

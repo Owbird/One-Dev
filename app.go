@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 
+	"fyne.io/systray"
 	"github.com/owbird/one-dev/backend/database"
 	"github.com/owbird/one-dev/backend/frontend/directories"
 	"github.com/owbird/one-dev/backend/frontend/git"
@@ -43,4 +44,7 @@ func (a *App) startup(ctx context.Context) {
 	db := database.NewInstance()
 
 	db.EnsureOneDir()
+
+	systray.Run(func() {
+	}, func() {})
 }
