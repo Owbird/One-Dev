@@ -11,7 +11,6 @@ import {
   TabPanels,
   Tabs,
 } from "@chakra-ui/react";
-import { WindowSetTitle } from "@go-runtime/runtime";
 import {
   ChangeBranch,
   GetRemoteRepoBranches,
@@ -31,7 +30,7 @@ import { FC, Fragment, useEffect, useState } from "react";
 import { AiOutlineBranches, AiOutlineTag } from "react-icons/ai";
 import { FaDownload, FaSync } from "react-icons/fa";
 import { VscRepoPush } from "react-icons/vsc";
-import useWindowFocus from 'use-window-focus';
+import useWindowFocus from "use-window-focus";
 
 interface IViewLocalRepoProps {
   repo: string;
@@ -42,7 +41,7 @@ const ViewLocalRepo: FC<IViewLocalRepoProps> = ({ repo }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [remoteBranches, setRemoteBranches] = useState<string[]>([]);
 
-   const windowFocused = useWindowFocus();
+  const windowFocused = useWindowFocus();
 
   useEffect(() => {
     if (windowFocused) getRepo(repo);
@@ -79,7 +78,7 @@ const ViewLocalRepo: FC<IViewLocalRepoProps> = ({ repo }) => {
     try {
       setIsLoading(true);
 
-      const currentRepo= await GetRepo(dir);
+      const currentRepo = await GetRepo(dir);
 
       setRepoData(currentRepo);
 
@@ -183,7 +182,11 @@ const ViewLocalRepo: FC<IViewLocalRepoProps> = ({ repo }) => {
             </TabPanel>
             <TabPanel w="85vw" ml={0} pl={0}>
               <Box>
-                            </Box>
+                <RepoCommits
+                  repo={repoData?.parentDir!}
+                  commits={repoData?.commits!}
+                />
+              </Box>
             </TabPanel>
             <TabPanel>
               <RepoAnalytics
