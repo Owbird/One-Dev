@@ -31,6 +31,7 @@ import { FC, Fragment, useEffect, useState } from "react";
 import { AiOutlineBranches, AiOutlineTag } from "react-icons/ai";
 import { FaDownload, FaSync } from "react-icons/fa";
 import { VscRepoPush } from "react-icons/vsc";
+import useWindowFocus from 'use-window-focus';
 
 interface IViewLocalRepoProps {
   repo: string;
@@ -41,9 +42,11 @@ const ViewLocalRepo: FC<IViewLocalRepoProps> = ({ repo }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [remoteBranches, setRemoteBranches] = useState<string[]>([]);
 
+   const windowFocused = useWindowFocus();
+
   useEffect(() => {
-    getRepo(repo);
-  }, []);
+    if (windowFocused) getRepo(repo);
+  }, [windowFocused]);
 
   const pushToOrigin = async () => {
     try {
