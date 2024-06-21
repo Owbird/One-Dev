@@ -1,6 +1,7 @@
 import { Box, Heading, Text } from "@chakra-ui/react";
 import { data } from "@go/models";
 import { FC, Fragment } from "react";
+import { AxisOptions, Chart } from "react-charts";
 
 interface IRepoContributorsProps {
   contributors: data.RepoContributors[];
@@ -13,17 +14,37 @@ const RepoContributors: FC<IRepoContributorsProps> = ({ contributors }) => {
 
   return (
     <Fragment>
-      {contributors.map((contributor) => (
-        <Box key={contributor.contributor} p={4} mb={2} borderRadius="md">
-          <Heading as="h3" size="md">
-            {contributor.contributor}
-          </Heading>
-          <Text>
-            Total Contributions: {contributor.totalCommits} (
-            {contributor.percentage}%)
-          </Text>
-        </Box>
-      ))}
+      <Box width="400px" height="400px">
+        <Chart
+          options={{
+            interactionMode: "closest",
+            getDatumStyle: (datum) =>
+              ({
+                circle: { r: parseInt(datum.originalDatum.percentage) },
+              }) as any,
+            primaryAxis: {
+              getValue: (datum) => `${datum.percentage}%`,
+            },
+            secondaryAxes: [
+              {
+                getValue: (datum) => datum.totalCommits,
+                elementType: "bubble",
+              },
+            ],
+            data: contributors.map(
+              ({ totalCommits, percentage, contributor }) => ({
+                label: contributor,
+                data: [
+                  {
+                    totalCommits,
+                    percentage,
+                  },
+                ],
+              }),
+            ),
+          }}
+        />
+      </Box>
     </Fragment>
   );
 };

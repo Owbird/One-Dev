@@ -1,6 +1,7 @@
 import { Box, Heading, Text } from "@chakra-ui/react";
 import { data } from "@go/models";
 import { FC, Fragment } from "react";
+import { Chart } from "react-charts";
 
 interface IRepoTechnologiesProps {
   technologies: data.RepoTechnologies[];
@@ -12,14 +13,29 @@ const RepoTechnologies: FC<IRepoTechnologiesProps> = ({ technologies }) => {
   }
   return (
     <Fragment>
-      {technologies.map((technology) => (
-        <Box key={technology.technology} p={4} mb={2} borderRadius="md">
-          <Heading as="h3" size="md">
-            {technology.technology}
-          </Heading>
-          <Text>Count: {technology.count} </Text>
-        </Box>
-      ))}
+      <Box width="400px" height="400px">
+        <Chart
+          options={{
+            primaryAxis: {
+              getValue: (datum) => datum.count,
+            },
+            secondaryAxes: [
+              {
+                getValue: (datum) => datum.count,
+                elementType: "bar",
+              },
+            ],
+            data: technologies.map(({ count, technology }) => ({
+              label: technology,
+              data: [
+                {
+                  count,
+                },
+              ],
+            })),
+          }}
+        />
+      </Box>
     </Fragment>
   );
 };

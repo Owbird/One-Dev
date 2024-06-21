@@ -20,10 +20,9 @@ const RepoAnalytics: FC<IRepoAnalyticsProps> = ({
 
   return (
     <Box>
-      <Heading as="h2" size="lg" mb={2}>
-        Total Commits
+      <Heading as="h2" color="green.500" size="lg" mb={2}>
+        {totalCommits} Commits
       </Heading>
-      <Text>{totalCommits}</Text>
       <Heading as="h2" size="lg" mb={2}>
         Contributors ({analytics.contributors.length})
       </Heading>
