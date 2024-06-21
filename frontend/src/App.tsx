@@ -181,10 +181,6 @@ function App() {
         />
       </SidebarContent>
       <Box
-        ml={{
-          base: 0,
-          md: 40,
-        }}
         transition=".3s ease"
       >
         <Tabs index={tabIndex} onChange={(index) => setTabIndex(index)}>
