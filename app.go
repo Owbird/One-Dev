@@ -11,6 +11,7 @@ import (
 	"github.com/owbird/one-dev/backend/frontend/helpers"
 	"github.com/owbird/one-dev/backend/frontend/home"
 	"github.com/owbird/one-dev/backend/frontend/settings"
+	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 type App struct {
@@ -44,6 +45,8 @@ func (a *App) startup(ctx context.Context) {
 	db := database.NewInstance()
 
 	db.EnsureOneDir()
+
+	runtime.WindowMaximise(ctx)
 
 	systray.Run(func() {
 	}, func() {})
