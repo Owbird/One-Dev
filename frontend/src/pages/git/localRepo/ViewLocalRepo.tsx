@@ -44,7 +44,7 @@ const ViewLocalRepo: FC<IViewLocalRepoProps> = ({ repo }) => {
   const windowFocused = useWindowFocus();
 
   useEffect(() => {
-    if (windowFocused) getRepo(repo);
+    if (windowFocused) getRepo(repo, true);
   }, [windowFocused]);
 
   const pushToOrigin = async () => {
@@ -74,9 +74,9 @@ const ViewLocalRepo: FC<IViewLocalRepoProps> = ({ repo }) => {
     }
   };
 
-  const getRepo = async (dir: string) => {
+  const getRepo = async (dir: string, silent = false) => {
     try {
-      setIsLoading(true);
+      setIsLoading(!silent);
 
       const currentRepo = await GetRepo(dir);
 
