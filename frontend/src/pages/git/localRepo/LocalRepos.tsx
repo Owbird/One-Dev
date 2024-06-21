@@ -115,6 +115,7 @@ const LocalRepos = () => {
       >
         {(searchRes ?? dirs).map((dir) => (
           <GridItem
+            borderRadius={"10px"}
             key={dir.parentDir}
             onClick={() => {
               viewRepo(dir);

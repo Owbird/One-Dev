@@ -60,7 +60,7 @@ const RepoCommits: FC<IRepoCommitsProps> = ({ repo, commits }) => {
 
   return (
     <Fragment>
-      <Grid templateColumns="repeat(3, 1fr)" gap={6}>
+      <Grid templateColumns="repeat(3, 1fr)" gap={3}>
         <GridItem>
           <Input
             value={searchQuery}
