@@ -123,7 +123,7 @@ const ViewLocalRepo: FC<IViewLocalRepoProps> = ({ repo }) => {
     );
   }
 
-  if (isLoading) {
+  if (isLoading || !repoData) {
     return (
       <Center>
         <Loader />
