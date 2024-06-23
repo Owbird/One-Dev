@@ -349,7 +349,7 @@ func (gf *GitFunctions) ChangeBranch(repoPath string, branch string) error {
 // name: the name of the repository.
 // error: returns an error if there was a problem cloning the repository.
 func (gf *GitFunctions) CloneRepo(url string, name string) error {
-	defer utils.HandlePanic(gf.Ctx, ErrPrefix, GetCommitDiffErr)
+	defer utils.HandlePanic(gf.Ctx, ErrPrefix, CloneRepoErr)
 
 	home, err := utils.UserHome()
 	if err != nil {
@@ -623,7 +623,7 @@ func (gf *GitFunctions) PullFromOrigin(repoDir string) error {
 }
 
 func (gf *GitFunctions) GetCommitDiff(repoDir, currentHash, prevHash string) ([]data.CommitDiff, error) {
-	defer utils.HandlePanic(gf.Ctx, ErrPrefix, GetCommitDiffErr)
+	// defer utils.HandlePanic(gf.Ctx, ErrPrefix, GetCommitDiffErr)
 
 	repo, err := git.PlainOpen(repoDir)
 	if err != nil {
@@ -689,8 +689,16 @@ func (gf *GitFunctions) GetCommitDiff(repoDir, currentHash, prevHash string) ([]
 			})
 		}
 
+		var file string
+
+		if to == nil {
+			file = from.Path()
+		} else {
+			file = to.Path()
+		}
+
 		changes = append(changes, data.CommitDiff{
-			File:           to.Path(),
+			File:           file,
 			CurrentContent: currentContent,
 			PrevContent:    prevContent,
 		})
