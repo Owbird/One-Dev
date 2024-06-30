@@ -10,23 +10,27 @@ import Drawer from "react-modern-drawer";
 import { FaMoon, FaSun } from "react-icons/fa";
 import "react-modern-drawer/dist/index.css";
 import { GiHamburgerMenu } from "react-icons/gi";
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 
-const SidebarContent = ({ children }: { children: React.ReactNode }) => {
+interface ISidebarContentProps {
+  children: ReactNode;
+  isDrawerOpen: boolean;
+  toggleDrawer: () => void;
+}
+
+const SidebarContent = ({
+  children,
+  isDrawerOpen,
+  toggleDrawer,
+}: ISidebarContentProps) => {
   const { colorMode, toggleColorMode } = useColorMode();
-
-  const [isOpen, setIsOpen] = useState(false);
-
-  const toggleDrawer = () => {
-    setIsOpen((prevState) => !prevState);
-  };
 
   return (
     <Box>
       <Box ml={4}>
         <GiHamburgerMenu size={30} onClick={toggleDrawer} />
       </Box>
-      <Drawer open={isOpen} onClose={toggleDrawer} direction="left">
+      <Drawer open={isDrawerOpen} onClose={toggleDrawer} direction="left">
         <Box
           as="nav"
           h="full"

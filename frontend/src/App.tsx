@@ -1,5 +1,5 @@
 import { Box, Tabs } from "@chakra-ui/react";
-import { Fragment, useEffect } from "react";
+import { Fragment, useEffect, useState } from "react";
 
 import { FaCog, FaFolder, FaGithub, FaHome } from "react-icons/fa";
 
@@ -63,6 +63,12 @@ function App() {
     (module) => NAV_ITEMS.find((item) => item.menuTab.label === module)!,
   );
 
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
+  const toggleDrawer = () => {
+    setIsDrawerOpen((prevState) => !prevState);
+  };
+
   const setWindowTitle = (window: string) => {
     WindowSetTitle(`One Dev | ${window}`);
   };
@@ -91,6 +97,8 @@ function App() {
     } else {
       setTabIndex(openedTabs.findIndex((x) => x.label === tab.label));
     }
+
+    toggleDrawer();
   };
 
   useEffect(() => {
@@ -173,16 +181,14 @@ function App() {
       }}
       minH="100vh"
     >
-      <SidebarContent>
+      <SidebarContent toggleDrawer={toggleDrawer} isDrawerOpen={isDrawerOpen}>
         <NavItems
           handleMenuClick={handleMenuClick}
           currentLabel={openedTabs[tabIndex].label}
           navItems={currentNav}
         />
       </SidebarContent>
-      <Box
-        transition=".3s ease"
-      >
+      <Box transition=".3s ease">
         <Tabs index={tabIndex} onChange={(index) => setTabIndex(index)}>
           <NavTabList
             tabs={openedTabs}
