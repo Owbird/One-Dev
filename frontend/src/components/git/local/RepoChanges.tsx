@@ -41,7 +41,7 @@ const RepoChanges: FC<IRepoChangesProps> = ({
   parentDir,
   refreshRepo,
 }) => {
-  const [stagedFiles, setStagedFiles] = useState<string[]>([]);
+  const [stagedFiles, setStagedFiles] = useState<string[]>(changes?.map((change) => change.file) as string[]);
   const [commitMessage, setCommitMessage] = useState("");
 
   if (changes === undefined || changes.length === 0) {
@@ -71,22 +71,21 @@ const RepoChanges: FC<IRepoChangesProps> = ({
 
   return (
     <Fragment>
-      {stagedFiles.length !== 0 && (
-        <Stack>
-          <Textarea
-            value={commitMessage}
-            onChange={(event) => setCommitMessage(event.target.value)}
-            placeholder="Commit message"
-          />
-          <Button
-            isDisabled={commitMessage === ""}
-            colorScheme={"blue"}
-            onClick={createCommit}
-          >
-            Commit files ({stagedFiles.length})
-          </Button>
-        </Stack>
-      )}
+      <Stack>
+        <Textarea
+          value={commitMessage}
+          onChange={(event) => setCommitMessage(event.target.value)}
+          placeholder="Commit message"
+        />
+        <Button
+          isDisabled={commitMessage === ""}
+          colorScheme={"blue"}
+          onClick={createCommit}
+        >
+          Commit files ({stagedFiles.length})
+        </Button>
+      </Stack>
+
       {changes.map((change) => (
         <HStack>
           <Checkbox
