@@ -579,6 +579,7 @@ export namespace data {
 	export class RepoAnalytics {
 	    contributors: RepoContributors[];
 	    technologies: RepoTechnologies[];
+	    contributedDays: {[key: number]: number};
 	
 	    static createFrom(source: any = {}) {
 	        return new RepoAnalytics(source);
@@ -588,6 +589,7 @@ export namespace data {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.contributors = this.convertValues(source["contributors"], RepoContributors);
 	        this.technologies = this.convertValues(source["technologies"], RepoTechnologies);
+	        this.contributedDays = source["contributedDays"];
 	    }
 	
 		convertValues(a: any, classs: any, asMap: boolean = false): any {

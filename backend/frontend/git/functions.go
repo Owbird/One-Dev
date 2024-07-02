@@ -123,6 +123,7 @@ func (gf *GitFunctions) GetRepo(path string) (data.Repo, error) {
 	}
 
 	contributorCommits := make(map[string]int)
+	contributedDays := make(map[int]int)
 
 	// Handle Commits
 	wg.Add(1)
@@ -139,6 +140,8 @@ func (gf *GitFunctions) GetRepo(path string) (data.Repo, error) {
 			contributorID := fmt.Sprintf("%s <%s>", commit.Committer.Name, commit.Committer.Email)
 			contributorCommits[contributorID]++
 
+			contributedDays[int(commit.Committer.When.Weekday())]++
+
 			return nil
 		}))
 
@@ -151,6 +154,8 @@ func (gf *GitFunctions) GetRepo(path string) (data.Repo, error) {
 				Percentage:   formattedPercentage,
 			})
 		}
+
+		gitRepo.Analytics.ContributedDays = contributedDays
 
 		wg.Done()
 	}()

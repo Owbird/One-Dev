@@ -25,8 +25,9 @@ type RepoTechnologies struct {
 }
 
 type RepoAnalytics struct {
-	Contributors []RepoContributors `json:"contributors"`
-	Technologies []RepoTechnologies `json:"technologies"`
+	Contributors    []RepoContributors `json:"contributors"`
+	Technologies    []RepoTechnologies `json:"technologies"`
+	ContributedDays map[int]int        `json:"contributedDays"`
 }
 
 type Repo struct {
