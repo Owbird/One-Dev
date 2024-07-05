@@ -46,12 +46,13 @@ const RemoteRepos = () => {
       .finally(() => {
         setIsLoading(false);
       });
-  }, []);
+  }, [])
 
   const handleRepoView = (repo: data.RemoteRepo) => {
     setActiveRepo(repo);
     onOpen();
   };
+
 
   if (isLoading) {
     return (
@@ -62,7 +63,7 @@ const RemoteRepos = () => {
   }
 
   const repoGridItem = repos?.map((repo) => {
-    const langColor = ghColors[repo.language as keyof typeof ghColors];
+    const langColor = ghColors[repo.primaryLanguage.name as keyof typeof ghColors];
     return (
       <VStack
         borderRadius={"10px"}
@@ -76,9 +77,9 @@ const RemoteRepos = () => {
         bg="blue.500"
       >
         <HStack>
-          {repo.private && <Badge>private</Badge>}
+          {repo.isPrivate && <Badge>private</Badge>}
           <Badge background={langColor ? langColor.color! : ""} color="white">
-            {repo.language}
+            {repo.primaryLanguage.name}
           </Badge>
         </HStack>
         <Text>
@@ -86,21 +87,22 @@ const RemoteRepos = () => {
         </Text>
         <HStack justifyContent={"center"} alignContent="center">
           <HStack>
-            <FaStar /> <Text>{repo.stargazersCount}</Text>
+            <FaStar /> <Text>{repo.stargazerCount}</Text>
           </HStack>
           <HStack>
-            <FaClone /> <Text>{repo.forksCount}</Text>
+            <FaClone /> <Text>{repo.forkCount}</Text>
           </HStack>
           <HStack>
-            <FaDatabase /> <Text>{formatBytes(repo.size)}</Text>
+            <FaDatabase /> <Text>{formatBytes(repo.diskUsage)}</Text>
           </HStack>
         </HStack>
         <HStack>
-          <FaClock /> <Text>{format(repo.updated_at)}</Text>
+          <FaClock /> <Text>{format(repo.updatedAt)}</Text>
         </HStack>
       </VStack>
     );
   });
+
 
   return (
     <TabPanel>

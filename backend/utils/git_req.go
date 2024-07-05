@@ -1,22 +1,23 @@
 package utils
 
 import (
+	"bytes"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"net"
 	"net/http"
 	"time"
 )
 
-func MakeAuthorizedRequest(method, url, token string) ([]byte, error) {
+func MakeAuthorizedRequest(method, url, token string, body []byte) ([]byte, error) {
 	log.Println("[+] Making auth req")
 
 	client := &http.Client{
-		Timeout: 30 * time.Second,
+		Timeout: 45 * time.Second,
 	}
 
-	req, err := http.NewRequest(method, url, nil)
+	req, err := http.NewRequest(method, url, bytes.NewBuffer(body))
 	if err != nil {
 		return nil, err
 	}
@@ -25,17 +26,17 @@ func MakeAuthorizedRequest(method, url, token string) ([]byte, error) {
 
 	res, err := client.Do(req)
 	if err != nil {
-		//Retry request on timeout
+		// Retry request on timeout
 		if netErr, ok := err.(net.Error); ok && netErr.Timeout() {
 			log.Println("[!] Retrying request")
-			MakeAuthorizedRequest(method, url, token)
+			return MakeAuthorizedRequest(method, url, token, body)
 		}
 
 		return nil, err
 	}
 	defer res.Body.Close()
 
-	body, err := ioutil.ReadAll(res.Body)
+	body, err = io.ReadAll(res.Body)
 	if err != nil {
 		return nil, err
 	}

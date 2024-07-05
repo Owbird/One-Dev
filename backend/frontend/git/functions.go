@@ -310,19 +310,52 @@ func (gf *GitFunctions) GetRemoteRepos() ([]data.RemoteRepo, error) {
 		return []data.RemoteRepo{}, err
 	}
 
-	body, err := utils.MakeAuthorizedRequest("GET", "https://api.github.com/user/repos?per_page=500", user.Token)
+	payload := map[string]string{
+		"query": `{
+  viewer {
+    repositories(first: 100, affiliations: [OWNER, ORGANIZATION_MEMBER, COLLABORATOR], ownerAffiliations: [OWNER, ORGANIZATION_MEMBER, COLLABORATOR], orderBy: { field: UPDATED_AT, direction: DESC }) {
+	nodes {
+	id
+	name
+	stargazerCount
+	forkCount
+	updatedAt
+	isPrivate
+	description
+	diskUsage
+	url	
+	primaryLanguage {
+		name
+	}
+	watchers {
+		totalCount
+        }
+	owner {
+		login
+		avatarUrl
+	}
+      }
+    }
+  }
+}
+`,
+	}
+
+	payloadJson, _ := json.Marshal(payload)
+
+	body, err := utils.MakeAuthorizedRequest("POST", "https://api.github.com/graphql", user.Token, payloadJson)
 	if err != nil {
 		return []data.RemoteRepo{}, err
 	}
 
-	var repos []data.RemoteRepo
+	var response data.RemoteRepoResponse
 
-	err = json.Unmarshal(body, &repos)
+	err = json.Unmarshal(body, &response)
 	if err != nil {
 		return []data.RemoteRepo{}, fmt.Errorf("could not get repos: %s", string(body))
 	}
 
-	return repos, nil
+	return response.Data.Viewer.Repositories.Nodes, nil
 }
 
 // ChangeBranch changes the branch of a Git repository.

@@ -30,7 +30,7 @@ const ViewRemoteRepoModal: FC<ViewRemoteRepoModalProps> = ({
 
   const handleClone = async () => {
     setIsCloning(true);
-    await CloneRepo(repo.htmlURL, repo.name);
+    await CloneRepo(repo.url, repo.name);
     setIsCloning(false);
   };
 
@@ -46,7 +46,7 @@ const ViewRemoteRepoModal: FC<ViewRemoteRepoModalProps> = ({
         <ModalContent>
           <ModalHeader>
             <Flex align="center">
-              <Avatar size="sm" src={repo.owner.avatarURL} />
+              <Avatar size="sm" src={repo.owner.avatarUrl} />
               <Text ml={2}>{repo.owner.login}</Text>
             </Flex>
           </ModalHeader>
@@ -54,13 +54,13 @@ const ViewRemoteRepoModal: FC<ViewRemoteRepoModalProps> = ({
           <ModalBody>
             {repo.description === "" ? "No description" : repo.description}
             <Text mt={2}>
-              Language: {repo.language}
+              Language: {repo.primaryLanguage.name}
               <br />
-              Stars: {repo.stargazersCount}
+              Stars: {repo.stargazerCount}
               <br />
-              Forks: {repo.forksCount}
+              Forks: {repo.forkCount}
               <br />
-              Watchers: {repo.watchersCount}
+              Watchers: {repo.watchers.totalCount}
             </Text>
           </ModalBody>
 
