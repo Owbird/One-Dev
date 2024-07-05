@@ -399,11 +399,11 @@ export namespace data {
 	    releasesURL: string;
 	    deploymentsURL: string;
 	    // Go type: time
-	    createdAt: any;
+	    created_at: any;
 	    // Go type: time
-	    updatedAt: any;
+	    updated_at: any;
 	    // Go type: time
-	    pushedAt: any;
+	    pushed_at: any;
 	    gitURL: string;
 	    sshURL: string;
 	    cloneURL: string;
@@ -489,9 +489,9 @@ export namespace data {
 	        this.labelsURL = source["labelsURL"];
 	        this.releasesURL = source["releasesURL"];
 	        this.deploymentsURL = source["deploymentsURL"];
-	        this.createdAt = this.convertValues(source["createdAt"], null);
-	        this.updatedAt = this.convertValues(source["updatedAt"], null);
-	        this.pushedAt = this.convertValues(source["pushedAt"], null);
+	        this.created_at = this.convertValues(source["created_at"], null);
+	        this.updated_at = this.convertValues(source["updated_at"], null);
+	        this.pushed_at = this.convertValues(source["pushed_at"], null);
 	        this.gitURL = source["gitURL"];
 	        this.sshURL = source["sshURL"];
 	        this.cloneURL = source["cloneURL"];

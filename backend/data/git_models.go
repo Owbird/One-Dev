@@ -135,9 +135,9 @@ type RemoteRepo struct {
 	LabelsURL                string                `json:"labelsURL"`
 	ReleasesURL              string                `json:"releasesURL"`
 	DeploymentsURL           string                `json:"deploymentsURL"`
-	CreatedAt                time.Time             `json:"createdAt"`
-	UpdatedAt                time.Time             `json:"updatedAt"`
-	PushedAt                 time.Time             `json:"pushedAt"`
+	CreatedAt                time.Time             `json:"created_at"`
+	UpdatedAt                time.Time             `json:"updated_at"`
+	PushedAt                 time.Time             `json:"pushed_at"`
 	GitURL                   string                `json:"gitURL"`
 	SSHURL                   string                `json:"sshURL"`
 	CloneURL                 string                `json:"cloneURL"`
