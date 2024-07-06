@@ -1,4 +1,5 @@
 import {
+    Badge,
   Center,
   Divider,
   Grid,
@@ -125,7 +126,8 @@ const LocalRepos = () => {
             p={5}
             bg="blue.500"
           >
-            <p>{dir.dir}</p>
+            <Badge>{dir.user}</Badge>
+            <Text>{dir.dir}</Text>
           </GridItem>
         ))}
       </Grid>

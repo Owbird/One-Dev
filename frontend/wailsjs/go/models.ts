@@ -151,6 +151,7 @@ export namespace data {
 	    }
 	}
 	export class File {
+	    user: string;
 	    parentDir: string;
 	    dir: string;
 	    // Go type: time
@@ -162,6 +163,7 @@ export namespace data {
 	
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.user = source["user"];
 	        this.parentDir = source["parentDir"];
 	        this.dir = source["dir"];
 	        this.modTime = this.convertValues(source["modTime"], null);
@@ -483,6 +485,7 @@ export namespace data {
 	    changes: RepoChange[];
 	    commits: RepoCommit[];
 	    analytics: RepoAnalytics;
+	    user: string;
 	    parentDir: string;
 	    dir: string;
 	    // Go type: time
@@ -500,6 +503,7 @@ export namespace data {
 	        this.changes = this.convertValues(source["changes"], RepoChange);
 	        this.commits = this.convertValues(source["commits"], RepoCommit);
 	        this.analytics = this.convertValues(source["analytics"], RepoAnalytics);
+	        this.user = source["user"];
 	        this.parentDir = source["parentDir"];
 	        this.dir = source["dir"];
 	        this.modTime = this.convertValues(source["modTime"], null);

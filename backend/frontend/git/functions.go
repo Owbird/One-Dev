@@ -38,6 +38,7 @@ const (
 	PullFromOriginErr
 	GetCommitDiffErr
 	GetRemoteRepoBranchesErr
+	GetRepoRemoteURLErr
 )
 
 func NewInstance() *GitFunctions {
@@ -472,15 +473,21 @@ func (gf *GitFunctions) GetGitDirs() ([]data.File, error) {
 					return err
 				}
 
+				remoteUrl, err := gf.GetRepoRemoteURL(path)
+				if err != nil {
+					return err
+				}
+
+				repoUser := strings.Split(remoteUrl, "/")[3]
+
 				dir := data.File{
+					User:      repoUser,
 					ParentDir: filepath.Dir(path),
 					Dir:       filepath.Base(filepath.Dir(path)),
 					ModTime:   info.ModTime(),
 				}
 
 				dirs = append(dirs, dir)
-
-				// database.IndexGitDir(dir)
 			}
 		}
 
@@ -743,4 +750,23 @@ func (gf *GitFunctions) GetCommitDiff(repoDir, currentHash, prevHash string) ([]
 	}
 
 	return changes, nil
+}
+
+// Returns the remote origin url of the repo
+func (gf *GitFunctions) GetRepoRemoteURL(path string) (string, error) {
+	defer utils.HandlePanic(gf.Ctx, ErrPrefix, GetRepoRemoteURLErr)
+
+	log.Println("[+] Getting remote url")
+
+	repo, err := git.PlainOpen(path)
+	if err != nil {
+		return "", err
+	}
+
+	remote, err := repo.Remote("origin")
+	if err != nil {
+		return "", err
+	}
+
+	return remote.Config().URLs[0], nil
 }

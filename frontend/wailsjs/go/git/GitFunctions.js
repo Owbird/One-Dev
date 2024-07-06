@@ -46,6 +46,10 @@ export function GetRepo(arg1) {
   return window['go']['git']['GitFunctions']['GetRepo'](arg1);
 }
 
+export function GetRepoRemoteURL(arg1) {
+  return window['go']['git']['GitFunctions']['GetRepoRemoteURL'](arg1);
+}
+
 export function PullFromOrigin(arg1) {
   return window['go']['git']['GitFunctions']['PullFromOrigin'](arg1);
 }

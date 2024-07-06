@@ -58,6 +58,10 @@ export function GetRepo(arg1) {
   return window['go']['main']['App']['GetRepo'](arg1);
 }
 
+export function GetRepoRemoteURL(arg1) {
+  return window['go']['main']['App']['GetRepoRemoteURL'](arg1);
+}
+
 export function GetSettings() {
   return window['go']['main']['App']['GetSettings']();
 }
