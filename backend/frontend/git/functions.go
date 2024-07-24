@@ -473,12 +473,12 @@ func (gf *GitFunctions) GetGitDirs() ([]data.File, error) {
 					return err
 				}
 
-				remoteUrl, err := gf.GetRepoRemoteURL(path)
-				if err != nil {
-					return err
-				}
+				repoUser := "Unknown"
 
-				repoUser := strings.Split(remoteUrl, "/")[3]
+				remoteUrl, err := gf.GetRepoRemoteURL(path)
+				if err == nil {
+					repoUser = strings.Split(remoteUrl, "/")[3]
+				}
 
 				dir := data.File{
 					User:      repoUser,
