@@ -3,7 +3,7 @@ export namespace data {
 	export class OpenedTabs {
 	    label: string;
 	    source: string;
-	    meta: {[key: string]: any};
+	    meta: Record<string, any>;
 	
 	    static createFrom(source: any = {}) {
 	        return new OpenedTabs(source);
@@ -413,7 +413,7 @@ export namespace data {
 	export class RepoAnalytics {
 	    contributors: RepoContributors[];
 	    technologies: RepoTechnologies[];
-	    contributedDays: {[key: number]: number};
+	    contributedDays: Record<number, number>;
 	
 	    static createFrom(source: any = {}) {
 	        return new RepoAnalytics(source);
