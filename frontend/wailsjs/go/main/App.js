@@ -14,6 +14,10 @@ export function CreateCommit(arg1) {
   return window['go']['main']['App']['CreateCommit'](arg1);
 }
 
+export function FetchLocalIp() {
+  return window['go']['main']['App']['FetchLocalIp']();
+}
+
 export function GetAppState() {
   return window['go']['main']['App']['GetAppState']();
 }
@@ -82,6 +86,10 @@ export function GetWakaToday() {
   return window['go']['main']['App']['GetWakaToday']();
 }
 
+export function IsHostAlive(arg1) {
+  return window['go']['main']['App']['IsHostAlive'](arg1);
+}
+
 export function KillProcess(arg1) {
   return window['go']['main']['App']['KillProcess'](arg1);
 }
@@ -100,6 +108,10 @@ export function PullFromOrigin(arg1) {
 
 export function PushToOrigin(arg1) {
   return window['go']['main']['App']['PushToOrigin'](arg1);
+}
+
+export function ResolveHostname(arg1) {
+  return window['go']['main']['App']['ResolveHostname'](arg1);
 }
 
 export function SaveAppState(arg1) {

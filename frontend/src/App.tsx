@@ -1,7 +1,7 @@
 import { Box, Tabs } from "@chakra-ui/react";
 import { Fragment, useEffect, useState } from "react";
 
-import { FaCog, FaFolder, FaGithub, FaHome } from "react-icons/fa";
+import { FaCog, FaFolder, FaGithub, FaHome, FaNetworkWired } from "react-icons/fa";
 
 import SidebarContent from "@components/app/SidebarContent";
 import { IMenuTab, INavItem } from "@data/interfaces";
@@ -19,6 +19,7 @@ import { GetAppState, GetSettings, SaveAppState } from "@go/main/App";
 import { data } from "@go/models";
 import ViewLocalRepo from "./pages/git/localRepo/ViewLocalRepo";
 import { selectedAppModules } from "./states/nav/AppModulesAtom";
+import Network from "./pages/Network/Network";
 
 const NAV_ITEMS: INavItem[] = [
   {
@@ -50,6 +51,14 @@ const NAV_ITEMS: INavItem[] = [
     menuTab: {
       label: "Settings",
       body: <Settings />,
+      source: "nav",
+    },
+  },
+  {
+    icon: FaNetworkWired,
+    menuTab: {
+      label: "Network",
+      body: <Network />,
       source: "nav",
     },
   },

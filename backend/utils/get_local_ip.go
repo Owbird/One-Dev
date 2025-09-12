@@ -2,6 +2,7 @@ package utils
 
 import (
 	"net"
+	"strings"
 )
 
 func GetLocalIp() (string, error) {
@@ -14,7 +15,8 @@ func GetLocalIp() (string, error) {
 	for _, addr := range addrs {
 		ip, ok := addr.(*net.IPNet)
 		if ok && !ip.IP.IsLoopback() {
-			if ip.IP.To4() != nil {
+			fmtedIp := ip.IP.To4()
+			if fmtedIp != nil && strings.Contains(fmtedIp.String(), "192.168") {
 				return ip.IP.String(), nil
 			}
 		}

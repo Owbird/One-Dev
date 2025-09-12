@@ -8,6 +8,7 @@ require (
 	fyne.io/systray v1.10.0
 	github.com/distatus/battery v0.11.0
 	github.com/go-git/go-git/v5 v5.13.2
+	github.com/go-ping/ping v1.2.0
 	github.com/ostafen/clover v1.2.0
 	github.com/wailsapp/wails/v2 v2.10.2
 )
