@@ -180,6 +180,11 @@ function App() {
   if (openedTabs.length === 0) {
     return <Fragment></Fragment>;
   }
+   
+  return <div className="text-[10rem] text-red-500">
+
+    Hiii
+  </div>
 
   return (
     <Box
