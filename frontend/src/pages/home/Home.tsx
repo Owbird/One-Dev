@@ -1,6 +1,6 @@
 import FileSystems from "@src/components/home/FileSystems";
 import Greeting from "@src/components/home/Greeting";
-import Processess from "@src/components/home/Processess";
+import Processes from "@src/components/home/Processes";
 import Resources from "@src/components/home/Resources";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@src/components/ui/tabs";
 import { Fragment } from "react";
@@ -20,7 +20,7 @@ const Home = () => {
             <Resources />
           </TabsContent>
           <TabsContent value="processes" className="mt-4">
-            <Processess />
+            <Processes />
           </TabsContent>
           <TabsContent value="filesystems" className="mt-4">
             <FileSystems />
