@@ -1,13 +1,3 @@
-import {
-    Badge,
-  Center,
-  Divider,
-  Grid,
-  GridItem,
-  Input,
-  TabPanel,
-  Text,
-} from "@chakra-ui/react";
 import { GetGitDirs, GetIndexedRepos } from "@go/main/App";
 import { data } from "@go/models";
 import Loader from "@src/components/shared/Loader";
@@ -16,6 +6,9 @@ import { openedTabsAtom, tabIndexAtom } from "@src/states/nav/TabsAtom";
 import { useAtom, useSetAtom } from "jotai";
 import { enqueueSnackbar } from "notistack";
 import { useEffect, useState } from "react";
+import { Input } from "@src/components/ui/input";
+import { Badge } from "@src/components/ui/badge";
+import { Separator } from "@src/components/ui/separator";
 import ViewLocalRepo from "./ViewLocalRepo";
 
 const LocalRepos = () => {
@@ -56,7 +49,6 @@ const LocalRepos = () => {
     const alreadyOpenedIndex = openedTabs.findIndex(
       (x) => x.label === repo.dir,
     );
-
     if (alreadyOpenedIndex === -1) {
       setOpenedTabs([
         ...openedTabs,
@@ -64,7 +56,7 @@ const LocalRepos = () => {
           body: <ViewLocalRepo key={repo.parentDir} repo={repo.parentDir} />,
           label: repo.dir,
           source: "git",
-          meta: repo
+          meta: repo,
         },
       ]);
       setTabIndex(openedTabs.length);
@@ -75,13 +67,12 @@ const LocalRepos = () => {
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
-
     if (query === "") {
       setSearchRes(undefined);
     } else {
       setSearchRes(
         dirs.filter((dir) =>
-          dir.dir.toLowerCase().includes(searchQuery.toLowerCase()),
+          dir.dir.toLowerCase().includes(query.toLowerCase()),
         ),
       );
     }
@@ -89,49 +80,45 @@ const LocalRepos = () => {
 
   if (isLoading) {
     return (
-      <TabPanel>
-        <Center>
+      <div className="p-4">
+        <div className="flex flex-col items-center justify-center py-8">
           <Loader />
-          {isTakingLong && <Text>This is taking longer than expected!</Text>}
-        </Center>
-      </TabPanel>
+          {isTakingLong && (
+            <p className="mt-4 text-gray-600">
+              This is taking longer than expected!
+            </p>
+          )}
+        </div>
+      </div>
     );
   }
 
   return (
-    <TabPanel>
-      <Divider width={20} />
-      <br />
+    <div className="p-4">
+      <Separator className="w-20 mb-4" />
+
       <Input
         value={searchQuery}
         onChange={(event) => handleSearch(event.target.value)}
-        mb={4}
-        placeholder={"Search..."}
+        className="mb-4"
+        placeholder="Search..."
       />
-      <Grid
-        maxH={500}
-        overflowY={"scroll"}
-        templateColumns="repeat(5, 1fr)"
-        gap={6}
-      >
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 max-h-[500px] overflow-y-auto">
         {(searchRes ?? dirs).map((dir) => (
-          <GridItem
-            borderRadius={"10px"}
+          <div
             key={dir.parentDir}
-            onClick={() => {
-              viewRepo(dir);
-            }}
-            w="100%"
-            h="100%"
-            p={5}
-            bg="blue.500"
+            onClick={() => viewRepo(dir)}
+            className="w-full p-5 bg-blue-500 rounded-lg cursor-pointer hover:bg-blue-600 transition-colors"
           >
-            <Badge>{dir.user}</Badge>
-            <Text>{dir.dir}</Text>
-          </GridItem>
+            <Badge variant="secondary" className="mb-2">
+              {dir.user}
+            </Badge>
+            <p className="text-white font-medium">{dir.dir}</p>
+          </div>
         ))}
-      </Grid>
-    </TabPanel>
+      </div>
+    </div>
   );
 };
 
