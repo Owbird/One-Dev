@@ -197,74 +197,82 @@ function App() {
   }
 
   return (
-    <div className="flex">
-  <div className="flex">
-    <Sidebar className="bg-white shadow-lg border-r">
-      <SidebarHeader className="p-4 border-b">
-        <h2 className="text-lg font-bold text-gray-800">One-Dev</h2>
-      </SidebarHeader>
-      <SidebarContent className="flex flex-col gap-2 p-2">
-        {currentNav.map((nav, idx) => (
-          <Fragment key={idx}>
-            {nav.menuTab.label === "Settings" ? (
-              <SidebarGroup className="mt-4 border-t pt-4">
-                <div
-                  onClick={() => handleMenuClick(nav.menuTab)}
-                  className="flex items-center gap-3 p-3 rounded-xl cursor-pointer hover:bg-gray-100 transition"
+    <div className="flex w-screen">
+      <div className="flex">
+        <Sidebar className="bg-white shadow-lg border-r">
+          <SidebarHeader className="p-4 border-b">
+            <h2 className="text-lg font-bold text-gray-800">One-Dev</h2>
+          </SidebarHeader>
+          <SidebarContent className="flex flex-col gap-2 p-2">
+            {currentNav.map((nav, idx) => (
+              <Fragment key={idx}>
+                {nav.menuTab.label === "Settings" ? (
+                  <SidebarGroup className="mt-4 border-t pt-4">
+                    <div
+                      onClick={() => handleMenuClick(nav.menuTab)}
+                      className="flex items-center gap-3 p-3 rounded-xl cursor-pointer hover:bg-gray-100 transition"
+                    >
+                      {nav.icon && (
+                        <nav.icon className="w-5 h-5 text-gray-600" />
+                      )}
+                      <p className="text-gray-700 font-medium">
+                        {nav.menuTab.label}
+                      </p>
+                    </div>
+                  </SidebarGroup>
+                ) : (
+                  <div
+                    onClick={() => handleMenuClick(nav.menuTab)}
+                    className="flex items-center gap-3 p-3 rounded-xl cursor-pointer hover:bg-gray-100 transition"
+                  >
+                    {nav.icon && <nav.icon className="w-5 h-5 text-gray-600" />}
+                    <p className="text-gray-700 font-medium">
+                      {nav.menuTab.label}
+                    </p>
+                  </div>
+                )}
+              </Fragment>
+            ))}
+          </SidebarContent>
+          <SidebarFooter className="p-4 border-t">
+            <p className="text-sm text-gray-500">Built with ❤️</p>
+          </SidebarFooter>
+        </Sidebar>
+        <SidebarTrigger className="self-start" />
+      </div>
+      <div className="flex-1">
+        <Tabs
+          key={tabIndex}
+          tabIndex={tabIndex}
+          defaultValue={openedTabs[tabIndex].label}
+        >
+          <TabsList>
+            {openedTabs.map((tab) => (
+              <div key={tab.label} className="flex items-center">
+                <TabsTrigger
+                  value={tab.label}
+                  // className="bg-green-400"
                 >
-                  {nav.icon && <nav.icon className="w-5 h-5 text-gray-600" />}
-                  <p className="text-gray-700 font-medium">
-                    {nav.menuTab.label}
-                  </p>
-                </div>
-              </SidebarGroup>
-            ) : (
-              <div
-                onClick={() => handleMenuClick(nav.menuTab)}
-                className="flex items-center gap-3 p-3 rounded-xl cursor-pointer hover:bg-gray-100 transition"
-              >
-                {nav.icon && <nav.icon className="w-5 h-5 text-gray-600" />}
-                <p className="text-gray-700 font-medium">
-                  {nav.menuTab.label}
-                </p>
+                  {tab.label}
+                </TabsTrigger>
+                {tab.label !== "Home" && (
+                  <XIcon
+                    className="w-4 h-4"
+                    onClick={() => closeTab(tab)}
+                    color={"red"}
+                  />
+                )}
               </div>
-            )}
-          </Fragment>
-        ))}
-      </SidebarContent>
-      <SidebarFooter className="p-4 border-t">
-        <p className="text-sm text-gray-500">Built with ❤️</p>
-      </SidebarFooter>
-    </Sidebar>
-    <SidebarTrigger className="self-start" />
-  </div>
-  <div className="flex-1">
-    <Tabs
-      key={tabIndex}
-      tabIndex={tabIndex}
-      defaultValue={openedTabs[tabIndex].label}
-    >
-      <TabsList>
-        {openedTabs.map((tab) => (
-          <div key={tab.label} className="flex items-center">
-            <TabsTrigger
-              value={tab.label}
-              // className="bg-green-400"
-            >
-              {tab.label}
-            </TabsTrigger>
-            {tab.label !== "Home" && (
-              <XIcon className="w-4 h-4" onClick={() => closeTab(tab)} color={"red"} />
-            )}
-          </div>
-        ))}
-      </TabsList>
-      {openedTabs.map((tab) => (
-        <TabsContent key={tab.label} value={tab.label}>{tab.body}</TabsContent>
-      ))}
-    </Tabs>
-  </div>
-</div>
+            ))}
+          </TabsList>
+          {openedTabs.map((tab) => (
+            <TabsContent key={tab.label} value={tab.label}>
+              {tab.body}
+            </TabsContent>
+          ))}
+        </Tabs>
+      </div>
+    </div>
   );
 }
 
