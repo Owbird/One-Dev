@@ -1,4 +1,3 @@
-import { Heading, HStack, Text } from "@chakra-ui/react";
 import { GetUserMeta } from "@go/main/App";
 import { data } from "@go/models";
 import { Fragment, useEffect, useState } from "react";
