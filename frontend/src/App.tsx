@@ -1,17 +1,18 @@
-import { Box, Tabs } from "@chakra-ui/react";
 import { Fragment, useEffect, useState } from "react";
 
-import { FaCog, FaFolder, FaGithub, FaHome, FaNetworkWired } from "react-icons/fa";
+import {
+  FaCog,
+  FaFolder,
+  FaGithub,
+  FaHome,
+  FaNetworkWired,
+} from "react-icons/fa";
 
-import SidebarContent from "@components/app/SidebarContent";
 import { IMenuTab, INavItem } from "@data/interfaces";
 import { WindowSetTitle } from "@go-runtime/runtime";
 import Git from "@pages/git/Git";
 import Home from "@src/pages/home/Home";
-import { useAtom, useAtomValue } from "jotai";
-import NavItems from "./components/app/NavItems";
-import NavTabList from "./components/app/NavTabList";
-import NavTabPanels from "./components/app/NavTabPanels";
+import { useAtom } from "jotai";
 import Directories from "./pages/directories/Directories";
 import Settings from "./pages/settings/Settings";
 import { openedTabsAtom, tabIndexAtom } from "./states/nav/TabsAtom";
@@ -20,6 +21,16 @@ import { data } from "@go/models";
 import ViewLocalRepo from "./pages/git/localRepo/ViewLocalRepo";
 import { selectedAppModules } from "./states/nav/AppModulesAtom";
 import Network from "./pages/Network/Network";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "./components/ui/tabs";
+import { XIcon } from "lucide-react";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarHeader,
+  SidebarTrigger,
+} from "./components/ui/sidebar";
 
 const NAV_ITEMS: INavItem[] = [
   {
@@ -69,7 +80,11 @@ function App() {
   const [openedTabs, setOpenedTabs] = useAtom(openedTabsAtom);
   const [appModules, setAppModules] = useAtom(selectedAppModules);
   const currentNav = appModules.map(
-    (module) => NAV_ITEMS.find((item) => item.menuTab.label === module)!,
+    (module) =>
+      NAV_ITEMS.find(
+        (item) =>
+          item.menuTab.label === module || item.menuTab.label === "Settings",
+      )!,
   );
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -180,40 +195,76 @@ function App() {
   if (openedTabs.length === 0) {
     return <Fragment></Fragment>;
   }
-   
-  return <div className="text-[10rem] text-red-500">
-
-    Hiii
-  </div>
 
   return (
-    <Box
-      as="section"
-      bg="gray.50"
-      _dark={{
-        bg: "gray.700",
-      }}
-      minH="100vh"
-    >
-      <SidebarContent toggleDrawer={toggleDrawer} isDrawerOpen={isDrawerOpen}>
-        <NavItems
-          handleMenuClick={handleMenuClick}
-          currentLabel={openedTabs[tabIndex].label}
-          navItems={currentNav}
-        />
+    <div className="flex">
+  <div className="flex">
+    <Sidebar className="bg-white shadow-lg border-r">
+      <SidebarHeader className="p-4 border-b">
+        <h2 className="text-lg font-bold text-gray-800">One-Dev</h2>
+      </SidebarHeader>
+      <SidebarContent className="flex flex-col gap-2 p-2">
+        {currentNav.map((nav, idx) => (
+          <Fragment key={idx}>
+            {nav.menuTab.label === "Settings" ? (
+              <SidebarGroup className="mt-4 border-t pt-4">
+                <div
+                  onClick={() => handleMenuClick(nav.menuTab)}
+                  className="flex items-center gap-3 p-3 rounded-xl cursor-pointer hover:bg-gray-100 transition"
+                >
+                  {nav.icon && <nav.icon className="w-5 h-5 text-gray-600" />}
+                  <p className="text-gray-700 font-medium">
+                    {nav.menuTab.label}
+                  </p>
+                </div>
+              </SidebarGroup>
+            ) : (
+              <div
+                onClick={() => handleMenuClick(nav.menuTab)}
+                className="flex items-center gap-3 p-3 rounded-xl cursor-pointer hover:bg-gray-100 transition"
+              >
+                {nav.icon && <nav.icon className="w-5 h-5 text-gray-600" />}
+                <p className="text-gray-700 font-medium">
+                  {nav.menuTab.label}
+                </p>
+              </div>
+            )}
+          </Fragment>
+        ))}
       </SidebarContent>
-      <Box transition=".3s ease">
-        <Tabs index={tabIndex} onChange={(index) => setTabIndex(index)}>
-          <NavTabList
-            tabs={openedTabs}
-            onTabClick={setWindowTitle}
-            closeTab={closeTab}
-          />
-
-          <NavTabPanels panels={openedTabs} />
-        </Tabs>
-      </Box>
-    </Box>
+      <SidebarFooter className="p-4 border-t">
+        <p className="text-sm text-gray-500">Built with ❤️</p>
+      </SidebarFooter>
+    </Sidebar>
+    <SidebarTrigger className="self-start" />
+  </div>
+  <div className="flex-1">
+    <Tabs
+      key={tabIndex}
+      tabIndex={tabIndex}
+      defaultValue={openedTabs[tabIndex].label}
+    >
+      <TabsList>
+        {openedTabs.map((tab) => (
+          <div key={tab.label} className="flex items-center m-6">
+            <TabsTrigger
+              value={tab.label}
+              className="bg-green-400"
+            >
+              {tab.label}
+            </TabsTrigger>
+            {tab.label !== "Home" && (
+              <XIcon onClick={() => closeTab(tab)} color={"red"} />
+            )}
+          </div>
+        ))}
+      </TabsList>
+      {openedTabs.map((tab) => (
+        <TabsContent key={tab.label} value={tab.label}>{tab.body}</TabsContent>
+      ))}
+    </Tabs>
+  </div>
+</div>
   );
 }
 
