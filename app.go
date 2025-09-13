@@ -10,6 +10,7 @@ import (
 	"github.com/owbird/one-dev/backend/frontend/git"
 	"github.com/owbird/one-dev/backend/frontend/helpers"
 	"github.com/owbird/one-dev/backend/frontend/home"
+	"github.com/owbird/one-dev/backend/frontend/network"
 	"github.com/owbird/one-dev/backend/frontend/settings"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
@@ -21,6 +22,7 @@ type App struct {
 	*git.GitFunctions
 	*settings.SettingsFunctions
 	*directories.DirectoriesFunctions
+	*network.NetworkFunctions
 }
 
 func NewApp() *App {
@@ -30,6 +32,7 @@ func NewApp() *App {
 		GitFunctions:         git.NewInstance(),
 		SettingsFunctions:    settings.NewInstance(),
 		DirectoriesFunctions: directories.NewInstance(),
+		NetworkFunctions:     network.NewInstance(),
 	}
 }
 

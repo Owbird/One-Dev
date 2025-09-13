@@ -3,13 +3,9 @@ package helpers
 import (
 	"context"
 	"fmt"
-	"log"
-	"net"
 	"os"
 	"os/exec"
-	"time"
 
-	"github.com/go-ping/ping"
 	"github.com/owbird/one-dev/backend/data"
 	"github.com/owbird/one-dev/backend/database"
 	"github.com/owbird/one-dev/backend/utils"
@@ -63,47 +59,6 @@ func (sf *HelperFunctions) GetWakaToday() string {
 	}
 
 	return fmt.Sprintf("%s Today", string(res))
-}
-
-// FetchLocalIp returns the local ip
-// on the network
-//
-// It returns a string.
-func (sf *HelperFunctions) FetchLocalIp() (string, error) {
-	return utils.GetLocalIp()
-}
-
-// IsHostAlive returns a boolean if the host is alive
-// or not
-func (sf *HelperFunctions) IsHostAlive(ip string) bool {
-	defer utils.HandlePanic(sf.Ctx, ErrPrefix, GetWakaTodayErr)
-
-	pinger, err := ping.NewPinger(ip)
-	if err != nil {
-		log.Println(err)
-		return false
-	}
-	pinger.Count = 3
-	pinger.Timeout = 2 * time.Second
-	pinger.SetPrivileged(false)
-	err = pinger.Run()
-	if err != nil {
-		log.Println(err)
-		return false
-	}
-	stats := pinger.Statistics()
-	return stats.PacketsRecv > 0
-}
-
-// ResolveHostname returns the hostname of the ip
-func (sf *HelperFunctions) ResolveHostname(ip string) string {
-	names, err := net.LookupAddr(ip)
-	if err != nil {
-		log.Println(err)
-		return ""
-	}
-
-	return names[0]
 }
 
 // KillProcess kills a process with the specified PID.

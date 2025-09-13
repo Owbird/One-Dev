@@ -32,6 +32,7 @@ func main() {
 			app.HelperFunctions,
 			app.GitFunctions,
 			app.DirectoriesFunctions,
+			app.NetworkFunctions,
 		},
 	})
 

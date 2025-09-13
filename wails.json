@@ -2,9 +2,9 @@
   "$schema": "https://wails.io/schemas/config.v2.json",
   "name": "one_dev",
   "outputfilename": "one_dev",
-  "frontend:install": "npm install --verbose  --legacy-peer-dependency",
-  "frontend:build": "npm run build --verbose",
-  "frontend:dev:watcher": "npm run dev",
+  "frontend:install": "ppnpm install",
+  "frontend:build": "pnpm build",
+  "frontend:dev:watcher": "pnpm dev",
   "frontend:dev:serverUrl": "auto",
   "author": {
     "name": "owbird",
