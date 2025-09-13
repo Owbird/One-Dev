@@ -1,18 +1,3 @@
-import {
-  Box,
-  Button,
-  Checkbox,
-  CheckboxGroup,
-  Divider,
-  Flex,
-  Heading,
-  Input,
-  Radio,
-  RadioGroup,
-  Stack,
-  Text,
-  VStack,
-} from "@chakra-ui/react";
 import { GetGitTokens, GetSettings, SaveSettings } from "@go/main/App";
 import { data } from "@go/models";
 import Loader from "@src/components/shared/Loader";
@@ -20,6 +5,12 @@ import { selectedAppModules } from "@src/states/nav/AppModulesAtom";
 import { useAtom } from "jotai";
 import { enqueueSnackbar } from "notistack";
 import { useEffect, useState } from "react";
+import { Button } from "@src/components/ui/button";
+import { Input } from "@src/components/ui/input";
+import { Checkbox } from "@src/components/ui/checkbox";
+import { RadioGroup, RadioGroupItem } from "@src/components/ui/radio-group";
+import { Label } from "@src/components/ui/label";
+import { Separator } from "@src/components/ui/separator";
 
 function Settings() {
   const [gitSettings, setGitSettings] = useState<data.OneJsonGit>({
@@ -29,7 +20,7 @@ function Settings() {
   const [availableGitTokens, setAvailableGitTokens] = useState<string[]>();
   const [isLoading, setIsLoading] = useState(false);
 
-  const availableAppModules = ["Git & Github", "Directories"];
+  const availableAppModules = ["Git & Github", "Directories", "Network"];
 
   const [selectedModules, setSelectedModules] = useState<string[]>([]);
 
@@ -76,27 +67,31 @@ function Settings() {
   }, []);
 
   const gitTokensRadio = availableGitTokens?.map((token) => (
-    <Radio key={token} value={token}>
-      {token}
-    </Radio>
+    <div key={token} className="flex items-center space-x-2">
+      <RadioGroupItem value={token} id={token} />
+      <Label htmlFor={token} className="cursor-pointer">
+        {token}
+      </Label>
+    </div>
   ));
 
   const appModulesCheckBox = availableAppModules.map((module) => (
-    <Checkbox
-      key={module}
-      value={module}
-      isChecked={selectedModules.includes(module)}
-      onChange={() => {
-        if (selectedModules.includes(module)) {
-          setSelectedModules((prev) => prev.filter((m) => m !== module));
-          return;
-        }
-
-        setSelectedModules((prev) => [...prev, module]);
-      }}
-    >
-      {module}
-    </Checkbox>
+    <div key={module} className="flex items-center space-x-2">
+      <Checkbox
+        id={module}
+        checked={selectedModules.includes(module)}
+        onCheckedChange={(checked) => {
+          if (checked) {
+            setSelectedModules((prev) => [...prev, module]);
+          } else {
+            setSelectedModules((prev) => prev.filter((m) => m !== module));
+          }
+        }}
+      />
+      <Label htmlFor={module} className="cursor-pointer">
+        {module}
+      </Label>
+    </div>
   ));
 
   if (isLoading) {
@@ -104,28 +99,21 @@ function Settings() {
   }
 
   return (
-    <Box p={4}>
-      <Flex direction="column" align="center">
-        <Heading as="h1" size="xl" mb={4}>
-          Settings
-        </Heading>
+    <div className="p-4">
+      <div className="flex flex-col items-center">
+        <h1 className="text-3xl font-bold mb-4">Settings</h1>
 
-        <VStack spacing={4} align="start" width="100%">
-          <Box width="100%">
-            <Text fontSize="lg" fontWeight="bold" mb={2}>
-              App modules
-            </Text>
-            <VStack spacing={2} align="start">
-              <Stack direction="column">{appModulesCheckBox}</Stack>
-            </VStack>
-          </Box>
+        <div className="space-y-4 w-full max-w-2xl">
+          <div className="w-full">
+            <h2 className="text-lg font-bold mb-2">App modules</h2>
+            <div className="space-y-2">{appModulesCheckBox}</div>
+          </div>
+
           {selectedModules.includes("Git & Github") && (
-            <Box width="100%">
-              <Text fontSize="lg" fontWeight="bold" mb={2}>
-                Git Settings
-              </Text>
-              <Divider />
-              <VStack spacing={2} align="start">
+            <div className="w-full">
+              <h2 className="text-lg font-bold mb-2">Git Settings</h2>
+              <Separator className="mb-4" />
+              <div className="space-y-4">
                 <Input
                   type="text"
                   onChange={(event) =>
@@ -133,8 +121,7 @@ function Settings() {
                   }
                   value={gitSettings.username}
                   placeholder="Username"
-                  size="lg"
-                  variant="filled"
+                  className="text-lg"
                 />
                 <Input
                   value={gitSettings.token}
@@ -143,35 +130,38 @@ function Settings() {
                     updateGitSettings("token", event.target.value)
                   }
                   placeholder="Git token"
-                  size="lg"
-                  variant="filled"
+                  className="text-lg"
                 />
                 {availableGitTokens && (
                   <RadioGroup
-                    onChange={(value) => updateGitSettings("token", value)}
                     value={gitSettings.token}
+                    onValueChange={(value) => updateGitSettings("token", value)}
                   >
-                    <Stack direction="column">{gitTokensRadio}</Stack>
+                    <div className="space-y-2">{gitTokensRadio}</div>
                   </RadioGroup>
                 )}
                 <Button
                   onClick={findAvailableGitTokens}
-                  colorScheme="teal"
-                  size="xs"
-                  mt={8}
+                  variant="default"
+                  size="sm"
+                  className="mt-8 bg-teal-600 hover:bg-teal-700"
                 >
                   Find available Tokens
                 </Button>
-              </VStack>
-            </Box>
+              </div>
+            </div>
           )}
-        </VStack>
+        </div>
 
-        <Button onClick={saveSettings} colorScheme="teal" size="lg" mt={8}>
+        <Button
+          onClick={saveSettings}
+          size="lg"
+          className="mt-8 bg-teal-600 hover:bg-teal-700"
+        >
           Save Settings
         </Button>
-      </Flex>
-    </Box>
+      </div>
+    </div>
   );
 }
 

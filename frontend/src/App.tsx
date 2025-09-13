@@ -33,6 +33,7 @@ import {
 } from "./components/ui/sidebar";
 
 const NAV_ITEMS: INavItem[] = [
+  // Must be the first one
   {
     icon: FaHome,
     menuTab: {
@@ -58,18 +59,20 @@ const NAV_ITEMS: INavItem[] = [
     },
   },
   {
-    icon: FaCog,
-    menuTab: {
-      label: "Settings",
-      body: <Settings />,
-      source: "nav",
-    },
-  },
-  {
     icon: FaNetworkWired,
     menuTab: {
       label: "Network",
       body: <Network />,
+      source: "nav",
+    },
+  },
+
+  // Must be the last one
+  {
+    icon: FaCog,
+    menuTab: {
+      label: "Settings",
+      body: <Settings />,
       source: "nav",
     },
   },
@@ -79,13 +82,13 @@ function App() {
   const [tabIndex, setTabIndex] = useAtom(tabIndexAtom);
   const [openedTabs, setOpenedTabs] = useAtom(openedTabsAtom);
   const [appModules, setAppModules] = useAtom(selectedAppModules);
-  const currentNav = appModules.map(
-    (module) =>
-      NAV_ITEMS.find(
-        (item) =>
-          item.menuTab.label === module || item.menuTab.label === "Settings",
-      )!,
-  );
+  const currentNav = [
+    NAV_ITEMS[0],
+    ...appModules.map(
+      (module) => NAV_ITEMS.find((item) => item.menuTab.label === module)!,
+    ),
+    NAV_ITEMS[NAV_ITEMS.length - 1],
+  ];
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
@@ -128,9 +131,9 @@ function App() {
   useEffect(() => {
     GetSettings().then((settings) => {
       setAppModules((prev) => [
-        prev[0],
+        // prev[0],
         ...settings.modules,
-        prev[prev.length - 1],
+        // prev[prev.length - 1],
       ]);
     });
 
