@@ -1,50 +1,53 @@
-import { HStack, Text } from "@chakra-ui/react";
 import { data } from "@go/models";
-import { Fragment, useEffect, useState } from "react";
+import { memo, useMemo } from "react";
 import { BsDisc } from "react-icons/bs";
 import StatProgressBar from "./HomeProgress";
 
-const DiskUsage = ({ diskStats }: { diskStats: data.DiskStats }) => {
-  const [color, setColor] = useState("green");
-  const [totalDiskSpace, setTotalDiskSpace] = useState(0);
-  const [totalUsed, setTotalUsed] = useState(0);
+interface DiskUsageProps {
+  diskStats: data.DiskStats;
+}
 
-  useEffect(() => {
-    const percentage = diskStats.usedPercentage;
+const DiskUsage = ({ diskStats }: DiskUsageProps) => {
+  const { usedPercentage, total, used, path, device } = diskStats;
 
-    const totalDiskSpace = Number(
-      (diskStats.total / Math.pow(1024, 3)).toFixed(2),
-    );
-
-    const totalUsed = Number((diskStats.used / Math.pow(1024, 3)).toFixed(2));
-
-    setTotalUsed(totalUsed);
-
-    if (percentage < 50) {
-      setColor("green");
-    } else if (percentage >= 50 && percentage <= 80) {
-      setColor("yellow");
+  const color = useMemo(() => {
+    if (usedPercentage < 50) {
+      return "green";
+    } else if (usedPercentage >= 50 && usedPercentage <= 80) {
+      return "yellow";
     } else {
-      setColor("red");
+      return "red";
     }
+  }, [usedPercentage]);
 
-    setTotalDiskSpace(totalDiskSpace);
-  }, [diskStats]);
+  const totalDiskSpace = useMemo(
+    () => Number((total / Math.pow(1024, 3)).toFixed(2)),
+    [total]
+  );
+
+  const totalUsed = useMemo(
+    () => Number((used / Math.pow(1024, 3)).toFixed(2)),
+    [used]
+  );
 
   return (
-    <Fragment>
-      <Text>
-        {diskStats.path} || {totalDiskSpace.toFixed(1)} Gb || {diskStats.device}
-      </Text>
-      <HStack>
-        {<BsDisc />}
-        <StatProgressBar colorScheme={color} value={diskStats.usedPercentage} />
-        <Text>
-          ({totalUsed} Gb) {diskStats.usedPercentage.toFixed(2)}%
-        </Text>
-      </HStack>
-    </Fragment>
+    <div className="flex flex-col gap-2">
+      <div className="text-sm text-gray-500">
+        <span>{path}</span>
+        <span className="mx-2">||</span>
+        <span>{totalDiskSpace.toFixed(1)} Gb</span>
+        <span className="mx-2">||</span>
+        <span>{device}</span>
+      </div>
+      <div className="flex items-center space-x-2">
+        <BsDisc className="text-lg" />
+        <StatProgressBar colorScheme={color} value={usedPercentage} />
+        <span className="text-sm font-medium w-32 text-right">
+          ({totalUsed} Gb) {usedPercentage.toFixed(2)}%
+        </span>
+      </div>
+    </div>
   );
 };
 
-export default DiskUsage;
+export default memo(DiskUsage);
