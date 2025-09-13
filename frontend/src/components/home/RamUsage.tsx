@@ -1,6 +1,5 @@
-import { HStack, Text } from "@chakra-ui/react";
 import { data } from "@go/models";
-import { Fragment, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { BsMemory } from "react-icons/bs";
 import StatProgressBar from "./HomeProgress";
 
@@ -32,19 +31,22 @@ const RamUsage = ({ memoryStats }: { memoryStats: data.MemoryStats }) => {
   }, [memoryStats]);
 
   return (
-    <Fragment>
-      <Text>Ram: {totalMemory.toFixed(1)} Gb</Text>
-      <HStack>
-        {<BsMemory />}
+    <div className="flex flex-col gap-2 text-sm">
+      <div className="flex justify-between">
+        <span className="text-gray-400">
+          RAM: {totalMemory.toFixed(1)} Gb
+        </span>
+        <span className="text-gray-400">
+          ({totalUsed.toFixed(1)} Gb) {memoryStats.usedPercentage.toFixed(2)}%
+        </span>
+      </div>
+      <div className="flex items-center space-x-2">
         <StatProgressBar
           colorScheme={color}
           value={memoryStats.usedPercentage}
         />
-        <Text>
-          ({totalUsed} Gb) {memoryStats.usedPercentage.toFixed(2)}%
-        </Text>
-      </HStack>
-    </Fragment>
+      </div>
+    </div>
   );
 };
 

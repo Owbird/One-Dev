@@ -246,15 +246,15 @@ function App() {
     >
       <TabsList>
         {openedTabs.map((tab) => (
-          <div key={tab.label} className="flex items-center m-6">
+          <div key={tab.label} className="flex items-center">
             <TabsTrigger
               value={tab.label}
-              className="bg-green-400"
+              // className="bg-green-400"
             >
               {tab.label}
             </TabsTrigger>
             {tab.label !== "Home" && (
-              <XIcon onClick={() => closeTab(tab)} color={"red"} />
+              <XIcon className="w-4 h-4" onClick={() => closeTab(tab)} color={"red"} />
             )}
           </div>
         ))}

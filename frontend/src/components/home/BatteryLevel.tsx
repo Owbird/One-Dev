@@ -1,7 +1,5 @@
-import { HStack, Text } from "@chakra-ui/react";
-import { Notify } from "@go/main/App";
 import { data } from "@go/models";
-import { Fragment, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { BsFillLightningChargeFill, BsPlug } from "react-icons/bs";
 import StatProgressBar from "./HomeProgress";
 
@@ -24,20 +22,17 @@ const BatteryLevel = ({
   }, [batteryStats]);
 
   return (
-    <Fragment>
-      <Text>Battery</Text>
-      <HStack>
-        {batteryStats.chargingState === "Discharging" ? (
-          <BsFillLightningChargeFill />
-        ) : (
-          <BsPlug />
-        )}
+    <div className="flex items-center space-x-2 text-sm">
+      {batteryStats.chargingState === "Discharging" ? (
+        <BsFillLightningChargeFill className="text-yellow-400" />
+      ) : (
+        <BsPlug className="text-green-500" />
+      )}
 
-        <StatProgressBar colorScheme={color} value={batteryLevel} />
+      <StatProgressBar colorScheme={color} value={batteryLevel} />
 
-        <Text>{batteryLevel}%</Text>
-      </HStack>
-    </Fragment>
+      <span className="w-10 text-right">{batteryLevel}%</span>
+    </div>
   );
 };
 

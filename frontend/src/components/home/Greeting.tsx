@@ -57,23 +57,18 @@ const Greeting = () => {
 
   return (
     <Fragment>
-      <HStack>
-        <Heading
-          fontWeight={600}
-          fontSize={{ base: "xl", sm: "2xl", md: "4xl" }}
-          lineHeight={"110%"}
-        >
-          <Text as={"span"} color={"green.400"}>
+      <div className="flex items-center space-x-4">
+        <h1 className="font-semibold text-xl sm:text-2xl md:text-4xl leading-tight">
+          <span className="text-green-400">
             {greeting}
             {userMeta && `, ${userMeta.name}`}
-          </Text>
-        </Heading>
-
+          </span>
+        </h1>
         {icon}
-      </HStack>
-      <Text color={"gray.500"}>
+      </div>
+      <p className="text-gray-500">
         {time.toLocaleString("en-US", timeOptions)}
-      </Text>
+      </p>
     </Fragment>
   );
 };
