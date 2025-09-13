@@ -1,7 +1,6 @@
-import { Box, Heading, Text } from "@chakra-ui/react";
 import { data } from "@go/models";
 import { FC, Fragment } from "react";
-import { AxisOptions, Chart } from "react-charts";
+import { Chart } from "react-charts";
 
 interface IRepoContributorsProps {
   contributors: data.RepoContributors[];
@@ -9,12 +8,12 @@ interface IRepoContributorsProps {
 
 const RepoContributors: FC<IRepoContributorsProps> = ({ contributors }) => {
   if (contributors === undefined || contributors.length === 0) {
-    return <Text>No Contributors</Text>;
+    return <p className="text-muted-foreground">No Contributors</p>;
   }
 
   return (
     <Fragment>
-      <Box width="400px" height="400px">
+      <div className="w-96 h-96">
         <Chart
           options={{
             interactionMode: "closest",
@@ -44,7 +43,7 @@ const RepoContributors: FC<IRepoContributorsProps> = ({ contributors }) => {
             ),
           }}
         />
-      </Box>
+      </div>
     </Fragment>
   );
 };

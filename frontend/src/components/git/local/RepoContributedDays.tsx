@@ -1,9 +1,8 @@
-import { Box, Heading, Text } from "@chakra-ui/react";
 import { data } from "@go/models";
 import { FC, Fragment } from "react";
 import { Chart } from "react-charts";
 
-interface IRepoTechnologiesProps {
+interface IRepoContributedDaysProps {
   days: data.RepoAnalytics["contributedDays"];
 }
 
@@ -17,10 +16,10 @@ const dayIndices: Record<number, string> = {
   6: "Sat",
 };
 
-const RepoContributedDays: FC<IRepoTechnologiesProps> = ({ days }) => {
+const RepoContributedDays: FC<IRepoContributedDaysProps> = ({ days }) => {
   return (
     <Fragment>
-      <Box width="400px" height="400px">
+      <div className="w-96 h-96">
         <Chart
           options={{
             primaryAxis: {
@@ -36,14 +35,14 @@ const RepoContributedDays: FC<IRepoTechnologiesProps> = ({ days }) => {
               label: dayIndices[parseInt(day)],
               data: [
                 {
-              day: dayIndices[parseInt(day)],
+                  day: dayIndices[parseInt(day)],
                   count: days[parseInt(day)],
                 },
               ],
             })),
           }}
         />
-      </Box>
+      </div>
     </Fragment>
   );
 };

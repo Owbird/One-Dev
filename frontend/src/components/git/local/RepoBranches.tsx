@@ -1,5 +1,13 @@
-import { Select } from "@chakra-ui/react";
 import { FC } from "react";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@src/components/ui/select";
 
 interface IRepoBranchesProps {
   localBranches: string[] | undefined;
@@ -15,37 +23,47 @@ const RepoBranches: FC<IRepoBranchesProps> = ({
   onBranchChange,
 }) => {
   if (localBranches === undefined || remoteBranches === undefined) {
-    return <Select placeholder="Branches"></Select>;
+    return (
+      <Select>
+        <SelectTrigger className="w-[200px]">
+          <SelectValue placeholder="Branches" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="loading" disabled>
+            Loading branches...
+          </SelectItem>
+        </SelectContent>
+      </Select>
+    );
   }
 
   return (
-    <Select
-      onChange={(event) => onBranchChange(event.target.value)}
-      placeholder={currentBranch}
-      defaultValue={currentBranch}
-    >
-      <optgroup label="Local">
-        {localBranches.map((branch, index) => (
-          <option
-            selected={branch.toLowerCase() === currentBranch!.toLowerCase()}
-            key={index}
-            value={branch}
-          >
-            {branch}
-          </option>
-        ))}
-      </optgroup>
-      <optgroup label="Remotes">
-        {remoteBranches.map((branch, index) => (
-          <option
-            selected={branch.toLowerCase() === currentBranch!.toLowerCase()}
-            key={index}
-            value={branch}
-          >
-            {branch}
-          </option>
-        ))}
-      </optgroup>
+    <Select value={currentBranch} onValueChange={onBranchChange}>
+      <SelectTrigger className="w-[200px]">
+        <SelectValue placeholder={currentBranch || "Select branch"} />
+      </SelectTrigger>
+      <SelectContent>
+        {localBranches.length > 0 && (
+          <SelectGroup>
+            <SelectLabel>Local</SelectLabel>
+            {localBranches.map((branch, index) => (
+              <SelectItem key={`local-${index}`} value={branch}>
+                {branch}
+              </SelectItem>
+            ))}
+          </SelectGroup>
+        )}
+        {remoteBranches.length > 0 && (
+          <SelectGroup>
+            <SelectLabel>Remotes</SelectLabel>
+            {remoteBranches.map((branch, index) => (
+              <SelectItem key={`remote-${index}`} value={branch}>
+                {branch}
+              </SelectItem>
+            ))}
+          </SelectGroup>
+        )}
+      </SelectContent>
     </Select>
   );
 };

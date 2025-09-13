@@ -1,17 +1,4 @@
 import {
-  Badge,
-  Box,
-  Center,
-  HStack,
-  Heading,
-  Stack,
-  Tab,
-  TabList,
-  TabPanel,
-  TabPanels,
-  Tabs,
-} from "@chakra-ui/react";
-import {
   ChangeBranch,
   GetRemoteRepoBranches,
   GetRepo,
@@ -31,6 +18,13 @@ import { AiOutlineBranches, AiOutlineTag } from "react-icons/ai";
 import { FaDownload, FaSync } from "react-icons/fa";
 import { VscRepoPush } from "react-icons/vsc";
 import useWindowFocus from "use-window-focus";
+import { Badge } from "@src/components/ui/badge";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@src/components/ui/tabs";
 
 interface IViewLocalRepoProps {
   repo: string;
@@ -113,46 +107,59 @@ const ViewLocalRepo: FC<IViewLocalRepoProps> = ({ repo }) => {
   if (repoData?.currentBranch === "") {
     return (
       <Fragment>
-        <HStack>
-          <Heading>{repoData?.dir}</Heading>
-        </HStack>
-        <Center>
-          <Heading>Empty Repo?</Heading>
-        </Center>
+        <div className="flex items-center space-x-2">
+          <h1 className="text-2xl font-bold">{repoData?.dir}</h1>
+        </div>
+        <div className="flex items-center justify-center mt-8">
+          <h2 className="text-xl">Empty Repo?</h2>
+        </div>
       </Fragment>
     );
   }
 
   if (isLoading || !repoData) {
     return (
-      <Center>
+      <div className="flex items-center justify-center">
         <Loader />
-      </Center>
+      </div>
     );
   }
 
   return (
     <Fragment>
-      <HStack>
-        <Heading>{repoData?.dir}</Heading>
-        <AiOutlineBranches />{" "}
-        <Badge>
-          {repoData?.localBranches.length! + remoteBranches.length!}
-        </Badge>
-        <Badge color={"green"}>{repoData?.currentBranch}</Badge>
-        <Box pl={60}>
-          <HStack>
-            <FaSync
-              title="Refresh"
-              onClick={() => getRepo(repoData?.parentDir!)}
-            />
-            <VscRepoPush title="Push" onClick={pushToOrigin} />
-            <FaDownload title="Pull" onClick={pullFromOrigin} />
-          </HStack>
-        </Box>
-      </HStack>
-      <Stack ml={5} mt={5} width={500}>
-        <HStack>
+      <div className="flex items-center  space-x-4">
+        <div className="flex items-center space-x-2">
+          <h1 className="text-2xl font-bold">{repoData?.dir}</h1>
+          <AiOutlineBranches />
+          <Badge variant="secondary">
+            {repoData?.localBranches.length! + remoteBranches.length!}
+          </Badge>
+          <Badge className="bg-green-100 text-green-800">
+            {repoData?.currentBranch}
+          </Badge>
+        </div>
+
+        <div className="flex items-center space-x-4">
+          <FaSync
+            className="cursor-pointer hover:text-blue-600 transition-colors"
+            title="Refresh"
+            onClick={() => getRepo(repoData?.parentDir!)}
+          />
+          <VscRepoPush
+            className="cursor-pointer hover:text-blue-600 transition-colors"
+            title="Push"
+            onClick={pushToOrigin}
+          />
+          <FaDownload
+            className="cursor-pointer hover:text-blue-600 transition-colors"
+            title="Pull"
+            onClick={pullFromOrigin}
+          />
+        </div>
+      </div>
+
+      <div className="ml-5 mt-5 max-w-[500px]">
+        <div className="flex items-center space-x-4 mb-6">
           <AiOutlineBranches size={60} />
           <RepoBranches
             localBranches={repoData?.localBranches}
@@ -162,41 +169,42 @@ const ViewLocalRepo: FC<IViewLocalRepoProps> = ({ repo }) => {
           />
           <AiOutlineTag size={60} />
           <RepoTags tags={repoData?.tags!} />
-        </HStack>
-        <Tabs>
-          <TabList>
-            <Tab>Changes</Tab>
-            <Tab>History</Tab>
-            <Tab>Analytics</Tab>
-          </TabList>
+        </div>
 
-          <TabPanels>
-            <TabPanel>
-              <Box>
-                <RepoChanges
-                  changes={repoData?.changes}
-                  parentDir={repoData?.parentDir!}
-                  refreshRepo={() => getRepo(repoData?.parentDir!)}
-                />
-              </Box>
-            </TabPanel>
-            <TabPanel w="85vw" ml={0} pl={0}>
-              <Box>
-                <RepoCommits
-                  repo={repoData?.parentDir!}
-                  commits={repoData?.commits!}
-                />
-              </Box>
-            </TabPanel>
-            <TabPanel>
-              <RepoAnalytics
-                totalCommits={repoData?.commits.length!}
-                analytics={repoData?.analytics!}
+        <Tabs defaultValue="changes" className="w-full">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="changes">Changes</TabsTrigger>
+            <TabsTrigger value="history">History</TabsTrigger>
+            <TabsTrigger value="analytics">Analytics</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="changes" className="mt-4">
+            <div>
+              <RepoChanges
+                changes={repoData?.changes}
+                parentDir={repoData?.parentDir!}
+                refreshRepo={() => getRepo(repoData?.parentDir!)}
               />
-            </TabPanel>
-          </TabPanels>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="history" className="mt-4 w-[85vw] ml-0 pl-0">
+            <div>
+              <RepoCommits
+                repo={repoData?.parentDir!}
+                commits={repoData?.commits!}
+              />
+            </div>
+          </TabsContent>
+
+          <TabsContent value="analytics" className="mt-4">
+            <RepoAnalytics
+              totalCommits={repoData?.commits.length!}
+              analytics={repoData?.analytics!}
+            />
+          </TabsContent>
         </Tabs>
-      </Stack>
+      </div>
     </Fragment>
   );
 };

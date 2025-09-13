@@ -1,4 +1,5 @@
-import { Box, Divider, Grid, GridItem, Input, Text } from "@chakra-ui/react";
+import { Input } from "@src/components/ui/input";
+import { Separator } from "@src/components/ui/separator";
 import { GetCommitDiff } from "@go/main/App";
 import { data } from "@go/models";
 import { FC, Fragment, useEffect, useState } from "react";
@@ -44,7 +45,7 @@ const RepoCommits: FC<IRepoCommitsProps> = ({ repo, commits }) => {
   };
 
   if (commits === undefined || commits.length === 0) {
-    return <Text>No Commits</Text>;
+    return <p className="text-muted-foreground">No Commits</p>;
   }
 
   useEffect(() => {
@@ -60,78 +61,79 @@ const RepoCommits: FC<IRepoCommitsProps> = ({ repo, commits }) => {
 
   return (
     <Fragment>
-      <Grid templateColumns="repeat(3, 1fr)" gap={3}>
-        <GridItem>
+      <div className="grid grid-cols-3 gap-3">
+        {/* Commits List */}
+        <div>
           <Input
             value={searchQuery}
             onChange={(event) => handleSearch(event.target.value)}
-            mb={4}
-            placeholder={"Search commit message"}
+            className="mb-4"
+            placeholder="Search commit message"
           />
-          <Box
-            overflowY={"scroll"}
-            h={"53vh"}
-            w="30vw"
-            p={4}
-            borderWidth="1px"
-            borderRadius="md"
-          >
+          <div className="overflow-y-scroll h-[53vh] w-[30vw] p-4 border border-border rounded-md">
             {filteredCommits.map((commit) => (
-              <Box
+              <div
                 key={commit.hash}
                 onClick={() => handleViewCommit(commit.hash)}
-                borderRadius={10}
-                padding={2}
-                backgroundColor={
-                  activeHash === commit.hash ? "peru" : undefined
-                }
+                className={`rounded-lg p-2 cursor-pointer transition-colors ${
+                  activeHash === commit.hash
+                    ? "bg-orange-600 text-white"
+                    : "hover:bg-muted"
+                }`}
               >
-                <Text fontSize="lg">{commit.message}</Text>
-                <Text
-                  fontSize="sm"
-                  color={activeHash === commit.hash ? "white" : "gray.500"}
+                <p className="text-lg font-medium">{commit.message}</p>
+                <p
+                  className={`text-sm ${
+                    activeHash === commit.hash
+                      ? "text-white"
+                      : "text-muted-foreground"
+                  }`}
                 >
                   {`${commit.committerName} <${commit.committerEmail}> | ${commit.date}`}
-                </Text>
-                <Divider my={2} />
-              </Box>
+                </p>
+                <Separator className="my-2" />
+              </div>
             ))}
-          </Box>
-        </GridItem>
-        <GridItem w={200}>
+          </div>
+        </div>
+
+        {/* File Diffs List */}
+        <div className="w-48">
           {diffs.length > 0 && (
-            <Box overflowY={"scroll"} h={"60vh"}>
+            <div className="overflow-y-scroll h-[60vh]">
               {diffs.map((diff) => (
-                <Box
+                <div
                   key={diff.file}
-                  borderRadius={10}
-                  padding={2}
-                  backgroundColor={
-                    contents?.file === diff.file ? "peru" : undefined
-                  }
+                  className={`rounded-lg p-2 cursor-pointer transition-colors ${
+                    contents?.file === diff.file
+                      ? "bg-orange-600 text-white"
+                      : "hover:bg-muted"
+                  }`}
                   onClick={() => {
                     setContents(() => diff);
                   }}
                 >
-                  <Text fontSize="lg">{diff.file}</Text>
-                  <Divider my={2} />
-                </Box>
+                  <p className="text-lg font-medium">{diff.file}</p>
+                  <Separator className="my-2" />
+                </div>
               ))}
-            </Box>
+            </div>
           )}
-        </GridItem>
-        <GridItem>
+        </div>
+
+        {/* Diff Viewer */}
+        <div>
           {contents && (
-            <Box overflowY={"scroll"} h={"62vh"}>
+            <div className="overflow-y-scroll h-[62vh]">
               <ReactDiffViewer
                 oldValue={contents.prevContent}
                 newValue={contents.currentContent}
                 splitView={false}
               />
-            </Box>
+            </div>
           )}
-        </GridItem>
-      </Grid>
+        </div>
+      </div>
     </Fragment>
   );
 };

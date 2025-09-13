@@ -1,12 +1,7 @@
-import {
-  Badge,
-  Button,
-  Checkbox,
-  HStack,
-  Stack,
-  Text,
-  Textarea,
-} from "@chakra-ui/react";
+import { Badge } from "@src/components/ui/badge";
+import { Button } from "@src/components/ui/button";
+import { Checkbox } from "@src/components/ui/checkbox";
+import { Textarea } from "@src/components/ui/textarea";
 import { CreateCommit } from "@go/main/App";
 import { data } from "@go/models";
 import { FC, Fragment, useState } from "react";
@@ -20,37 +15,35 @@ interface IRepoChangesProps {
 const getChangeColor = (status: string): string => {
   switch (status) {
     case "N":
-      return "green";
-    case " ":
-      return "yellow";
-    case "M":
-      return "yellow";
     case "A":
     case "U":
-      return "green";
+      return "text-green-400";
+    case " ":
+    case "M":
+      return "text-yellow-400";
     case "D":
-      return "red";
+      return "text-red-400";
     default:
-      break;
+      return "text-black";
   }
-
-  return "gray";
 };
+
 const RepoChanges: FC<IRepoChangesProps> = ({
   changes,
   parentDir,
   refreshRepo,
 }) => {
-  const [stagedFiles, setStagedFiles] = useState<string[]>(changes?.map((change) => change.file) as string[]);
+  const [stagedFiles, setStagedFiles] = useState<string[]>(
+    changes?.map((change) => change.file) as string[],
+  );
   const [commitMessage, setCommitMessage] = useState("");
 
   if (changes === undefined || changes.length === 0) {
-    return <Text>No Local Changes</Text>;
+    return <p className="text-muted-foreground">No Local Changes</p>;
   }
 
   const toggleStageFile = (file: string) => {
     const isStaged = stagedFiles.includes(file);
-
     if (isStaged) {
       setStagedFiles((prev) => prev.filter((x) => x !== file));
     } else {
@@ -65,39 +58,35 @@ const RepoChanges: FC<IRepoChangesProps> = ({
       repo: parentDir,
     };
     await CreateCommit(commitData);
-
     refreshRepo();
   };
 
   return (
     <Fragment>
-      <Stack>
+      <div className="space-y-4">
         <Textarea
           value={commitMessage}
           onChange={(event) => setCommitMessage(event.target.value)}
           placeholder="Commit message"
         />
-        <Button
-          isDisabled={commitMessage === ""}
-          colorScheme={"blue"}
-          onClick={createCommit}
-        >
+        <Button disabled={commitMessage === ""} onClick={createCommit}>
           Commit files ({stagedFiles.length})
         </Button>
-      </Stack>
-
-      {changes.map((change) => (
-        <HStack>
-          <Checkbox
-            isChecked={stagedFiles.includes(change.file)}
-            onChange={() => toggleStageFile(change.file)}
-          />
-          <Text>{change.file}</Text>
-          <Badge colorScheme={getChangeColor(change.status)}>
-            {change.status}
-          </Badge>
-        </HStack>
-      ))}
+      </div>
+      <div className="space-y-2">
+        {changes.map((change, index) => (
+          <div key={index} className="flex items-center space-x-3">
+            <Checkbox
+              checked={stagedFiles.includes(change.file)}
+              onCheckedChange={() => toggleStageFile(change.file)}
+            />
+            <span className="flex-1">{change.file}</span>
+            <Badge className={`bg-white ${getChangeColor(change.status)}`}>
+              {change.status}
+            </Badge>
+          </div>
+        ))}
+      </div>
     </Fragment>
   );
 };

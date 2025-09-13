@@ -1,4 +1,3 @@
-import { Box, Heading, Text } from "@chakra-ui/react";
 import { data } from "@go/models";
 import { FC, Fragment } from "react";
 import { Chart } from "react-charts";
@@ -9,11 +8,12 @@ interface IRepoTechnologiesProps {
 
 const RepoTechnologies: FC<IRepoTechnologiesProps> = ({ technologies }) => {
   if (technologies === undefined || technologies.length === 0) {
-    return <Text>No Technologies</Text>;
+    return <p className="text-muted-foreground">No Technologies</p>;
   }
+
   return (
     <Fragment>
-      <Box width="400px" height="400px">
+      <div className="w-96 h-96">
         <Chart
           options={{
             primaryAxis: {
@@ -35,7 +35,7 @@ const RepoTechnologies: FC<IRepoTechnologiesProps> = ({ technologies }) => {
             })),
           }}
         />
-      </Box>
+      </div>
     </Fragment>
   );
 };

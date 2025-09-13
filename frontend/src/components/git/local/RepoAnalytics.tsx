@@ -1,4 +1,3 @@
-import { Box, Grid, GridItem, Heading, Text } from "@chakra-ui/react";
 import { data } from "@go/models";
 import Loader from "@src/components/shared/Loader";
 import { FC } from "react";
@@ -20,37 +19,35 @@ const RepoAnalytics: FC<IRepoAnalyticsProps> = ({
   }
 
   return (
-    <Grid templateColumns={'repeat(3, 1fr)'} gap={5}>
-      <GridItem>
-        <Heading as="h2" color="green.500" size="lg" mb={2}>
+    <div className="grid grid-cols-3 gap-5">
+      <div>
+        <h2 className="text-green-500 text-xl font-semibold mb-2">
           {totalCommits} Commits
-        </Heading>
-        <Heading as="h2" size="lg" mb={2}>
+        </h2>
+        <h2 className="text-xl font-semibold mb-2">
           Contributors ({analytics.contributors.length})
-        </Heading>
-        <Box overflowY="auto" maxHeight="400">
+        </h2>
+        <div className="overflow-y-auto max-h-96">
           <RepoContributors contributors={analytics.contributors!} />
-        </Box>
-      </GridItem>
+        </div>
+      </div>
 
-      <GridItem>
-        <Heading as="h2" size="lg" mb={2}>
-          Days Contributed
-        </Heading>
-        <Box overflowY="auto" maxHeight="400">
+      <div>
+        <h2 className="text-xl font-semibold mb-2">Days Contributed</h2>
+        <div className="overflow-y-auto max-h-96">
           <RepoContributedDays days={analytics.contributedDays!} />
-        </Box>
-      </GridItem>
+        </div>
+      </div>
 
-      <GridItem>
-        <Heading as="h2" size="lg" mb={2}>
+      <div>
+        <h2 className="text-xl font-semibold mb-2">
           Technologies ({analytics.technologies.length})
-        </Heading>
-        <Box overflowY="auto" maxHeight="400">
+        </h2>
+        <div className="overflow-y-auto max-h-96">
           <RepoTechnologies technologies={analytics.technologies!} />
-        </Box>
-      </GridItem>
-    </Grid>
+        </div>
+      </div>
+    </div>
   );
 };
 

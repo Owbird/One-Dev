@@ -1,4 +1,10 @@
-import { Select } from "@chakra-ui/react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@src/components/ui/select";
 import { FC } from "react";
 
 interface IRepoTagsProps {
@@ -7,16 +13,28 @@ interface IRepoTagsProps {
 
 const RepoTags: FC<IRepoTagsProps> = ({ tags }) => {
   if (tags === undefined || tags.length === 0) {
-    return <Select placeholder={"No tags"}></Select>;
+    return (
+      <Select disabled>
+        <SelectTrigger>
+          <SelectValue placeholder="No tags" />
+        </SelectTrigger>
+        <SelectContent>{/* Empty content for disabled state */}</SelectContent>
+      </Select>
+    );
   }
 
   return (
-    <Select placeholder={"Tags"}>
-      {tags.map((tag, index) => (
-        <option key={index} value={tag}>
-          {tag}
-        </option>
-      ))}
+    <Select>
+      <SelectTrigger>
+        <SelectValue placeholder="Tags" />
+      </SelectTrigger>
+      <SelectContent>
+        {tags.map((tag, index) => (
+          <SelectItem key={index} value={tag}>
+            {tag}
+          </SelectItem>
+        ))}
+      </SelectContent>
     </Select>
   );
 };
