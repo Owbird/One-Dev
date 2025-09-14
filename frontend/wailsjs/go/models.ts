@@ -201,6 +201,20 @@ export namespace data {
 	        this.token = source["token"];
 	    }
 	}
+	export class Ip {
+	    ip: string;
+	    interface: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new Ip(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.ip = source["ip"];
+	        this.interface = source["interface"];
+	    }
+	}
 	export class MemoryStats {
 	    total: number;
 	    used: number;
@@ -564,7 +578,7 @@ export namespace data {
 	export class SystemResources {
 	    hasWaka: boolean;
 	    isLaptop: boolean;
-	    localIP: string;
+	    localIP: Ip[];
 	    uptime: UpTime;
 	    batteryStats: BatteryStats;
 	    memoryStats: MemoryStats;
@@ -579,7 +593,7 @@ export namespace data {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.hasWaka = source["hasWaka"];
 	        this.isLaptop = source["isLaptop"];
-	        this.localIP = source["localIP"];
+	        this.localIP = this.convertValues(source["localIP"], Ip);
 	        this.uptime = this.convertValues(source["uptime"], UpTime);
 	        this.batteryStats = this.convertValues(source["batteryStats"], BatteryStats);
 	        this.memoryStats = this.convertValues(source["memoryStats"], MemoryStats);

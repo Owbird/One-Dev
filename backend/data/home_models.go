@@ -49,7 +49,7 @@ type UserMeta struct {
 type SystemResources struct {
 	HasWaka      bool         `json:"hasWaka"`
 	IsLaptop     bool         `json:"isLaptop"`
-	LocalIP      string       `json:"localIP"`
+	LocalIPs     []Ip         `json:"localIP"`
 	UpTime       UpTime       `json:"uptime"`
 	BatteryStats BatteryStats `json:"batteryStats"`
 	MemoryStats  MemoryStats  `json:"memoryStats"`

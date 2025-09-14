@@ -14,8 +14,8 @@ export function CreateCommit(arg1) {
   return window['go']['main']['App']['CreateCommit'](arg1);
 }
 
-export function FetchLocalIp() {
-  return window['go']['main']['App']['FetchLocalIp']();
+export function FetchLocalIps() {
+  return window['go']['main']['App']['FetchLocalIps']();
 }
 
 export function GetAppState() {

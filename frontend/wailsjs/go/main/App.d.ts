@@ -8,7 +8,7 @@ export function CloneRepo(arg1:string,arg2:string):Promise<void>;
 
 export function CreateCommit(arg1:data.CreateCommit):Promise<void>;
 
-export function FetchLocalIp():Promise<string>;
+export function FetchLocalIps():Promise<Array<data.Ip>>;
 
 export function GetAppState():Promise<data.AppState>;
 

@@ -13,6 +13,7 @@ import (
 	"fyne.io/systray"
 	"github.com/distatus/battery"
 	"github.com/owbird/one-dev/backend/data"
+	"github.com/owbird/one-dev/backend/frontend/network"
 	"github.com/owbird/one-dev/backend/utils"
 	"github.com/shirou/gopsutil/cpu"
 	"github.com/shirou/gopsutil/disk"
@@ -155,12 +156,14 @@ func (hf *HomeFunctions) GetSystemResources() (data.SystemResources, error) {
 
 	stats.HasWaka = err == nil
 
-	ip, err := utils.GetLocalIp()
+	network := network.NewInstance()
+
+	ips, err := network.FetchLocalIps()
 	if err != nil {
 		return stats, err
 	}
 
-	stats.LocalIP = ip
+	stats.LocalIPs = ips
 
 	toolTipBuilder := strings.Builder{}
 
