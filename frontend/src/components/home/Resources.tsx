@@ -56,11 +56,20 @@ const Resources = () => {
 
   return (
     <div className="p-4 text-gray-300">
-      <div className="mb-4">
-        <p className="text-sm text-gray-500">IP: {resources.localIP}</p>
-      </div>
+      <ResourceCard title="Local IPs" className="mb-4">
+        <div className="mb-4 flex gap-4 items-center">
+          {resources.localIPs.map(({ ip, interface: iface }) => (
+            <p key={ip} className="text-sm text-gray-400">
+              {ip} ({iface})
+            </p>
+          ))}
+        </div>
+      </ResourceCard>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <ResourceCard title="Uptime" icon={<BsClock className="text-gray-400" />}>
+        <ResourceCard
+          title="Uptime"
+          icon={<BsClock className="text-gray-400" />}
+        >
           <div className="flex items-center space-x-2 text-sm text-gray-400">
             {resources.uptime.days > 0 && (
               <span>

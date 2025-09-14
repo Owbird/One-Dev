@@ -578,7 +578,7 @@ export namespace data {
 	export class SystemResources {
 	    hasWaka: boolean;
 	    isLaptop: boolean;
-	    localIP: Ip[];
+	    localIPs: Ip[];
 	    uptime: UpTime;
 	    batteryStats: BatteryStats;
 	    memoryStats: MemoryStats;
@@ -593,7 +593,7 @@ export namespace data {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.hasWaka = source["hasWaka"];
 	        this.isLaptop = source["isLaptop"];
-	        this.localIP = this.convertValues(source["localIP"], Ip);
+	        this.localIPs = this.convertValues(source["localIPs"], Ip);
 	        this.uptime = this.convertValues(source["uptime"], UpTime);
 	        this.batteryStats = this.convertValues(source["batteryStats"], BatteryStats);
 	        this.memoryStats = this.convertValues(source["memoryStats"], MemoryStats);
