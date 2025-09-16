@@ -59,8 +59,8 @@ const Processes = () => {
   const sortedProcesses = useMemo(() => {
     return [...filteredProcesses].sort((a, b) => {
       let comparison = 0;
-      const aVal = a[sortField];
-      const bVal = b[sortField];
+      const aVal = a[sortField as keyof data.Process];
+      const bVal = b[sortField as keyof data.Process];
 
       if (typeof aVal === "string" && typeof bVal === "string") {
         comparison = aVal.localeCompare(bVal);
@@ -108,7 +108,7 @@ const Processes = () => {
         <table className="w-full text-sm text-left text-gray-500">
           <thead className="text-xs text-gray-700 uppercase bg-gray-50 sticky top-0 z-10">
             <tr>
-              {(["pid", "name", "username", "memory", "cpu"] as SortField[]).map(
+              {(["pid", "name", "username", "memoryUsage", "cpuUsage"] as SortField[]).map(
                 (field) => (
                   <th
                     key={field}
