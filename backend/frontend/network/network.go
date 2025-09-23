@@ -40,12 +40,12 @@ type NetworkFunctions struct {
 func (sf *NetworkFunctions) FetchLocalIps() ([]data.Ip, error) {
 	defer utils.HandlePanic(sf.Ctx, ErrPrefix, FetchLocalIpErr)
 
+	localIps := []data.Ip{}
+
 	ifs, err := net.Interfaces()
 	if err != nil {
-		return nil, err
+		return localIps, err
 	}
-
-	var localIps []data.Ip
 
 	for _, iface := range ifs {
 		addrs, err := iface.Addrs()
