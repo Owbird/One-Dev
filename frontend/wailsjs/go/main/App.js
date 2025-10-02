@@ -6,6 +6,10 @@ export function ChangeBranch(arg1, arg2) {
   return window['go']['main']['App']['ChangeBranch'](arg1, arg2);
 }
 
+export function CheckGhCli() {
+  return window['go']['main']['App']['CheckGhCli']();
+}
+
 export function CloneRepo(arg1, arg2) {
   return window['go']['main']['App']['CloneRepo'](arg1, arg2);
 }
@@ -36,14 +40,6 @@ export function GetFileSystems() {
 
 export function GetGitDirs() {
   return window['go']['main']['App']['GetGitDirs']();
-}
-
-export function GetGitTokens() {
-  return window['go']['main']['App']['GetGitTokens']();
-}
-
-export function GetGitUser() {
-  return window['go']['main']['App']['GetGitUser']();
 }
 
 export function GetIndexedRepos() {

@@ -23,20 +23,6 @@ func NewInstance() *Database {
 	return &Database{}
 }
 
-// GetGitToken retrieves the Git token from the database.
-//
-// It returns a string.
-func (db *Database) GetGitUser() (data.GitUser, error) {
-	oneJson, err := db.GetOneJson()
-	if err != nil {
-		return data.GitUser{}, err
-	}
-
-	return data.GitUser{
-		Username: oneJson.Git.Username,
-		Token:    oneJson.Git.Token,
-	}, nil
-}
 
 // EnsureOneDir creates a directory for storing app data.
 //

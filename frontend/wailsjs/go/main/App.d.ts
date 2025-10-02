@@ -4,6 +4,8 @@ import {data} from '../models';
 
 export function ChangeBranch(arg1:string,arg2:string):Promise<void>;
 
+export function CheckGhCli():Promise<boolean>;
+
 export function CloneRepo(arg1:string,arg2:string):Promise<void>;
 
 export function CreateCommit(arg1:data.CreateCommit):Promise<void>;
@@ -19,10 +21,6 @@ export function GetDirectories(arg1:string,arg2:boolean):Promise<Array<data.Dire
 export function GetFileSystems():Promise<Array<data.DiskStats>>;
 
 export function GetGitDirs():Promise<Array<data.File>>;
-
-export function GetGitTokens():Promise<Array<string>>;
-
-export function GetGitUser():Promise<data.GitUser>;
 
 export function GetIndexedRepos():Promise<Array<data.File>>;
 

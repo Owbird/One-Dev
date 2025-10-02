@@ -16,7 +16,6 @@ import (
 	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing"
 	"github.com/go-git/go-git/v5/plumbing/object"
-	"github.com/go-git/go-git/v5/plumbing/transport/http"
 	"github.com/owbird/one-dev/backend/data"
 	"github.com/owbird/one-dev/backend/database"
 	"github.com/owbird/one-dev/backend/utils"
@@ -301,62 +300,49 @@ func (gf *GitFunctions) GetRemoteRepos() ([]data.RemoteRepo, error) {
 
 	log.Println("[+] Getting remote repos")
 
-	user, err := gf.db.GetGitUser()
-
-	if user.Token == "" {
-		return []data.RemoteRepo{}, fmt.Errorf("missing remote config")
-	}
-
-	if err != nil {
-		return []data.RemoteRepo{}, err
-	}
-
-	payload := map[string]string{
-		"query": `{
+	query := `{
   viewer {
     repositories(first: 100, affiliations: [OWNER, ORGANIZATION_MEMBER, COLLABORATOR], ownerAffiliations: [OWNER, ORGANIZATION_MEMBER, COLLABORATOR], orderBy: { field: UPDATED_AT, direction: DESC }) {
-	nodes {
-	id
-	name
-	stargazerCount
-	forkCount
-	updatedAt
-	isPrivate
-	description
-	diskUsage
-	url	
-	primaryLanguage {
-		name
-	}
-	watchers {
-		totalCount
+      nodes {
+        id
+        name
+        stargazerCount
+        forkCount
+        updatedAt
+        isPrivate
+        description
+        diskUsage
+        url
+        primaryLanguage {
+          name
         }
-	owner {
-		login
-		avatarUrl
-	}
+        watchers {
+          totalCount
+        }
+        owner {
+          login
+          avatarUrl
+        }
       }
     }
   }
-}
-`,
-	}
+}`
 
-	payloadJson, _ := json.Marshal(payload)
-
-	body, err := utils.MakeAuthorizedRequest("POST", "https://api.github.com/graphql", user.Token, payloadJson)
+	res, err := utils.RunGhCliCmd("api", "graphql", "-f", "query="+query)
 	if err != nil {
 		return []data.RemoteRepo{}, err
 	}
 
-	var response data.RemoteRepoResponse
+	var fmttedRes data.RemoteRepoResponse
 
-	err = json.Unmarshal(body, &response)
+	err = json.Unmarshal([]byte(res), &fmttedRes)
 	if err != nil {
-		return []data.RemoteRepo{}, fmt.Errorf("could not get repos: %s", string(body))
+		return []data.RemoteRepo{}, err
 	}
 
-	return response.Data.Viewer.Repositories.Nodes, nil
+	log.Println(res, fmttedRes)
+
+	return fmttedRes.Data.Viewer.Repositories.Nodes, nil
 }
 
 // ChangeBranch changes the branch of a Git repository.
@@ -395,11 +381,6 @@ func (gf *GitFunctions) CloneRepo(url string, name string) error {
 		return err
 	}
 
-	user, err := gf.db.GetGitUser()
-	if err != nil {
-		return err
-	}
-
 	path, err := runtime.OpenDirectoryDialog(gf.Ctx, runtime.OpenDialogOptions{
 		Title:            fmt.Sprintf("Clone %s repo", name),
 		DefaultDirectory: home,
@@ -408,40 +389,23 @@ func (gf *GitFunctions) CloneRepo(url string, name string) error {
 	path = filepath.Join(path, name)
 
 	os.MkdirAll(path, 0755)
-
 	if err != nil {
 		return err
 	}
 
-	auth := &http.BasicAuth{
-		Username: user.Username,
-		Password: user.Token,
-	}
-
 	log.Println("[+] Cloning repo")
 
-	repo, err := git.PlainClone(path, false, &git.CloneOptions{
-		URL:      url,
-		Progress: os.Stdout,
-		Auth:     auth,
-	})
+	_, err = utils.RunGhCliCmd("repo", "clone", url, path)
+
 	if err != nil {
 		log.Println(err)
-	}
+		return err
 
-	log.Println(repo)
+	}
 
 	log.Println("[+] Repo cloned")
 
 	return nil
-}
-
-// GetGitUser returns the GitUser object and an error.
-//
-// No parameters.
-// Returns a GitUser object and an error.
-func (gf *GitFunctions) GetGitUser() (data.GitUser, error) {
-	return gf.db.GetGitUser()
 }
 
 // GetGitDirs returns a slice of data File structs representing Git directories.
@@ -501,78 +465,6 @@ func (gf *GitFunctions) GetGitDirs() ([]data.File, error) {
 	gf.db.IndexLocalRepos(dirs)
 
 	return dirs, nil
-}
-
-// GetGitTokens returns a slice of strings representing Git tokens and an error.
-//
-// This function retrieves the list of Git directories from the database and
-// iterates over each directory. For each directory, it opens the corresponding
-// Git repository and retrieves the list of remotes. For each remote, it extracts
-// the token from the URL and adds it to the tokens slice. Finally, it returns
-// the tokens slice and any error that occurred during the process.
-func (gf *GitFunctions) GetGitTokens() ([]string, error) {
-	defer utils.HandlePanic(gf.Ctx, ErrPrefix, GetGitTokensErr)
-
-	tokens := []string{}
-
-	gitDirs := []data.File{}
-
-	indexedDirs, err := gf.GetIndexedRepos()
-
-	if err == nil {
-		gitDirs = indexedDirs
-	}
-
-	if len(gitDirs) == 0 {
-
-		gitDirs, err = gf.GetGitDirs()
-		if err != nil {
-			return []string{}, err
-		}
-
-	}
-
-	for _, dir := range gitDirs {
-		repo, err := git.PlainOpen(dir.ParentDir)
-		if err != nil {
-			return tokens, err
-		}
-
-		remotes, err := repo.Remotes()
-		if err != nil {
-			return tokens, err
-		}
-
-		for _, remote := range remotes {
-			// url = https://<token>@github.com/<user>/<repo>.git
-			for _, url := range remote.Config().URLs {
-				atParts := strings.Split(url, "@") // [https://<token>, @github.com/<user>/<repo>.git]
-
-				if len(atParts) == 2 {
-					httpParts := strings.Split(atParts[0], "https://") // ["",<token>]
-
-					token := httpParts[1]
-
-					alreadyExists := false
-
-					// Check if token has already been appended
-					for _, t := range tokens {
-						if t == token {
-							alreadyExists = true
-							break
-						}
-					}
-
-					if !alreadyExists {
-						tokens = append(tokens, token)
-					}
-
-				}
-			}
-		}
-	}
-
-	return tokens, nil
 }
 
 // CreateCommit commits changes to the Git repository.
@@ -769,4 +661,12 @@ func (gf *GitFunctions) GetRepoRemoteURL(path string) (string, error) {
 	}
 
 	return remote.Config().URLs[0], nil
+}
+
+func (gf *GitFunctions) CheckGhCli() bool {
+	_, err := exec.LookPath("gh")
+	if err != nil {
+		return false
+	}
+	return true
 }

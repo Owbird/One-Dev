@@ -1,4 +1,4 @@
-import { GetRemoteRepos } from "@go/main/App";
+import { CheckGhCli, GetRemoteRepos } from "@go/main/App";
 import { data } from "@go/models";
 import Loader from "@src/components/shared/Loader";
 import { remoteReposAtom } from "@src/states/git/RemoteReposAtom";
@@ -12,6 +12,7 @@ import { FaStar, FaClock, FaClone, FaDatabase } from "react-icons/fa";
 import { Badge } from "@src/components/ui/badge";
 
 const RemoteRepos = () => {
+  const [hasGhCli, setHasGhCli] = useState(false);
   const [repos, setRepos] = useAtom(remoteReposAtom);
   const [activeRepo, setActiveRepo] = useState<data.RemoteRepo>();
   const [isLoading, setIsLoading] = useState(repos.length === 0);
@@ -27,10 +28,9 @@ const RemoteRepos = () => {
   };
 
   useEffect(() => {
-    GetRemoteRepos()
-      .then((repos) => {
-        setRepos(repos);
-        setIsLoading(false);
+    CheckGhCli()
+      .then((isInstalled) => {
+        setHasGhCli(isInstalled);
       })
       .catch((err) => {
         enqueueSnackbar(err, { variant: "error" });
@@ -39,6 +39,23 @@ const RemoteRepos = () => {
         setIsLoading(false);
       });
   }, []);
+
+  useEffect(() => {
+    if (hasGhCli) {
+          setIsLoading(true);
+      GetRemoteRepos()
+        .then((repos) => {
+          setRepos(repos);
+          setIsLoading(false);
+        })
+        .catch((err) => {
+          enqueueSnackbar(err, { variant: "error" });
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    }
+  }, [hasGhCli]);
 
   const handleRepoView = (repo: data.RemoteRepo) => {
     setActiveRepo(repo);
@@ -58,7 +75,8 @@ const RemoteRepos = () => {
   }
 
   const repoGridItem = repos?.map((repo) => {
-    const langColor = ghColors[repo.primaryLanguage.name as keyof typeof ghColors];
+    const langColor =
+      ghColors[repo.primaryLanguage.name as keyof typeof ghColors];
     return (
       <div
         key={repo.id}
@@ -66,23 +84,21 @@ const RemoteRepos = () => {
         className="w-full p-5 bg-blue-500 rounded-lg cursor-pointer hover:bg-blue-600 transition-colors flex flex-col justify-between items-start space-y-3"
       >
         <div className="flex items-center space-x-2">
-          {repo.isPrivate && (
-            <Badge variant="secondary">private</Badge>
-          )}
-          <Badge 
-            style={{ 
+          {repo.isPrivate && <Badge variant="secondary">private</Badge>}
+          <Badge
+            style={{
               backgroundColor: langColor ? langColor.color! : "#6b7280",
-              color: "white" 
+              color: "white",
             }}
           >
             {repo.primaryLanguage.name}
           </Badge>
         </div>
-        
+
         <p className="text-white font-medium">
           {repo.owner.login}/{repo.name}
         </p>
-        
+
         <div className="flex items-center justify-center space-x-4">
           <div className="flex items-center space-x-1 text-white">
             <FaStar />
@@ -97,7 +113,7 @@ const RemoteRepos = () => {
             <span className="text-sm">{formatBytes(repo.diskUsage)}</span>
           </div>
         </div>
-        
+
         <div className="flex items-center space-x-1 text-white">
           <FaClock />
           <span className="text-sm">{format(repo.updatedAt)}</span>

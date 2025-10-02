@@ -6,6 +6,10 @@ export function ChangeBranch(arg1, arg2) {
   return window['go']['git']['GitFunctions']['ChangeBranch'](arg1, arg2);
 }
 
+export function CheckGhCli() {
+  return window['go']['git']['GitFunctions']['CheckGhCli']();
+}
+
 export function CloneRepo(arg1, arg2) {
   return window['go']['git']['GitFunctions']['CloneRepo'](arg1, arg2);
 }
@@ -20,14 +24,6 @@ export function GetCommitDiff(arg1, arg2, arg3) {
 
 export function GetGitDirs() {
   return window['go']['git']['GitFunctions']['GetGitDirs']();
-}
-
-export function GetGitTokens() {
-  return window['go']['git']['GitFunctions']['GetGitTokens']();
-}
-
-export function GetGitUser() {
-  return window['go']['git']['GitFunctions']['GetGitUser']();
 }
 
 export function GetIndexedRepos() {
