@@ -61,16 +61,16 @@ const RepoCommits: FC<IRepoCommitsProps> = ({ repo, commits }) => {
 
   return (
     <Fragment>
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-12 gap-3">
         {/* Commits List */}
-        <div>
+        <div className="col-span-4">
           <Input
             value={searchQuery}
             onChange={(event) => handleSearch(event.target.value)}
             className="mb-4"
             placeholder="Search commit message"
           />
-          <div className="overflow-y-scroll h-[53vh] w-[30vw] p-4 border border-border rounded-md">
+          <div className="overflow-y-scroll h-[53vh] p-4 border border-border rounded-md">
             {filteredCommits.map((commit) => (
               <div
                 key={commit.hash}
@@ -81,7 +81,7 @@ const RepoCommits: FC<IRepoCommitsProps> = ({ repo, commits }) => {
                     : "hover:bg-muted"
                 }`}
               >
-                <p className="text-lg font-medium">{commit.message}</p>
+                <p className="text-lg font-medium break-words">{commit.message}</p>
                 <p
                   className={`text-sm ${
                     activeHash === commit.hash
@@ -98,7 +98,7 @@ const RepoCommits: FC<IRepoCommitsProps> = ({ repo, commits }) => {
         </div>
 
         {/* File Diffs List */}
-        <div className="w-48">
+        <div className="col-span-2">
           {diffs.length > 0 && (
             <div className="overflow-y-scroll h-[60vh]">
               {diffs.map((diff) => (
@@ -113,7 +113,7 @@ const RepoCommits: FC<IRepoCommitsProps> = ({ repo, commits }) => {
                     setContents(() => diff);
                   }}
                 >
-                  <p className="text-lg font-medium">{diff.file}</p>
+                  <p className="text-lg font-medium break-words">{diff.file}</p>
                   <Separator className="my-2" />
                 </div>
               ))}
@@ -122,7 +122,7 @@ const RepoCommits: FC<IRepoCommitsProps> = ({ repo, commits }) => {
         </div>
 
         {/* Diff Viewer */}
-        <div>
+        <div className="col-span-6">
           {contents && (
             <div className="overflow-y-scroll h-[62vh]">
               <ReactDiffViewer

@@ -158,7 +158,7 @@ const ViewLocalRepo: FC<IViewLocalRepoProps> = ({ repo }) => {
         </div>
       </div>
 
-      <div className="ml-5 mt-5 max-w-[500px]">
+      <div className="ml-5 mt-5">
         <div className="flex items-center space-x-4 mb-6">
           <AiOutlineBranches size={60} />
           <RepoBranches
@@ -188,7 +188,7 @@ const ViewLocalRepo: FC<IViewLocalRepoProps> = ({ repo }) => {
             </div>
           </TabsContent>
 
-          <TabsContent value="history" className="mt-4 w-[85vw] ml-0 pl-0">
+          <TabsContent value="history" className="mt-4">
             <div>
               <RepoCommits
                 repo={repoData?.parentDir!}
