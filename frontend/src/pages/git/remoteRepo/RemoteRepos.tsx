@@ -1,4 +1,4 @@
-import { CheckGhCli, GetRemoteRepos } from "@go/main/App";
+import { CheckGhCli, GetRemoteRepos, OpenFile } from "@go/main/App";
 import { data } from "@go/models";
 import Loader from "@src/components/shared/Loader";
 import { remoteReposAtom } from "@src/states/git/RemoteReposAtom";
@@ -10,6 +10,8 @@ import { format } from "timeago.js";
 import { ghColors } from "@src/data/constants";
 import { FaStar, FaClock, FaClone, FaDatabase } from "react-icons/fa";
 import { Badge } from "@src/components/ui/badge";
+import { Button } from "@src/components/ui/button";
+import { Input } from "@src/components/ui/input";
 
 const RemoteRepos = () => {
   const [hasGhCli, setHasGhCli] = useState(false);
@@ -17,6 +19,9 @@ const RemoteRepos = () => {
   const [activeRepo, setActiveRepo] = useState<data.RemoteRepo>();
   const [isLoading, setIsLoading] = useState(repos.length === 0);
   const [isOpen, setIsOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const [searchRes, setSearchRes] = useState<data.RemoteRepo[]>();
 
   const formatBytes = (bytes: number): string => {
     if (bytes === 0) return "0 Bytes";
@@ -25,6 +30,19 @@ const RemoteRepos = () => {
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     const size = parseFloat((bytes / Math.pow(k, i)).toFixed(2));
     return `${size} ${sizes[i]}`;
+  };
+
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+    if (query === "") {
+      setSearchRes(undefined);
+    } else {
+      setSearchRes(
+        repos.filter((repo) =>
+          repo.name.toLowerCase().includes(query.toLowerCase()),
+        ),
+      );
+    }
   };
 
   useEffect(() => {
@@ -42,7 +60,7 @@ const RemoteRepos = () => {
 
   useEffect(() => {
     if (hasGhCli) {
-          setIsLoading(true);
+      setIsLoading(true);
       GetRemoteRepos()
         .then((repos) => {
           setRepos(repos);
@@ -74,7 +92,21 @@ const RemoteRepos = () => {
     );
   }
 
-  const repoGridItem = repos?.map((repo) => {
+  if (!hasGhCli) {
+    return (
+      <div className="justify-center items-center h-screen flex flex-col">
+        <p className="text-red-400">
+          This functionality requires Github CLI installed.
+        </p>
+
+        <Button onClick={() => OpenFile("https://github.com/cli/cli")}>
+          Download
+        </Button>
+      </div>
+    );
+  }
+
+  const repoGridItem = (searchRes ?? repos).map((repo) => {
     const langColor =
       ghColors[repo.primaryLanguage.name as keyof typeof ghColors];
     return (
@@ -124,7 +156,14 @@ const RemoteRepos = () => {
 
   return (
     <div className="p-4">
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 max-h-[500px] overflow-y-auto">
+      <Input
+        value={searchQuery}
+        onChange={(event) => handleSearch(event.target.value)}
+        className="mb-4"
+        placeholder="Search..."
+      />
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 overflow-y-auto">
         {repos && (
           <Fragment>
             <ViewRemoteRepoModal
