@@ -83,11 +83,9 @@ function App() {
   const [openedTabs, setOpenedTabs] = useAtom(openedTabsAtom);
   const [appModules, setAppModules] = useAtom(selectedAppModules);
   const currentNav = [
-    NAV_ITEMS[0],
     ...appModules.map(
       (module) => NAV_ITEMS.find((item) => item.menuTab.label === module)!,
     ),
-    NAV_ITEMS[NAV_ITEMS.length - 1],
   ];
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -131,9 +129,9 @@ function App() {
   useEffect(() => {
     GetSettings().then((settings) => {
       setAppModules((prev) => [
-        // prev[0],
-        ...settings.modules,
-        // prev[prev.length - 1],
+        "Home",
+        ...settings.modules.filter((m) => m !== "Home" && m !== "Settings"),
+        "Settings",
       ]);
     });
 
@@ -254,7 +252,6 @@ function App() {
               <div key={tab.label} className="flex items-center">
                 <TabsTrigger
                   value={tab.label}
-                  // className="bg-green-400"
                 >
                   {tab.label}
                 </TabsTrigger>
