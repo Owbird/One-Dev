@@ -8,7 +8,7 @@ require (
 	github.com/go-git/go-git/v5 v5.13.2
 	github.com/go-ping/ping v1.2.0
 	github.com/ostafen/clover v1.2.0
-	github.com/wailsapp/wails/v2 v2.10.2
+	github.com/wailsapp/wails/v2 v2.11.0
 )
 
 require (
@@ -48,7 +48,7 @@ require (
 	github.com/tevino/abool v1.2.0 // indirect
 	github.com/tklauser/go-sysconf v0.3.11 // indirect
 	github.com/tklauser/numcpus v0.6.0 // indirect
-	github.com/wailsapp/go-webview2 v1.0.19 // indirect
+	github.com/wailsapp/go-webview2 v1.0.22 // indirect
 	github.com/xanzy/ssh-agent v0.3.3 // indirect
 	github.com/yusufpapurcu/wmi v1.2.2 // indirect
 	go.opencensus.io v0.22.5 // indirect
